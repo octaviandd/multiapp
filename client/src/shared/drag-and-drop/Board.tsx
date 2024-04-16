@@ -1,6 +1,6 @@
 /** @format */
 
-// @ts-nocheck
+import uniqid from "uniqid";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal, unstable_batchedUpdates } from "react-dom";
 import {
@@ -57,19 +57,16 @@ const dropAnimation: DropAnimation = {
 };
 
 type Item = {
-  id: number;
+  id: UniqueIdentifier;
   title: string;
 };
 
-type Items = {
+type Board = {
   id: UniqueIdentifier;
   title: string;
   items: Item[];
+  type: string;
 };
-
-// type Items = {
-//   [key: UniqueIdentifier]: Item[];
-// };
 
 interface Props {
   adjustScale?: boolean;
@@ -82,13 +79,13 @@ interface Props {
     index: number;
     overIndex: number;
     isDragging: boolean;
-    containerId: UniqueIdentifier;
+    boardId: UniqueIdentifier;
     isSorting: boolean;
     isDragOverlay: boolean;
   }): React.CSSProperties;
   wrapperStyle?(args: { index: number }): React.CSSProperties;
   itemCount?: number;
-  items?: Items;
+  items?: Board;
   handle?: boolean;
   renderItem?: any;
   strategy?: SortingStrategy;
@@ -101,40 +98,83 @@ interface Props {
 const PLACEHOLDER_ID = "placeholder";
 const empty: UniqueIdentifier[] = [];
 
-const defaultItems = [
+const defaultBoards = [
   {
-    id: 123,
+    type: "board",
+    id: uniqid(),
     title: "Recently assigned",
     items: [
-      { id: 1, title: "Recently assigned" },
+      { id: uniqid(), title: "Recently assigned" },
       { id: 2, title: "A2" },
     ],
   },
   {
-    id: 124,
+    type: "board",
+    id: uniqid(),
     title: "Do today",
     items: [
-      { id: 3, title: "Do toda" },
-      { id: 4, title: "B2" },
+      { id: uniqid(), title: "Do toda" },
+      { id: uniqid(), title: "B2" },
     ],
   },
   {
-    id: 125,
+    type: "board",
+    id: uniqid(),
     title: "Do next week",
     items: [
-      { id: 5, title: "Do next wee" },
-      { id: 6, title: "C2" },
+      { id: uniqid(), title: "Do next wee" },
+      { id: uniqid(), title: "C2" },
     ],
   },
   {
-    id: 126,
+    type: "board",
+    id: uniqid(),
     title: "Do Later",
     items: [
-      { id: 7, title: "Do Late" },
-      { id: 8, title: "D2" },
+      { id: uniqid(), title: "Do Late" },
+      { id: uniqid(), title: "D2" },
     ],
   },
 ];
+
+const getSortableItemDragOverlay = (
+  id: UniqueIdentifier,
+  container: Board,
+  handle: boolean,
+  getItemStyles: (args: {
+    value: UniqueIdentifier;
+    index: number;
+    overIndex: number;
+    isDragging: boolean;
+    containerId: UniqueIdentifier;
+    isSorting: boolean;
+    isDragOverlay: boolean;
+  }) => React.CSSProperties,
+  getIndex: (id: UniqueIdentifier) => number,
+  wrapperStyle: (args: { index: number }) => React.CSSProperties,
+  renderItem: any
+) => {
+  const item = container?.items.find((item: Item) => item.id === id) as Item;
+  return (
+    <Item
+      value={item.title}
+      handle={handle}
+      style={getItemStyles({
+        containerId: container?.id as UniqueIdentifier,
+        overIndex: -1,
+        index: getIndex(id),
+        value: id,
+        isSorting: true,
+        isDragging: true,
+        isDragOverlay: true,
+      })}
+      color="#fff"
+      wrapperStyle={wrapperStyle({ index: 0 })}
+      renderItem={renderItem}
+      dragOverlay
+    />
+  );
+};
 
 export default function MultipleContainers({
   adjustScale = false,
@@ -151,27 +191,46 @@ export default function MultipleContainers({
   vertical = false,
   scrollable,
 }: Props) {
-  const [items, setItems] = useState<Items[]>(() => defaultItems);
+  const [boards, setBoards] = useState<Board[]>(defaultBoards);
   const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null);
   const lastOverId = useRef<UniqueIdentifier | null>(null);
-  const recentlyMovedToNewContainer = useRef(false);
-  // const isSortingContainer = activeId
-  //   ? items.find((item) => item.id === activeId)
-  //   : false;
-  const isSortingContainer = false;
-  // const isSortingContainer = () => {
-  //   if (items.hasOwnProperty('items')){
-  //     return activeId ? items.find((item) => item.id === activeId) : false;
-  //   } else {
-  //     return activeId ? items.find((item) => item) : false;
-  //   }
-  // }
+  const recentlyMovedToNewBoard = useRef(false);
+  const isSortingBoard = activeId
+    ? boards.some((board) => board.id === activeId)
+    : false;
 
   const measuring = {
     droppable: {
       strategy: MeasuringStrategy.Always,
     },
   };
+
+  const [clonedItems, setClonedItems] = useState<Board[] | null>(null);
+  const sensors = useSensors(useSensor(MouseSensor), useSensor(TouchSensor));
+  const findBoard = (id: UniqueIdentifier): Board => {
+    return boards.find((board) => board.id === id) as Board;
+  };
+
+  const findBoardByItemId = (id: UniqueIdentifier): Board => {
+    return boards.find((board) =>
+      board.items.find((item) => item.id === id)
+    ) as Board;
+  };
+
+  const findItem = (id: UniqueIdentifier): Item => {
+    return findBoardByItemId(id).items.find((item) => item.id === id) as Item;
+  };
+
+  const getIndex = (id: UniqueIdentifier) => {
+    const board = findBoard(id);
+    return !board ? -1 : board.items.findIndex((item) => item.id === id);
+  };
+
+  useEffect(() => {
+    requestAnimationFrame(() => {
+      recentlyMovedToNewBoard.current = false;
+    });
+  }, [boards]);
 
   /**
    * Custom collision detection strategy optimized for multiple containers
@@ -184,10 +243,10 @@ export default function MultipleContainers({
   const collisionDetectionStrategy: CollisionDetection = useCallback(
     (args) => {
       const isActiveItemInItems = () =>
-        items.some((item) => item.id === activeId);
+        boards.some((board) => board.id === activeId);
 
-      const hasArrayObjectWithIndex = (id: number | UniqueIdentifier) =>
-        items.some((item) => item.id === id);
+      const hasArrayObjectWithIndex = (id: UniqueIdentifier) =>
+        boards.some((board) => board.id === id);
 
       if (activeId && isActiveItemInItems()) {
         return closestCenter({
@@ -207,12 +266,12 @@ export default function MultipleContainers({
           : rectIntersection(args);
       let overId = getFirstCollision(intersections, "id");
 
-      if (overId != null) {
+      if (overId != null && overId != undefined) {
         if (hasArrayObjectWithIndex(overId)) {
           //err
-          const containerItems = findContainer(overId).items;
+          const containerItems = findBoard(overId)?.items;
 
-          if (containerItems.length > 0) {
+          if (containerItems && containerItems.length > 0) {
             // Return the closest droppable within that container
             overId = closestCenter({
               ...args,
@@ -234,63 +293,44 @@ export default function MultipleContainers({
       // and the `overId` may become `null`. We manually set the cached `lastOverId`
       // to the id of the draggable item that was moved to the new container, otherwise
       // the previous `overId` will be returned which can cause items to incorrectly shift positions
-      if (recentlyMovedToNewContainer.current) {
+      if (recentlyMovedToNewBoard.current) {
         lastOverId.current = activeId;
       }
 
       // If no droppable is matched, return the last match
       return lastOverId.current ? [{ id: lastOverId.current }] : [];
     },
-    [activeId, items]
+    [activeId, boards]
   );
-  const [clonedItems, setClonedItems] = useState<Items[] | null>(null);
-  const sensors = useSensors(useSensor(MouseSensor), useSensor(TouchSensor));
-  const findContainer = (id: UniqueIdentifier) => {
-    const container = items.find((item) => item.id === id);
-    if (container) return container;
-
-    return items.find((item) => {
-      return item.items.some((item) => item.id === id);
-    });
-  };
-
-  const getIndex = (id: UniqueIdentifier) => {
-    const container = findContainer(id);
-
-    if (!container) {
-      return -1;
-    }
-
-    const index = container.items.findIndex((item) => item.id === id);
-
-    return index;
-  };
 
   const onDragCancel = () => {
     if (clonedItems) {
-      setItems(clonedItems);
+      setBoards(clonedItems);
     }
 
     setActiveId(null);
     setClonedItems(null);
   };
 
-  useEffect(() => {
-    requestAnimationFrame(() => {
-      recentlyMovedToNewContainer.current = false;
-      // console.log("animation frame");
-    });
-  }, [items]);
-
   function renderSortableItemDragOverlay(id: UniqueIdentifier) {
-    const container = findContainer(id);
-    const item = container?.items.find((item: Item) => item.id === id) as Item;
+    // return getSortableItemDragOverlay(
+    //   id,
+    //   board,
+    //   handle,
+    //   (getItemStyles = () => ({})),
+    //   getIndex,
+    //   wrapperStyle,
+    //   renderItem
+    // );
+
+    const board = findBoard(id) as Board;
+    const item = findItem(id) as Item;
     return (
       <Item
         value={item.title}
         handle={handle}
         style={getItemStyles({
-          containerId: container?.id as UniqueIdentifier,
+          boardId: board?.id as UniqueIdentifier,
           overIndex: -1,
           index: getIndex(id),
           value: id,
@@ -306,11 +346,11 @@ export default function MultipleContainers({
     );
   }
 
-  function renderContainerDragOverlay(containerId: UniqueIdentifier) {
-    const container = findContainer(containerId);
+  function renderContainerDragOverlay(boardId: UniqueIdentifier) {
+    const board = findBoard(boardId) as Board;
     return (
       <BoardContainer
-        label={`${container.title}`}
+        label={`${board.title}`}
         columns={columns}
         style={{
           height: "100%",
@@ -319,13 +359,13 @@ export default function MultipleContainers({
         shadow
         unstyled={false}
       >
-        {container.items.map((item, index) => (
+        {board.items.map((item, index) => (
           <Item
             key={item.id}
             value={item.title}
             handle={handle}
             style={getItemStyles({
-              containerId,
+              boardId,
               overIndex: -1,
               index: getIndex(item.id),
               value: item.id,
@@ -342,66 +382,79 @@ export default function MultipleContainers({
     );
   }
 
-  function handleRemove(containerID: UniqueIdentifier) {
-    setItems((containers) =>
-      containers.filter((container) => container.id !== containerID)
-    );
+  function handleRemove(boardId: UniqueIdentifier) {
+    setBoards((boards) => boards.filter((board) => board.id !== boardId));
   }
 
   function handleAddColumn() {
-    const newContainerId = getNextContainerId();
+    const newBoardId = getNextBoardId();
+    const newBoard = {
+      id: newBoardId,
+      title: `Board ${newBoardId}`,
+      items: [],
+      type: "board",
+    };
 
     unstable_batchedUpdates(() => {
-      // setContainers((containers) => [...containers, newContainerId]);
-      setItems((items) => ({
-        ...items,
-        [newContainerId]: [],
-      }));
+      setBoards((boards) => [...boards, newBoard]);
     });
   }
 
-  // function handleAddRow() {
-  //   const newRowId = getNextRowId();
+  function handleAddRow(boardID: UniqueIdentifier) {
+    const newRowId = getNextRowId();
 
-  //   unstable_batchedUpdates(() => {
-  //     setItems((items) => ({
-  //       ...items,
-  //       [newContainerId]: [],
-  //     }));
-  //   });
-  // }
+    unstable_batchedUpdates(() => {
+      setBoards((boards) => {
+        const newItems = [...boards];
+        const board = newItems.find((item) => item.id === boardID);
+
+        if (board) {
+          board.items = [
+            ...board.items,
+            {
+              id: newRowId,
+              title: `Item ${newRowId}`,
+            },
+          ];
+        }
+
+        return newItems;
+      });
+    });
+  }
 
   function onDragStart({ active }: { active: any }) {
     setActiveId(active.id);
-    setClonedItems(items);
+    setClonedItems(boards);
   }
 
   function onDragOver({ active, over }: { active: any; over: any }) {
     const overId = over?.id;
     const activeId = active.id;
 
-    const isDraggingContainers = items.some(
-      (item) => item.id === overId || item.id === activeId
-    );
+    // const isDraggingContainers = boards.some(
+    //   (board) => board.id === overId || board.id === activeId
+    // );
 
-    const isActiveIdInItems = () => {
-      return items.some((item) => item.id === activeId);
+    const onBoardLevel = () => {
+      return boards.some((board) => board.id === activeId);
     };
 
-    if (overId == null || isActiveIdInItems()) {
-      console.log("im here");
+    // If it outside the boards or we are on moving boards.
+    if (overId == null || onBoardLevel()) {
       return;
     }
 
-    const overContainer = findContainer(overId);
-    const activeContainer = findContainer(activeId);
+    // Working with items inside Boards; overId and activeId become board items ids.
+    const overContainer = findBoardByItemId(overId);
+    const activeContainer = findBoardByItemId(activeId);
 
     if (!overContainer || !activeContainer) {
       return;
     }
 
     if (activeContainer !== overContainer) {
-      setItems((items) => {
+      setBoards((boards) => {
         const activeItems = activeContainer.items;
         const overItems = overContainer.items;
         const overIndex = overItems.findIndex((item) => item.id === overId);
@@ -411,11 +464,11 @@ export default function MultipleContainers({
 
         let newIndex: number;
 
-        const isOverInItems = () => {
-          return items.some((item) => item.id === overId);
+        const isOverPositionInAnotherBoard = () => {
+          return boards.some((board) => board.id === overId);
         };
 
-        if (isOverInItems()) {
+        if (isOverPositionInAnotherBoard()) {
           newIndex = overItems.length + 1;
         } else {
           const isBelowOverItem =
@@ -430,9 +483,9 @@ export default function MultipleContainers({
             overIndex >= 0 ? overIndex + modifier : overItems.length + 1;
         }
 
-        recentlyMovedToNewContainer.current = true;
+        recentlyMovedToNewBoard.current = true;
 
-        let newItems = [...items];
+        let newItems = [...boards];
         let newActiveContainerIndex = newItems.findIndex(
           (item) => item.id === activeContainer.id
         );
@@ -458,26 +511,20 @@ export default function MultipleContainers({
     let activeId = active.id;
     let overId = over?.id;
 
-    console.log("activeId", activeId, "overId", overId);
+    const onBoardLevel = () => boards.some((board) => board.id === activeId);
 
-    const isActiveIdInItems = () => items.some((item) => item.id === activeId);
+    if (onBoardLevel() && overId) {
+      setBoards((boards) => {
+        const activeIndex = boards.findIndex((item) => item.id === activeId);
+        const overIndex = boards.findIndex((item) => item.id === overId);
 
-    if (isActiveIdInItems() && overId) {
-      setItems((containers) => {
-        const activeIndex = containers.findIndex(
-          (item) => item.id === activeId
-        );
-        const overIndex = containers.findIndex((item) => item.id === overId);
-
-        console.log(activeIndex, overIndex);
-
-        return arrayMove(containers, activeIndex, overIndex);
+        return arrayMove(boards, activeIndex, overIndex);
       });
     }
 
-    const activeContainer = findContainer(activeId);
+    const activeBoard = findBoardByItemId(activeId);
 
-    if (!activeContainer) {
+    if (!activeBoard) {
       setActiveId(null);
       return;
     }
@@ -487,23 +534,20 @@ export default function MultipleContainers({
       return;
     }
 
-    const overContainer = findContainer(overId);
+    const overBoard = findBoardByItemId(overId);
 
-    if (overContainer) {
-      const activeIndex = activeContainer.items.findIndex(
+    if (overBoard) {
+      const activeIndex = activeBoard.items.findIndex(
         (item) => item.id === activeId
       );
-      const overIndex = overContainer.items.findIndex(
-        (item) => item.id === overId
-      );
+      const overIndex = overBoard.items.findIndex((item) => item.id === overId);
 
-      console.log("hit");
       // might need fux
       if (activeIndex !== overIndex) {
-        setItems((items) => {
+        setBoards((items) => {
           let newItems = [...items];
           let targetItem =
-            newItems[items.findIndex((item) => item.id === activeContainer.id)];
+            newItems[items.findIndex((item) => item.id === activeBoard.id)];
           let modifiedNestedItems = arrayMove(
             targetItem.items,
             activeIndex,
@@ -518,19 +562,13 @@ export default function MultipleContainers({
     setActiveId(null);
   }
 
-  function getNextContainerId() {
-    const containerIds = Object.keys(items);
-    const lastContainerId = containerIds[containerIds.length - 1];
-
-    return String.fromCharCode(lastContainerId.charCodeAt(0) + 1);
+  function getNextBoardId() {
+    return uniqid();
   }
 
-  // function getNextRowId(activeId: UniqueIdentifier) {
-  //   const currentContainer = findContainer(activeId);
-  //   const lastItemId = items[currentContainer][items[currentContainer].length - 1]
-
-  //   return String.fromCharCode(lastItemId.charCodeAt(0) + 1);
-  // }
+  function getNextRowId() {
+    return uniqid();
+  }
 
   return (
     <DndContext
@@ -550,31 +588,31 @@ export default function MultipleContainers({
         }`}
       >
         <SortableContext
-          items={[...items.map((item) => item.id), PLACEHOLDER_ID]}
+          items={[...boards.map((board) => board.id), PLACEHOLDER_ID]}
           strategy={
             vertical
               ? verticalListSortingStrategy
               : horizontalListSortingStrategy
           }
         >
-          {items.map((container) => (
+          {boards.map((board) => (
             <>
               <DroppableContainer
-                key={container.id}
-                id={container.id}
-                label={`${container.title}`}
+                key={board.id}
+                id={board.id}
+                label={`${board.title}`}
                 columns={columns}
-                items={container.items.map((item) => item.id)}
+                items={board.items.map((item) => item.id)}
                 scrollable={scrollable}
                 style={containerStyle}
                 unstyled={false}
-                onRemove={() => handleRemove(container.id)}
+                onRemove={() => handleRemove(board.id)}
               >
-                <SortableContext items={container.items} strategy={strategy}>
-                  {container.items.map((value, index) => {
+                <SortableContext items={board.items} strategy={strategy}>
+                  {board.items.map((value, index) => {
                     return (
                       <SortableItemBoard
-                        disabled={isSortingContainer}
+                        disabled={isSortingBoard}
                         key={value.id}
                         id={value.id}
                         value={value.title}
@@ -583,12 +621,15 @@ export default function MultipleContainers({
                         style={getItemStyles}
                         wrapperStyle={wrapperStyle}
                         renderItem={renderItem}
-                        containerId={container.id}
+                        containerId={board.id}
                         getIndex={getIndex}
                       />
                     );
                   })}
-                  <div className="py-1 flex justify-center items-center cursor-pointer rounded-lg bg-transparent hover:bg-[#3D3E40] transition-all ease-in-out duration-200">
+                  <div
+                    className="py-1 flex justify-center items-center cursor-pointer rounded-lg bg-transparent hover:bg-[#3D3E40] transition-all ease-in-out duration-200"
+                    onClick={() => handleAddRow(board.id)}
+                  >
                     <span className="w-[12px] h-[12px] mr-2">
                       <Plus
                         width={13}
@@ -607,19 +648,19 @@ export default function MultipleContainers({
           ))}
           <DroppableContainer
             id={PLACEHOLDER_ID}
-            disabled={isSortingContainer}
+            disabled={isSortingBoard}
             items={empty}
             onClick={handleAddColumn}
             placeholder
           >
-            + Add column
+            + Add Board
           </DroppableContainer>
         </SortableContext>
       </div>
       {createPortal(
         <DragOverlay adjustScale={adjustScale} dropAnimation={dropAnimation}>
           {activeId
-            ? items.find((item) => item.id == activeId)
+            ? boards.find((board) => board.id == activeId)
               ? renderContainerDragOverlay(activeId)
               : renderSortableItemDragOverlay(activeId)
             : null}
