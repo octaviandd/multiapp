@@ -62,16 +62,6 @@
   }
 }
 
-body {
-  color: white;
-}
-
-.home-background {
-  background-image: url("https://d3ki9tyy5l5ruj.cloudfront.net/obj/7be19e7c5bba62fcaeb561f0bb7cb0f024313a06/Oat_background_dark.jpg");
-  background-size: cover;
-  background-position: center;
-}
-
 h1 {
   @apply scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl;
 }

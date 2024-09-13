@@ -3,7 +3,7 @@
 import React from "react";
 import { cn } from "../../../utils/helpers/utils";
 
-import styles from "./Wrapper.module.css";
+import styles from "./wrapper.module.scss";
 
 interface Props {
   children: React.ReactNode;

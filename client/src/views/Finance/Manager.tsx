@@ -2,9 +2,9 @@
 
 import React, { useEffect } from "react";
 import { Link, Outlet } from "react-router-dom";
-import { DataTable } from "../../shared/tables/data-table";
-import { columns } from "../../shared/tables/columns";
-import data from "../../shared/tables/tasks.json";
+import { DataTable } from "../../components/tables/data-table";
+import { columns } from "../../components/tables/columns";
+import data from "../../components/tables/tasks.json";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/layout/avatar";
 
 type Props = {};

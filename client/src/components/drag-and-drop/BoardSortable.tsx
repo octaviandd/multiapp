@@ -11,9 +11,9 @@ import {
 import { GridContainer } from "./Grid/GridContainer";
 import { Sortable, Props as SortableProps } from "./Sortable";
 
-import { NotesWidget } from "../../components/layout/home/notes-widget";
-import { TasksWidget } from "../../components/layout/home/tasks-widget";
-import { FinanceWidget } from "../../components/layout/home/finance-widget";
+import { NotesWidget } from "../layout/notes-widget";
+import { TasksWidget } from "../layout/tasks-widget";
+import { FinanceWidget } from "../layout/finance-widget";
 
 const items = [
   NotesWidget,

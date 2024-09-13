@@ -11,10 +11,10 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../../components/layout/select";
+} from "../layout/select";
 
-import { Badge } from "../../components/layout/badge";
-import { Checkbox } from "../../components/layout/checkbox";
+import { Badge } from "../layout/badge";
+import { Checkbox } from "../layout/checkbox";
 
 import { labels, categories } from "./data";
 import { Task } from "./schema";

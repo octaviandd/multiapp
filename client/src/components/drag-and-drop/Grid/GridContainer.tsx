@@ -2,7 +2,7 @@
 
 import React from "react";
 
-import styles from "./GridContainer.module.css";
+import styles from "./grid-container.module.scss";
 
 export interface Props {
   children: React.ReactNode;

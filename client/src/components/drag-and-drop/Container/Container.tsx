@@ -5,7 +5,7 @@ import React, { forwardRef } from "react";
 import { Remove } from "../Item/Remove";
 import { Handle } from "../Item/Handle";
 import { cn } from "../../../utils/helpers/utils";
-import styles from "./container.module.css";
+import styles from "./container.module.scss";
 
 export interface Props {
   children: React.ReactNode;

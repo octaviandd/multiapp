@@ -3,7 +3,7 @@
 import React, { useEffect } from "react";
 import type { DraggableSyntheticListeners } from "@dnd-kit/core";
 import type { Transform } from "@dnd-kit/utilities";
-import styles from "./item.module.css";
+import styles from "./item.module.scss";
 
 import { Handle } from "./Handle";
 import { Remove } from "./Remove";

@@ -1,13 +1,14 @@
 /** @format */
 
 import React from "react";
-import { BoardSortable } from "../../shared/drag-and-drop/BoardSortable";
+import { BoardSortable } from "../../components/drag-and-drop/BoardSortable";
+import styles from "./home.module.scss"
 
 type Props = {};
 
 export default function Home({}: Props) {
   return (
-    <div className="overflow-y-scroll home-background w-full">
+    <div className={styles.Home}>
       <div className="p-6">
         <div className="mb-4">
           <p className="text-[20px]">Home</p>

@@ -3,7 +3,7 @@
 import React, { forwardRef } from "react";
 import { cn } from "../../../utils/helpers/utils";
 
-import styles from "./List.module.css";
+import styles from "./list.module.scss";
 
 export interface Props {
   children: React.ReactNode;

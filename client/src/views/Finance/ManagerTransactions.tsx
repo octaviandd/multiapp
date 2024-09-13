@@ -1,9 +1,9 @@
 /** @format */
 
 import React from "react";
-import { columns } from "../../shared/tables/columns";
-import data from "../../shared/tables/tasks.json";
-import { DataTable } from "../../shared/tables/data-table";
+import { columns } from "../../components/tables/columns";
+import data from "../../components/tables/tasks.json";
+import { DataTable } from "../../components/tables/data-table";
 
 type Props = {};
 
