@@ -11,11 +11,7 @@ export default function Tasks({}: Props) {
   const { store } = useContext(StoreContext);
 
   return (
-    <div
-      className={`flex flex-col w-full h-full transition-all ease-in-out duration-300 ${
-        store.displaySidebar ? "translate-x-0" : "-translate-x-[240px]"
-      }`}
-    >
+    <div className={`flex flex-col w-full h-full transition-all ease-in-out duration-300`}>
       <div className="overflow-hidden pb-2">
         <div className="w-full bg-[#1E1F21] py-3 px-4 flex items-center gap-x-6">
           <div className="flex items-center">
