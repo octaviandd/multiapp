@@ -4,7 +4,7 @@ import React, { forwardRef } from "react";
 
 import { Remove } from "../Item/Remove";
 import { Handle } from "../Item/Handle";
-import { cn } from "../../../lib/utils";
+import { cn } from "../../../utils/helpers/utils";
 import styles from "./container.module.css";
 
 export interface Props {

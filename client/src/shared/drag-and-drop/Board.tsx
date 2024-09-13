@@ -542,7 +542,6 @@ export default function MultipleContainers({
       );
       const overIndex = overBoard.items.findIndex((item) => item.id === overId);
 
-      // might need fux
       if (activeIndex !== overIndex) {
         setBoards((items) => {
           let newItems = [...items];

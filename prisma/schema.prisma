@@ -19,8 +19,35 @@ model Task {
   updatedAt DateTime @updatedAt
   title     String
   content   String?
-  board    TasksBoard   @relation(fields: [boardId], references: [id])
-  boardId  Int
+  board     TasksBoard   @relation(fields: [boardId], references: [id])
+  boardId   Int
+  asignee   User  @relation(fields: [asigneeId], references: [id])
+  asigneeId Int
+  due_date  DateTime
+  sub_tasks SubTask[]
+  comments Comment[]
+}
+model Comment {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  content   String
+  task      Task   @relation(fields: [taskId], references: [id])
+  taskId    Int
+  author    User   @relation(fields: [authorId], references: [id])
+  authorId  Int
+}
+model SubTask {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  title     String
+  content   String?
+  task      Task   @relation(fields: [taskId], references: [id])
+  taskId    Int
+  asignee   User  @relation(fields: [asigneeId], references: [id])
+  asigneeId Int
+  due_date  DateTime
 }
 
 model Goals {
@@ -54,17 +81,6 @@ model Note {
   userId  Int
 }
 
-// model Post {
-//   id        Int      @id @default(autoincrement())
-//   createdAt DateTime @default(now())
-//   updatedAt DateTime @updatedAt
-//   title     String   @db.VarChar(255)
-//   content   String?
-//   published Boolean  @default(false)
-//   author    User     @relation(fields: [authorId], references: [id])
-//   authorId  Int
-// }
-
 model Profile {
   id     Int     @id @default(autoincrement())
   bio    String?
@@ -75,10 +91,13 @@ model Profile {
 model User {
   id      Int      @id @default(autoincrement())
   email   String   @unique
+  password String
   name    String?
-  // posts   Post[]
   profile Profile?
   notes Note[]
   goas Goals[]
   task_boards TasksBoard[]
+  tasks Task[]
+  sub_tasks SubTask[]
+  comments Comment[]
 }

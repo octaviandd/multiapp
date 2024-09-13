@@ -11,20 +11,13 @@ import {
 import { GridContainer } from "./Grid/GridContainer";
 import { Sortable, Props as SortableProps } from "./Sortable";
 
-// import { FitnessWidget } from "../../components/ui/home/fitness-widget";
-import { NotesWidget } from "../../components/ui/home/notes-widget";
-import { TasksWidget } from "../../components/ui/home/tasks-widget";
-import { ProjectsWidget } from "../../components/ui/home/projects-widget";
-import { GoalsWidget } from "../../components/ui/home/goals-widget";
-import { PeopleWidget } from "../../components/ui/home/people-widget";
-import { FinanceWidget } from "../../components/ui/home/finance-widget";
+import { NotesWidget } from "../../components/layout/home/notes-widget";
+import { TasksWidget } from "../../components/layout/home/tasks-widget";
+import { FinanceWidget } from "../../components/layout/home/finance-widget";
 
 const items = [
   NotesWidget,
   TasksWidget,
-  ProjectsWidget,
-  GoalsWidget,
-  PeopleWidget,
   FinanceWidget,
 ];
 

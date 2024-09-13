@@ -7,7 +7,7 @@ import styles from "./item.module.scss";
 
 import { Handle } from "./Handle";
 
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils/helpers/utils";
 import { CalendarClock, CircleCheck, ThumbsUp } from "lucide-react";
 
 export interface Props {

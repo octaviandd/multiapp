@@ -3,7 +3,7 @@
 import React, { forwardRef } from "react";
 
 import { Handle } from "../BoardItem/Handle";
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils/helpers/utils";
 import styles from "./container.module.scss";
 import { Plus } from "lucide-react";
 

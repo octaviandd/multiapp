@@ -3,22 +3,21 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.scss";
-import Root from "./Application/Root";
+import Root from "./Root";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import Errors from "./Application/Errors";
-import Home from "./Application/Home";
-import Tasks from "./Application/Tasks";
-import Inbox from "./Application/Inbox";
-import FinanceManager from "./Application/Finance/Manager";
-import FinanceManagerReview from "./Application/Finance/ManagerReview";
-import FinanceManagerTransactions from "./Application/Finance/ManagerTransactions";
-import List from "./Application/Tasks/components/List";
-import Board from "./Application/Tasks/components/Board";
-import Files from "./Application/Tasks/components/Files";
-import Calendar from "./Application/Tasks/components/Calendar";
-import { LoginForm } from "./Auth/Login";
-import { RegisterForm } from "./Auth/Register";
-import { StoreProvider } from "./store";
+import Errors from "./views/Error/ErrorPage";
+import Home from "./views/Home/Home";
+import Tasks from "./views/Tasks/TasksNavigvation";
+import FinanceManager from "./views/Finance/Manager";
+import FinanceManagerReview from "./views/Finance/ManagerReview";
+import FinanceManagerTransactions from "./views/Finance/ManagerTransactions";
+import List from "./views/Tasks/List";
+import Board from "./views/Tasks/Board";
+import Files from "./views/Tasks/Files";
+import Calendar from "./views/Tasks/Calendar";
+import { LoginForm } from "./views/Login/LoginPage";
+import { RegisterForm } from "./views/Register/RegisterPage";
+import { StoreProvider } from "./store/index";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
@@ -55,10 +54,6 @@ const router = createBrowserRouter([
             element: <Files />,
           },
         ],
-      },
-      {
-        path: "/inbox",
-        element: <Inbox />,
       },
       {
         path: "/finance",
