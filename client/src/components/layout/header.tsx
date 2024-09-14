@@ -84,7 +84,7 @@ export default function Header({ displaySidebar, setDisplaySidebar }: Props) {
             >
               <DropdownMenuSeparator />
               <DropdownMenuGroup>
-                <DropdownMenuItem>
+                <   DropdownMenuItem>
                   <User color="black" className="mr-2 h-4 w-4" />
                   <span className="text-black">Task</span>
                   <DropdownMenuShortcut className="text-black">⇧⌘P</DropdownMenuShortcut>

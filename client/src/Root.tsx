@@ -19,7 +19,7 @@ export default function Root({}: Props) {
   };
 
   return (
-    <div className="overflow-hidden">
+    <div className="overflow-hidden h-screen">
       <Header
         displaySidebar={store.displaySidebar}
         setDisplaySidebar={() => setDisplaySidebar(!store.displaySidebar)}

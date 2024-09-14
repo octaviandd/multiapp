@@ -1,7 +1,7 @@
 /** @format */
 
 .Container {
-  @apply flex flex-col outline-none rounded-lg overflow-hidden h-full p-4;
+  @apply flex flex-col outline-none rounded-lg overflow-hidden p-4;
   grid-auto-rows: max-content;
   box-sizing: border-box;
   appearance: none;
@@ -14,7 +14,8 @@
   transition: border 0.1s ease-in-out;
 
   ul {
-    @apply grid gap-1 list-none m-0;
+    @apply grid gap-1 list-none m-0 overflow-auto;
+    scrollbar-width: thin;
     grid-template-columns: repeat(var(--columns, 1), 1fr);
   }
 

@@ -206,7 +206,7 @@ export default function MultipleContainers({
   };
 
   const [clonedItems, setClonedItems] = useState<Board[] | null>(null);
-  const sensors = useSensors(useSensor(MouseSensor), useSensor(TouchSensor));
+  const sensors = useSensors(useSensor(MouseSensor, {activationConstraint: {distance: 8}}), useSensor(TouchSensor));
   const findBoard = (id: UniqueIdentifier): Board => {
     return boards.find((board) => board.id === id) as Board;
   };
@@ -413,7 +413,7 @@ export default function MultipleContainers({
             ...board.items,
             {
               id: newRowId,
-              title: `Item ${newRowId}`,
+              title: `New Task`,
             },
           ];
         }
@@ -446,8 +446,8 @@ export default function MultipleContainers({
     }
 
     // Working with items inside Boards; overId and activeId become board items ids.
-    const overContainer = findBoardByItemId(overId);
-    const activeContainer = findBoardByItemId(activeId);
+    const overContainer = findBoardByItemId(overId) || findBoard(overId);
+    const activeContainer = findBoardByItemId(activeId) || findBoard(activeId);
 
     if (!overContainer || !activeContainer) {
       return;
@@ -534,13 +534,14 @@ export default function MultipleContainers({
       return;
     }
 
-    const overBoard = findBoardByItemId(overId);
+    const overBoardByItemId = findBoardByItemId(overId);
 
-    if (overBoard) {
+    if (overBoardByItemId) {
       const activeIndex = activeBoard.items.findIndex(
         (item) => item.id === activeId
       );
-      const overIndex = overBoard.items.findIndex((item) => item.id === overId);
+
+      const overIndex = overBoardByItemId.items.findIndex((item) => item.id === overId);
 
       if (activeIndex !== overIndex) {
         setBoards((items) => {
@@ -556,8 +557,7 @@ export default function MultipleContainers({
           return newItems;
         });
       }
-    }
-
+    } 
     setActiveId(null);
   }
 

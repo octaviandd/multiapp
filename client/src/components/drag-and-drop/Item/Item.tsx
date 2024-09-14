@@ -1,6 +1,6 @@
 /** @format */
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import type { DraggableSyntheticListeners } from "@dnd-kit/core";
 import type { Transform } from "@dnd-kit/utilities";
 import styles from "./item.module.scss";
@@ -43,6 +43,8 @@ export interface Props {
   }): React.ReactElement;
 }
 
+const CLICK_DRAG_THRESHOLD = 5; // Threshold to distinguish click from drag
+
 export const Item = React.memo(
   React.forwardRef<HTMLLIElement, Props>(
     (
@@ -69,6 +71,9 @@ export const Item = React.memo(
       },
       ref
     ) => {
+      console.log(renderItem)
+      const [mouseDownPosition, setMouseDownPosition] = useState<{ x: number; y: number } | null>(null);
+
       useEffect(() => {
         if (!dragOverlay) {
           return;
@@ -80,6 +85,41 @@ export const Item = React.memo(
           document.body.style.cursor = "";
         };
       }, [dragOverlay]);
+
+      const handleMouseDown = (event: React.MouseEvent) => {
+        console.log('hit')
+        // Store the mouse down position
+        setMouseDownPosition({ x: event.clientX, y: event.clientY });
+      };
+
+      const handleMouseMove = (event: React.MouseEvent) => {
+        if (!mouseDownPosition) return;
+
+        const deltaX = Math.abs(event.clientX - mouseDownPosition.x);
+        const deltaY = Math.abs(event.clientY - mouseDownPosition.y);
+
+        // If the mouse moved beyond the threshold, it's considered a drag
+        if (deltaX >= CLICK_DRAG_THRESHOLD || deltaY >= CLICK_DRAG_THRESHOLD) {
+          setMouseDownPosition(null); // Reset after determining drag
+        }
+      };
+
+      const handleMouseUp = (event: React.MouseEvent) => {
+        if (!mouseDownPosition) return;
+
+        const deltaX = Math.abs(event.clientX - mouseDownPosition.x);
+        const deltaY = Math.abs(event.clientY - mouseDownPosition.y);
+
+        // If movement is within threshold, it's a click
+        if (deltaX < CLICK_DRAG_THRESHOLD && deltaY < CLICK_DRAG_THRESHOLD) {
+          if (typeof value === "object" && React.isValidElement(value)) {
+            // Trigger click action here
+            console.log("Item clicked");
+          }
+        }
+
+        setMouseDownPosition(null); // Reset after click or drag
+      };
 
       return renderItem ? (
         renderItem({
@@ -125,6 +165,10 @@ export const Item = React.memo(
               "--color": color,
             } as React.CSSProperties
           }
+          onMouseDown={handleMouseDown}
+          onMouseMove={handleMouseMove}
+          onMouseUp={handleMouseUp}
+          {...listeners}
           ref={ref}
         >
           <div
