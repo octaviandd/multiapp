@@ -12,7 +12,7 @@ type Props = {
 export default function Sidebar({ displaySidebar }: Props) {
   return (
     <div
-      className={`flex flex-col bg-[#2e2e30] w-[240px] flex-shrink-0 transition-all ease-in-out duration-200 ${
+      className={`flex flex-col bg-[#2e2e30] flex-shrink-0 transition-all ease-in-out duration-200 ${
         displaySidebar ? "w-[240px]" : "w-0"
       }`}
     >
