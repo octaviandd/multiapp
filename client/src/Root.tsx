@@ -29,7 +29,7 @@ export default function Root({}: Props) {
           displaySidebar={store.displaySidebar}
           setDisplaySidebar={() => setDisplaySidebar(!store.displaySidebar)}
         />
-        <div className="w-full transition-all ease-in-out duration-300">
+        <div style={{ width: store.displaySidebar ? 'calc(100% - 240px)' : '100%'}} className={`transition-all ease-in-out duration-300`}>
           <Outlet />
         </div>
       </div>

@@ -582,7 +582,7 @@ export default function MultipleContainers({
       modifiers={modifiers}
     >
       <div
-        className={`inline-grid p-5 h-full ${
+        className={`inline-grid p-5 h-full overflow-y-scroll w-full ${
           vertical ? "grid-flow-row" : "grid-flow-col"
         }`}
       >

@@ -69,7 +69,7 @@ export default function Tasks({}: Props) {
           <button>Group By</button>
         </div>
       </div>
-      <div className="overflow-x-scroll overflow-y-hidden w-full h-full bg-[#252628]">
+      <div className="w-full h-full bg-[#252628]">
         <Outlet />
       </div>
     </div>
