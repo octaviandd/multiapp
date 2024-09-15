@@ -38,9 +38,9 @@ export function DataTableColumnHeader<TData, TValue>({
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button
-            variant="ghost"
+            variant="default"
             size="sm"
-            className="-ml-3 h-8 data-[state=open]:bg-accent"
+            className="-ml-3 h-8 data-[state=open]:bg-neutral-700"
           >
             <span>{title}</span>
             {column.getIsSorted() === "desc" ? (
@@ -54,17 +54,17 @@ export function DataTableColumnHeader<TData, TValue>({
         </DropdownMenuTrigger>
         <DropdownMenuContent align="start">
           <DropdownMenuItem onClick={() => column.toggleSorting(false)}>
-            <ArrowUpIcon className="mr-2 h-3.5 w-3.5 text-muted-foreground/70" />
-            Asc
+            <ArrowUpIcon color="black" className="mr-2 h-3.5 w-3.5 text-muted-foreground/70" />
+            <span className="text-black">Asc</span>
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => column.toggleSorting(true)}>
-            <ArrowDownIcon className="mr-2 h-3.5 w-3.5 text-muted-foreground/70" />
-            Desc
+            <ArrowDownIcon color="black" className="mr-2 h-3.5 w-3.5 text-muted-foreground/70" />
+            <span className="text-black">Desc</span>
           </DropdownMenuItem>
-          <DropdownMenuSeparator />
+          <DropdownMenuSeparator className="bg-neutral-200"/>
           <DropdownMenuItem onClick={() => column.toggleVisibility(false)}>
-            <EyeNoneIcon className="mr-2 h-3.5 w-3.5 text-muted-foreground/70" />
-            Hide
+            <EyeNoneIcon color="black" className="mr-2 h-3.5 w-3.5 text-muted-foreground/70" />
+            <span className="text-black">Hide</span>
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

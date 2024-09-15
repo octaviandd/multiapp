@@ -63,7 +63,7 @@ function CategoryCell<TData extends RowData, TValue>({
   return (
     <div className="flex space-x-2">
       <Select>
-        <SelectTrigger className="w-[180px]">
+        <SelectTrigger className="w-[180px] !text-black">
           <SelectValue placeholder="Select a category" />
         </SelectTrigger>
         <SelectContent>
@@ -72,9 +72,9 @@ function CategoryCell<TData extends RowData, TValue>({
               <SelectItem value={category.value}>
                 <div className="flex items-center">
                   {category.icon && (
-                    <category.icon className="mr-2 h-4 w-4 text-muted-foreground" />
+                    <category.icon className="mr-2 h-4 w-4 stroke-neutral-500" />
                   )}{" "}
-                  {category.label}
+                  <span className="text-black">{category.label}</span>
                 </div>
               </SelectItem>
             ))}
@@ -107,10 +107,10 @@ function TitleCell<TData extends RowData, TValue>({
 
   return (
     <div className="flex space-x-2">
-      {label && <Badge variant="outline">{label.label}</Badge>}
+      {label && <Badge variant="secondary">{label.label}</Badge>}
       <span className="max-w-[500px] w-full">
         <input
-          className="max-w-[500px] truncate font-medium w-full"
+          className="max-w-[500px] bg-transparent truncate text-white font-medium w-full"
           value={value as string}
           onChange={(e) => setValue(e.target.value as TValue)}
           onBlur={onBlur}
@@ -152,7 +152,7 @@ export const columns: ColumnDef<Task>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="ID" />
     ),
-    cell: ({ row }) => <div className="w-[80px]">{row.getValue("id")}</div>,
+    cell: ({ row }) => <div className="text-white w-[80px]">{row.getValue("id")}</div>,
     enableSorting: false,
     enableHiding: false,
   },
@@ -171,7 +171,7 @@ export const columns: ColumnDef<Task>[] = [
     cell: ({ row }) => {
       return (
         <div className="flex w-[100px] items-center">
-          <span>£ {row.getValue("price")}</span>
+          <span className="text-white">£ {row.getValue("price")}</span>
         </div>
       );
     },

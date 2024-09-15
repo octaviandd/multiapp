@@ -652,7 +652,7 @@ export default function MultipleContainers({
             onClick={handleAddColumn}
             placeholder
           >
-            + Add Board
+            <span className="text-white">+ Add Board</span>
           </DroppableContainer>
         </SortableContext>
       </div>

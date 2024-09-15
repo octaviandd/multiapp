@@ -27,10 +27,10 @@ import {
   TableRow,
 } from "@/components/layout/table";
 
-import { useSkipper } from "./columns";
+import { useSkipper } from "../columns";
 
-import { DataTablePagination } from "./data-table-pagination";
-import { DataTableToolbar } from "./data-table-toolbar";
+import { DataTablePagination } from "../data-table-pagination";
+import { DataTableToolbar } from "../data-table-toolbar";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
