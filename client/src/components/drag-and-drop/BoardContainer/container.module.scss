@@ -12,9 +12,10 @@
   background-color: #252628;
   font-size: 1em;
   transition: border 0.1s ease-in-out;
+  max-height: 715px;
 
   ul {
-    @apply grid gap-1 list-none m-0 overflow-auto;
+    @apply grid gap-1 list-none m-0;
     scrollbar-width: thin;
     grid-template-columns: repeat(var(--columns, 1), 1fr);
   }

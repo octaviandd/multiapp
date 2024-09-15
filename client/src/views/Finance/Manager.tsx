@@ -13,7 +13,7 @@ export default function FinanceManager({}: Props) {
   return (
     <div className="flex flex-col w-full">
       <div className="border-b border-neutral-500 w-full">
-        <div className="w-full bg-[#1E1F21] py-3 px-4 flex items-center gap-x-6">
+        <div className="w-full bg-[#1E1F21] h-16 py-3 px-4 flex items-center gap-x-6">
           <div className="flex items-center">
             <div className="flex items-center gap-x-2 cursor-pointer">
               <Avatar className="w-[48px] h-[48px] min-w-[48px] min-h-[48px]">

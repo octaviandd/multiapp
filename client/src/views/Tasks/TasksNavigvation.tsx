@@ -12,7 +12,7 @@ export default function Tasks({}: Props) {
 
   return (
     <div className="flex flex-col w-full transition-all ease-in-out duration-300 h-full dark-scroll">
-      <div className="w-full bg-[#1E1F21] py-3 px-4 flex items-center gap-x-6">
+      <div className="w-full bg-[#1E1F21] h-16 py-3 px-4 flex items-center gap-x-6">
         <div className="flex items-center">
           <div className="flex items-center gap-x-2 cursor-pointer">
             <Avatar className="w-[48px] h-[48px] min-w-[48px] min-h-[48px]">
@@ -59,19 +59,17 @@ export default function Tasks({}: Props) {
           </div>
         </div>
       </div>
-      <div>
-        <div className="flex items-center justify-between bg-[#1E1F21] py-3 px-4 border-b border-t border-[#424244]">
-          <div>
-            <p className="muted extra-small">Last task completed on 31 Mar</p>
-          </div>
-          <div className="flex items-center gap-x-4">
-            <button>Filter</button>
-            <button>Sort</button>
-            <button>Group By</button>
-          </div>
+      <div className="h-10 bg-[#1E1F21] border-b border-t border-[#424244] flex items-center justify-between px-4">
+        <div>
+          <p className="muted extra-small">Last task completed on 31 Mar</p>
+        </div>
+        <div className="flex items-center gap-x-4">
+          <button>Filter</button>
+          <button>Sort</button>
+          <button>Group By</button>
         </div>
       </div>
-      <div className="overflow-scroll w-full h-full bg-[#252628]">
+      <div className="overflow-x-scroll overflow-y-hidden w-full h-full bg-[#252628]">
         <Outlet />
       </div>
     </div>
