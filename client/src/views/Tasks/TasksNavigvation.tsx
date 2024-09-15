@@ -63,11 +63,6 @@ export default function Tasks({}: Props) {
         <div>
           <p className="muted extra-small">Last task completed on 31 Mar</p>
         </div>
-        <div className="flex items-center text-white gap-x-4">
-          <button>Filter</button>
-          <button>Sort</button>
-          <button>Group By</button>
-        </div>
       </div>
       <div className="w-full h-full bg-[#252628]">
         <Outlet />
