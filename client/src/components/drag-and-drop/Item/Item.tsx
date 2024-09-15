@@ -71,8 +71,11 @@ export const Item = React.memo(
       },
       ref
     ) => {
-      console.log(renderItem)
-      const [mouseDownPosition, setMouseDownPosition] = useState<{ x: number; y: number } | null>(null);
+      console.log(renderItem);
+      const [mouseDownPosition, setMouseDownPosition] = useState<{
+        x: number;
+        y: number;
+      } | null>(null);
 
       useEffect(() => {
         if (!dragOverlay) {
@@ -87,7 +90,7 @@ export const Item = React.memo(
       }, [dragOverlay]);
 
       const handleMouseDown = (event: React.MouseEvent) => {
-        console.log('hit')
+        console.log("hit");
         // Store the mouse down position
         setMouseDownPosition({ x: event.clientX, y: event.clientY });
       };

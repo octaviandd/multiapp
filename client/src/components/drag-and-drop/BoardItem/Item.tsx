@@ -9,6 +9,8 @@ import { Handle } from "./Handle";
 
 import { cn } from "@/utils/helpers/utils";
 import { CalendarClock, CircleCheck, ThumbsUp } from "lucide-react";
+import SideTask from "@/components/layout/side-task";
+import { createPortal } from "react-dom";
 
 export interface Props {
   dragOverlay?: boolean;
@@ -69,6 +71,7 @@ export const Item = React.memo(
       },
       ref
     ) => {
+      const [isSideTaskOpen, setIsSideTaskOpen] = useState(false);
       useEffect(() => {
         if (!dragOverlay) {
           return;
@@ -97,6 +100,7 @@ export const Item = React.memo(
         })
       ) : (
         <li
+          onClick={() => setIsSideTaskOpen(!isSideTaskOpen)}
           className={cn(
             styles.Wrapper,
             fadeIn && styles.fadeIn,
@@ -134,7 +138,8 @@ export const Item = React.memo(
               handle && styles.withHandle,
               dragOverlay && styles.dragOverlay,
               disabled && styles.disabled,
-              color && styles.color
+              color && styles.color,
+              "group"
             )}
             style={style}
             data-cypress="draggable-item"
@@ -150,12 +155,21 @@ export const Item = React.memo(
             </div>
             <div className="flex justify-between items-center mt-7">
               <CalendarClock width={14} height={14} />
-              <ThumbsUp width={14} height={14} />
+              <ThumbsUp
+                className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 ease-in-out"
+                width={14}
+                height={14}
+              />
             </div>
             <span className={styles.Actions}>
               {handle ? <Handle {...handleProps} {...listeners} /> : null}
             </span>
           </div>
+          {isSideTaskOpen &&
+            createPortal(
+              <SideTask taskData={value} />,
+              document.querySelector("#root") as HTMLElement
+            )}
         </li>
       );
     }

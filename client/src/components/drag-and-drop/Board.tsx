@@ -206,7 +206,10 @@ export default function MultipleContainers({
   };
 
   const [clonedItems, setClonedItems] = useState<Board[] | null>(null);
-  const sensors = useSensors(useSensor(MouseSensor, {activationConstraint: {distance: 8}}), useSensor(TouchSensor));
+  const sensors = useSensors(
+    useSensor(MouseSensor, { activationConstraint: { distance: 8 } }),
+    useSensor(TouchSensor)
+  );
   const findBoard = (id: UniqueIdentifier): Board => {
     return boards.find((board) => board.id === id) as Board;
   };
@@ -541,7 +544,9 @@ export default function MultipleContainers({
         (item) => item.id === activeId
       );
 
-      const overIndex = overBoardByItemId.items.findIndex((item) => item.id === overId);
+      const overIndex = overBoardByItemId.items.findIndex(
+        (item) => item.id === overId
+      );
 
       if (activeIndex !== overIndex) {
         setBoards((items) => {
@@ -557,7 +562,7 @@ export default function MultipleContainers({
           return newItems;
         });
       }
-    } 
+    }
     setActiveId(null);
   }
 
@@ -582,7 +587,7 @@ export default function MultipleContainers({
       modifiers={modifiers}
     >
       <div
-        className={`inline-grid p-5 h-full overflow-y-scroll w-full ${
+        className={`inline-grid p-5 h-full overflow-y-hidden overflow-x-scroll w-full ${
           vertical ? "grid-flow-row" : "grid-flow-col"
         }`}
       >

@@ -14,7 +14,6 @@ import FinanceManagerTransactions from "./views/Finance/ManagerTransactions";
 import List from "./views/Tasks/List";
 import Board from "./views/Tasks/Board";
 import Files from "./views/Tasks/Files";
-import Calendar from "./views/Tasks/Calendar";
 import { LoginForm } from "./views/Login/LoginPage";
 import { RegisterForm } from "./views/Register/RegisterPage";
 import { StoreProvider } from "./store/index";
@@ -44,10 +43,6 @@ const router = createBrowserRouter([
           {
             path: "/tasks/board",
             element: <Board />,
-          },
-          {
-            path: "/tasks/calendar",
-            element: <Calendar />,
           },
           {
             path: "/tasks/files",

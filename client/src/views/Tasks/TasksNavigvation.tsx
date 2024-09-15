@@ -2,7 +2,11 @@
 
 import React, { useContext, useEffect } from "react";
 import { Link, Outlet } from "react-router-dom";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/layout/avatar";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@/components/layout/avatar";
 import { StoreContext } from "@/store/index";
 
 type Props = {};
@@ -46,12 +50,6 @@ export default function Tasks({}: Props) {
             </Link>
             <Link to="board" className="text-[16px] font-medium text-white">
               Board
-            </Link>
-            <Link
-              to="calendar"
-              className="text-[16px] font-medium text-white"
-            >
-              Calendar
             </Link>
             <Link to="files" className="text-[16px] font-medium text-white">
               Files
