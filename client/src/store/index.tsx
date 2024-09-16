@@ -1,8 +1,10 @@
 /** @format */
+import { UniqueIdentifier } from "@dnd-kit/core";
 import React, { createContext, useState, ReactNode } from "react";
 
 interface StoreState {
   displaySidebar: boolean;
+  currentBoardItem: UniqueIdentifier | null;
 }
 
 interface StoreContextType {
@@ -14,6 +16,7 @@ interface StoreContextType {
 export const StoreContext = createContext<StoreContextType>({
   store: {
     displaySidebar: false,
+    currentBoardItem: null,
   },
   setStore: () => {},
 });
@@ -21,6 +24,7 @@ export const StoreContext = createContext<StoreContextType>({
 export const StoreProvider = ({ children }: { children: ReactNode }) => {
   const [store, setStore] = useState<StoreState>({
     displaySidebar: false,
+    currentBoardItem: null,
   });
 
   return (

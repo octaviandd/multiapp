@@ -1,7 +1,10 @@
 /** @format */
 
-import React, { useEffect, useState } from "react";
-import type { DraggableSyntheticListeners } from "@dnd-kit/core";
+import React, { useContext, useEffect, useState } from "react";
+import type {
+  DraggableSyntheticListeners,
+  UniqueIdentifier,
+} from "@dnd-kit/core";
 import type { Transform } from "@dnd-kit/utilities";
 import styles from "./item.module.scss";
 
@@ -9,8 +12,9 @@ import { Handle } from "./Handle";
 
 import { cn } from "@/utils/helpers/utils";
 import { CalendarClock, CircleCheck, ThumbsUp } from "lucide-react";
-import SideTask from "@/components/layout/side-task";
-import { createPortal } from "react-dom";
+import { StoreContext } from "@/store";
+import { use } from "passport";
+import { set } from "zod";
 
 export interface Props {
   dragOverlay?: boolean;
@@ -26,6 +30,7 @@ export interface Props {
   listeners?: DraggableSyntheticListeners;
   sorting?: boolean;
   style?: React.CSSProperties;
+  id: UniqueIdentifier;
   transition?: string | null;
   wrapperStyle?: React.CSSProperties;
   value: React.ReactNode;
@@ -58,6 +63,7 @@ export const Item = React.memo(
         handleProps,
         height,
         index,
+        id,
         listeners,
         onRemove,
         renderItem,
@@ -71,7 +77,15 @@ export const Item = React.memo(
       },
       ref
     ) => {
-      const [isSideTaskOpen, setIsSideTaskOpen] = useState(false);
+      const { store, setStore } = useContext(StoreContext);
+
+      const updateStoreCurrentBoardItem = (id: UniqueIdentifier) => {
+        setStore((prev) => ({
+          ...prev,
+          currentBoardItem: id,
+        }));
+      };
+
       useEffect(() => {
         if (!dragOverlay) {
           return;
@@ -100,7 +114,7 @@ export const Item = React.memo(
         })
       ) : (
         <li
-          onClick={() => setIsSideTaskOpen(!isSideTaskOpen)}
+          onClick={() => updateStoreCurrentBoardItem(id)}
           className={cn(
             styles.Wrapper,
             fadeIn && styles.fadeIn,
@@ -165,11 +179,11 @@ export const Item = React.memo(
               {handle ? <Handle {...handleProps} {...listeners} /> : null}
             </span>
           </div>
-          {isSideTaskOpen &&
+          {/* {isSideTaskOpen &&
             createPortal(
               <SideTask taskData={value} />,
               document.querySelector("#root") as HTMLElement
-            )}
+            )} */}
         </li>
       );
     }

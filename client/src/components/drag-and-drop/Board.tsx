@@ -36,6 +36,7 @@ import { Item } from "./BoardItem/index";
 import { Plus } from "lucide-react";
 import { SortableItemBoard } from "./SortableItemBoard";
 import DroppableContainer from "./DroppableContainer";
+import SideTask from "../layout/side-task";
 
 const defaultInitializer = (index: number) => index;
 
@@ -105,7 +106,7 @@ const defaultBoards = [
     title: "Recently assigned",
     items: [
       { id: uniqid(), title: "Recently assigned" },
-      { id: 2, title: "A2" },
+      { id: uniqid(), title: "A2" },
     ],
   },
   {
@@ -137,44 +138,44 @@ const defaultBoards = [
   },
 ];
 
-const getSortableItemDragOverlay = (
-  id: UniqueIdentifier,
-  container: Board,
-  handle: boolean,
-  getItemStyles: (args: {
-    value: UniqueIdentifier;
-    index: number;
-    overIndex: number;
-    isDragging: boolean;
-    containerId: UniqueIdentifier;
-    isSorting: boolean;
-    isDragOverlay: boolean;
-  }) => React.CSSProperties,
-  getIndex: (id: UniqueIdentifier) => number,
-  wrapperStyle: (args: { index: number }) => React.CSSProperties,
-  renderItem: any
-) => {
-  const item = container?.items.find((item: Item) => item.id === id) as Item;
-  return (
-    <Item
-      value={item.title}
-      handle={handle}
-      style={getItemStyles({
-        containerId: container?.id as UniqueIdentifier,
-        overIndex: -1,
-        index: getIndex(id),
-        value: id,
-        isSorting: true,
-        isDragging: true,
-        isDragOverlay: true,
-      })}
-      color="#fff"
-      wrapperStyle={wrapperStyle({ index: 0 })}
-      renderItem={renderItem}
-      dragOverlay
-    />
-  );
-};
+// const getSortableItemDragOverlay = (
+//   id: UniqueIdentifier,
+//   container: Board,
+//   handle: boolean,
+//   getItemStyles: (args: {
+//     value: UniqueIdentifier;
+//     index: number;
+//     overIndex: number;
+//     isDragging: boolean;
+//     containerId: UniqueIdentifier;
+//     isSorting: boolean;
+//     isDragOverlay: boolean;
+//   }) => React.CSSProperties,
+//   getIndex: (id: UniqueIdentifier) => number,
+//   wrapperStyle: (args: { index: number }) => React.CSSProperties,
+//   renderItem: any
+// ) => {
+//   const item = container?.items.find((item: Item) => item.id === id) as Item;
+//   return (
+//     <Item
+//       value={item.title}
+//       handle={handle}
+//       style={getItemStyles({
+//         containerId: container?.id as UniqueIdentifier,
+//         overIndex: -1,
+//         index: getIndex(id),
+//         value: id,
+//         isSorting: true,
+//         isDragging: true,
+//         isDragOverlay: true,
+//       })}
+//       color="#fff"
+//       wrapperStyle={wrapperStyle({ index: 0 })}
+//       renderItem={renderItem}
+//       dragOverlay
+//     />
+//   );
+// };
 
 export default function MultipleContainers({
   adjustScale = false,
@@ -341,6 +342,7 @@ export default function MultipleContainers({
           isDragging: true,
           isDragOverlay: true,
         })}
+        id={id}
         color="#fff"
         wrapperStyle={wrapperStyle({ index: 0 })}
         renderItem={renderItem}
@@ -376,6 +378,7 @@ export default function MultipleContainers({
               isSorting: false,
               isDragOverlay: false,
             })}
+            id={boardId}
             color="#fff"
             wrapperStyle={wrapperStyle({ index })}
             renderItem={renderItem}

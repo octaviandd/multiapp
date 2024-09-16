@@ -63,6 +63,7 @@ export const SortableItemBoard = ({
     <Item
       ref={disabled ? undefined : setNodeRef}
       value={value}
+      id={id}
       dragging={isDragging}
       sorting={isSorting}
       handle={handle}

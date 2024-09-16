@@ -71,7 +71,6 @@ export const Item = React.memo(
       },
       ref
     ) => {
-      console.log(renderItem);
       const [mouseDownPosition, setMouseDownPosition] = useState<{
         x: number;
         y: number;

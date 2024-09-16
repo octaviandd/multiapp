@@ -8,14 +8,19 @@ import {
   AvatarImage,
 } from "@/components/layout/avatar";
 import { StoreContext } from "@/store/index";
+import SideTask from "@/components/layout/side-task";
 
 type Props = {};
 
 export default function Tasks({}: Props) {
   const { store } = useContext(StoreContext);
 
+  useEffect(() => {
+    console.log("store", store);
+  }, [store.currentBoardItem]);
+
   return (
-    <div className="flex flex-col w-full transition-all ease-in-out duration-300 h-full dark-scroll">
+    <div className="flex flex-col w-full transition-all ease-in-out duration-300 h-full dark-scroll relative">
       <div className="w-full bg-[#1E1F21] h-16 py-3 px-4 flex items-center gap-x-6">
         <div className="flex items-center">
           <div className="flex items-center gap-x-2 cursor-pointer">
@@ -65,6 +70,9 @@ export default function Tasks({}: Props) {
       <div className="w-full h-full bg-[#252628]">
         <Outlet />
       </div>
+      {store.currentBoardItem && (
+        <SideTask selectedItem={store.currentBoardItem} />
+      )}
     </div>
   );
 }
