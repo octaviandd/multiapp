@@ -18,6 +18,15 @@ export default function Root({}: Props) {
     });
   };
 
+  fetch("/api", {
+    headers: {
+      "Content-Type": "application/json",
+      type: "GET",
+    },
+  }).then((res) => {
+    console.log(res);
+  });
+
   return (
     <div className="overflow-hidden h-screen flex flex-col">
       <Header
@@ -29,7 +38,12 @@ export default function Root({}: Props) {
           displaySidebar={store.displaySidebar}
           setDisplaySidebar={() => setDisplaySidebar(!store.displaySidebar)}
         />
-        <div style={{ width: store.displaySidebar ? 'calc(100% - 240px)' : '100%'}} className="transition-all ease-in-out duration-300">
+        <div
+          style={{
+            width: store.displaySidebar ? "calc(100% - 240px)" : "100%",
+          }}
+          className="transition-all ease-in-out duration-300"
+        >
           <Outlet />
         </div>
       </div>

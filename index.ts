@@ -42,8 +42,18 @@ main()
     process.exit(1);
   });
 
-router.get("/api", (req: Request, res: Response) => {
-  console.log('hit')
+router.get("/", (req: Request, res: Response) => {
+  console.log("Route hit");
   res.send("Hello World!");
 });
 
+router.get("/api", (req: Request, res: Response) => {
+  console.log("API route hit");
+  res.send("Hello from the API!");
+});
+
+app.use("/", router);
+
+app.listen(port, () => {
+  console.log(`Server running on port ${port}`);
+});
