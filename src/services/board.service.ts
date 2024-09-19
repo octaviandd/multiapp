@@ -1,7 +1,6 @@
 /** @format */
 
 import prisma from "../../prisma/prisma-client";
-import { Request, Response } from "express";
 
 const getBoards = async () => {
   const boards = await prisma.board.findMany();

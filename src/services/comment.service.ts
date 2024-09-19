@@ -1,6 +1,6 @@
 /** @format */
 
-import prisma from "prisma/prisma-client";
+import prisma from "../../prisma/prisma-client";
 
 const getComments = async (taskId: string) => {
   const comments = await prisma.comment.findMany({
@@ -22,11 +22,16 @@ const getComment = async (commentId: string) => {
   return comment;
 };
 
-const createComment = async (content: string, boardId: string) => {
+const createComment = async (
+  content: string,
+  taskId: string,
+  currentUserId: string
+) => {
   const comment = await prisma.comment.create({
     data: {
       content,
-      boardId: Number(boardId),
+      taskId: Number(taskId),
+      authorId: Number(currentUserId),
     },
   });
 

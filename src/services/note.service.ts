@@ -1,7 +1,7 @@
 /** @format */
 
-import prisma from "prisma/prisma-client";
-import { Note } from "src/types/note";
+import prisma from "../../prisma/prisma-client";
+import { Note } from "../types/note";
 
 const getNote = async (noteId: string) => {
   const note = await prisma.note.findUnique({
@@ -32,17 +32,17 @@ const deleteNote = async (noteId: string) => {
   return deletedNote;
 };
 
-const createNote = async (data: Partial<Note>) => {
-  const createdNote = await prisma.note.create({
-    data,
-  });
+// const createNote = async (data: Partial<Note>) => {
+//   const createdNote = await prisma.note.create({
+//     data,
+//   });
 
-  return createdNote;
-};
+//   return createdNote;
+// };
 
 export default {
   getNote,
   updateNote,
   deleteNote,
-  createNote,
+  // createNote,
 };

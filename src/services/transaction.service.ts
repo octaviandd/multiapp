@@ -1,7 +1,7 @@
 /** @format */
 
-import prisma from "prisma/prisma-client";
-import { Transaction } from "src/types/transaction";
+import prisma from "../../prisma/prisma-client";
+import { Transaction } from "../types/transaction";
 
 const getTransaction = async (id: string) => {
   const transaction = await prisma.transaction.findUnique({
@@ -15,14 +15,14 @@ const getTransaction = async (id: string) => {
   return transaction;
 };
 
-const updateTransaction = async (id: string, data: Partial<Transaction>) => {
-  const updatedTransaction = await prisma.transaction.update({
-    where: { id: Number(id) },
-    data,
-  });
+// const updateTransaction = async (id: string, data: Partial<Transaction>) => {
+//   const updatedTransaction = await prisma.transaction.update({
+//     where: { id: Number(id) },
+//     data,
+//   });
 
-  return updatedTransaction;
-};
+//   return updatedTransaction;
+// };
 
 const deleteTransaction = async (id: string) => {
   const deletedTransaction = await prisma.transaction.delete({
@@ -32,17 +32,17 @@ const deleteTransaction = async (id: string) => {
   return deletedTransaction;
 };
 
-const createTransaction = async (data: Partial<Transaction>) => {
-  const createdTransaction = await prisma.transaction.create({
-    data,
-  });
+// const createTransaction = async (data: Partial<Transaction>) => {
+//   const createdTransaction = await prisma.transaction.create({
+//     data,
+//   });
 
-  return createdTransaction;
-};
+//   return createdTransaction;
+// };
 
 export default {
   getTransaction,
-  updateTransaction,
+  // updateTransaction,
   deleteTransaction,
-  createTransaction,
+  // createTransaction,
 };

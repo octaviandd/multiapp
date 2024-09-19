@@ -1,7 +1,7 @@
 /** @format */
 
 import { Request, Response } from "express";
-import BoardService from "src/services/board.service";
+import BoardService from "../services/board.service";
 
 const getBoards = async (req: Request, res: Response) => {
   try {

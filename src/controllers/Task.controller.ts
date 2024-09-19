@@ -1,6 +1,6 @@
 /** @format */
 
-import TaskService from "src/services/task.service";
+import TaskService from "../services/task.service";
 import { Request, Response } from "express";
 
 const getTasks = async (req: Request, res: Response) => {
@@ -37,8 +37,14 @@ const getTask = async (req: Request, res: Response) => {
 
 const createTask = async (req: Request, res: Response) => {
   try {
-    const { title, boardId } = req.body;
-    const task = TaskService.createTask(title, boardId);
+    const { title, boardId, displayOrder } = req.body;
+    const currentUserId = (req.user as { id: string }).id;
+    const task = TaskService.createTask(
+      title,
+      boardId,
+      displayOrder,
+      currentUserId
+    );
 
     return res.status(201).json(task);
   } catch (error) {

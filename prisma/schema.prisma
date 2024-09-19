@@ -19,7 +19,8 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   notes     Note[]
-  tasks     Task[]
+  tasks     Task[] @relation("TaskAssignee")
+  createdTasks Task[] @relation("TaskCreator")
   subtasks  SubTask[]
   comments  Comment[]
   taskLikes TaskLike[]
@@ -32,15 +33,7 @@ model Board {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   displayOrder Int 
-  tasks     BoardTask[]
-}
-
-model BoardTask {
-  id        Int      @id @default(autoincrement())
-  task      Task     @relation(fields: [taskId], references: [id])
-  taskId    Int
-  board     Board    @relation(fields: [boardId], references: [id])
-  boardId   Int
+  tasks     Task[]
 }
 
 model Note {
@@ -66,18 +59,21 @@ model Task {
   id        Int      @id @default(autoincrement())
   title     String
   body      String?
-  assignee  User     @relation(fields: [assigneeId], references: [id])
-  assigneeId Int
-  dueDate   DateTime
+  assignee  User?     @relation("TaskAssignee", fields: [assigneeId], references: [id])
+  assigneeId Int?
+  dueDate   DateTime?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   displayOrder Int
-  completed Boolean
+  completed Boolean @default(false)
   subtasks  SubTask[]
   comments  Comment[]
   files     TaskFile[]
-  boardTask BoardTask[]
+  boardId   Int
+  parentBoard Board @relation(fields: [boardId], references: [id])
   taskLikes TaskLike[]
+  createdBy User @relation("TaskCreator", fields: [createdById], references: [id])
+  createdById Int
 }
 
 model TaskFile {

@@ -1,6 +1,6 @@
 /** @format */
 
-import CommentService from "src/services/comment.service";
+import CommentService from "../services/comment.service";
 import { Request, Response } from "express";
 
 const getComments = async (req: Request, res: Response) => {
@@ -31,8 +31,13 @@ const getComment = async (req: Request, res: Response) => {
 
 const createComment = async (req: Request, res: Response) => {
   try {
-    const { content, boardId } = req.body;
-    const comment = CommentService.createComment(content, boardId);
+    const { content, taskId } = req.body;
+    const currentUserId = (req.user as { id: string }).id;
+    const comment = CommentService.createComment(
+      content,
+      taskId,
+      currentUserId
+    );
 
     return res.status(201).json(comment);
   } catch (error) {

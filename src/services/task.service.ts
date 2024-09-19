@@ -1,6 +1,6 @@
 /** @format */
 
-import prisma from "prisma/prisma-client";
+import prisma from "../../prisma/prisma-client";
 
 const getTasks = async (boardId: string) => {
   const tasks = await prisma.task.findMany({
@@ -39,11 +39,18 @@ const deleteTask = async (taskId: string) => {
   return true;
 };
 
-const createTask = async (title: string, boardId: string) => {
+const createTask = async (
+  title: string,
+  boardId: string,
+  displayOrder: number,
+  createdById: string
+) => {
   const task = await prisma.task.create({
     data: {
       title,
       boardId: Number(boardId),
+      displayOrder,
+      createdById: Number(createdById),
     },
   });
 

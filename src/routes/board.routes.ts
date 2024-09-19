@@ -4,7 +4,7 @@ import express from "express";
 import { withAuth } from "../middleware/auth.middleware";
 import BoardController from "../controllers/board.controller";
 import TaskController from "../controllers/task.controller";
-import CommentController from "src/controllers/comment.controller";
+import CommentController from "../controllers/comment.controller";
 
 const router = express.Router();
 
@@ -27,9 +27,18 @@ router.delete("/:id/tasks/:taskId", TaskController.deleteTask);
 
 // Comment Routes (nested under tasks)
 router.get("/:id/tasks/:taskId/comments", CommentController.getComments);
-router.get("/:id/tasks/:taskId/comments/:commentId", CommentController.getComment);
+router.get(
+  "/:id/tasks/:taskId/comments/:commentId",
+  CommentController.getComment
+);
 router.post("/:id/tasks/:taskId/comments", CommentController.createComment);
-router.put("/:id/tasks/:taskId/comments/:commentId", CommentController.updateComment);
-router.delete("/:id/tasks/:taskId/comments/:commentId", CommentController.deleteComment);
+router.put(
+  "/:id/tasks/:taskId/comments/:commentId",
+  CommentController.updateComment
+);
+router.delete(
+  "/:id/tasks/:taskId/comments/:commentId",
+  CommentController.deleteComment
+);
 
 export default router;
