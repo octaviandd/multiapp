@@ -5,24 +5,36 @@ import express, { Express, Request, Response } from "express";
 import { PrismaClient } from "@prisma/client";
 import cors from "cors";
 import session from "express-session";
+import userRoutes from "./routes/user.routes";
+import authRoutes from "./routes/auth.routes";
+import boardRoutes from "./routes/board.routes";
+import transactionRoutes from "./routes/transaction.routes";
+import notesRoutes from "./routes/notes.routes";
 
 dotenv.config();
 
 const app: Express = express();
 export const router = express.Router();
+const prisma = new PrismaClient();
 
 app.use(
   session({
     secret: "your_secret_key",
     resave: false,
     saveUninitialized: false,
+    cookie: { secure: false },
   })
 );
 app.use(express.json());
 app.use(cors());
-const port = 8000;
 
-const prisma = new PrismaClient();
+app.use("/users", userRoutes);
+app.use("/auth", authRoutes);
+app.use("/boards", boardRoutes);
+app.use("/transactions", transactionRoutes);
+app.use("/notes", notesRoutes);
+
+const port = 8000 || process.env.PORT;
 
 async function main() {}
 
@@ -35,16 +47,6 @@ main()
     await prisma.$disconnect();
     process.exit(1);
   });
-
-router.get("/", (req: Request, res: Response) => {
-  console.log("Route hit");
-  res.send("Hello World!");
-});
-
-router.get("/api", (req: Request, res: Response) => {
-  console.log("API route hit");
-  res.send("Hello from the API!");
-});
 
 app.use("/", router);
 

@@ -1,25 +1,16 @@
 /** @format */
 
-// /** @format */
+import prisma from "../../prisma/prisma-client";
 
-// import prisma from "../../prisma/prisma-client";
+export const getUser = async () => {
+  const user = await prisma.user.findUnique({
+    where: { username },
+    include: { tasks: true, notes: true },
+  });
 
-// const getUser = async (username: string, currentUsername: string) => {
-//   const user = await prisma.user.findUnique({
-//     where: { username },
-//     include: { profile: true },
-//   });
+  if (!user) {
+    throw new Error("User not found");
+  }
 
-//   if (!user) {
-//     throw new Error("User not found");
-//   }
-
-//   const following = await prisma.user.findFirst({
-//     where: {
-//       username: currentUsername,
-//       following: { some: { username } },
-//     },
-//   });
-
-//   return { ...user, following: !!following };
-// };
+  return { ...user };
+};
