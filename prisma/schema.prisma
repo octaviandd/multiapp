@@ -23,6 +23,7 @@ model User {
   subtasks  SubTask[]
   comments  Comment[]
   taskLikes TaskLike[]
+  transactions Transaction[]
 }
 
 model Board {
@@ -120,3 +121,11 @@ model Comment {
   updatedAt DateTime @updatedAt
 }
 
+model Transaction {
+  id        Int      @id @default(autoincrement())
+  amount    Float
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
