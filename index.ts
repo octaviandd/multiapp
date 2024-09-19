@@ -24,13 +24,7 @@ const port = 8000;
 
 const prisma = new PrismaClient();
 
-async function main() {
-  const allUsers = await prisma.user.findMany({
-    include: {
-      profile: true,
-    },
-  });
-}
+async function main() {}
 
 main()
   .then(async () => {

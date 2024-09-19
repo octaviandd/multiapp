@@ -1,9 +1,6 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -13,91 +10,112 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Task {
+model User {
   id        Int      @id @default(autoincrement())
+  username  String   @unique
+  password  String
+  role      String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  notes     Note[]
+  tasks     Task[]
+  subtasks  SubTask[]
+  comments  Comment[]
+  taskLikes TaskLike[]
+}
+
+model Board {
+  id        Int      @id @default(autoincrement())
   title     String
-  content   String?
-  board     TasksBoard   @relation(fields: [boardId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  displayOrder Int 
+  tasks     BoardTask[]
+}
+
+model BoardTask {
+  id        Int      @id @default(autoincrement())
+  task      Task     @relation(fields: [taskId], references: [id])
+  taskId    Int
+  board     Board    @relation(fields: [boardId], references: [id])
   boardId   Int
-  asignee   User  @relation(fields: [asigneeId], references: [id])
-  asigneeId Int
-  due_date  DateTime
-  sub_tasks SubTask[]
-  comments Comment[]
-}
-model Comment {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  content   String
-  task      Task   @relation(fields: [taskId], references: [id])
-  taskId    Int
-  author    User   @relation(fields: [authorId], references: [id])
-  authorId  Int
-}
-model SubTask {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  title     String
-  content   String?
-  task      Task   @relation(fields: [taskId], references: [id])
-  taskId    Int
-  asignee   User  @relation(fields: [asigneeId], references: [id])
-  asigneeId Int
-  due_date  DateTime
-}
-
-model Goals {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  title     String
-  content   String?
-  user    User   @relation(fields: [userId], references: [id])
-  userId  Int
-}
-
-model TasksBoard {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  title     String
-  content   String?
-  author    User     @relation(fields: [authorId], references: [id])
-  authorId  Int @unique
-  notes    Task[]
 }
 
 model Note {
   id        Int      @id @default(autoincrement())
+  title     String
+  body      String
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  displayOrder Int
+}
+
+model File {
+  id        Int      @id @default(autoincrement())
   title     String
-  content   String?
-  user    User   @relation(fields: [userId], references: [id])
-  userId  Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  taskFiles TaskFile[]
 }
 
-model Profile {
-  id     Int     @id @default(autoincrement())
-  bio    String?
-  user   User    @relation(fields: [userId], references: [id])
-  userId Int     @unique
+model Task {
+  id        Int      @id @default(autoincrement())
+  title     String
+  body      String?
+  assignee  User     @relation(fields: [assigneeId], references: [id])
+  assigneeId Int
+  dueDate   DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  displayOrder Int
+  completed Boolean
+  subtasks  SubTask[]
+  comments  Comment[]
+  files     TaskFile[]
+  boardTask BoardTask[]
+  taskLikes TaskLike[]
 }
 
-model User {
-  id      Int      @id @default(autoincrement())
-  email   String   @unique
-  password String
-  name    String?
-  profile Profile?
-  notes Note[]
-  goas Goals[]
-  task_boards TasksBoard[]
-  tasks Task[]
-  sub_tasks SubTask[]
-  comments Comment[]
+model TaskFile {
+  id        Int      @id @default(autoincrement())
+  task      Task     @relation(fields: [taskId], references: [id])
+  taskId    Int
+  file      File     @relation(fields: [fileId], references: [id])
+  fileId    Int
 }
+
+model TaskLike {
+  id        Int      @id @default(autoincrement())
+  task      Task     @relation(fields: [taskId], references: [id])
+  taskId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
+}
+
+model SubTask {
+  id        Int      @id @default(autoincrement())
+  title     String
+  body      String?
+  task      Task     @relation(fields: [taskId], references: [id])
+  taskId    Int
+  assignee  User     @relation(fields: [assigneeId], references: [id])
+  assigneeId Int
+  dueDate   DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  displayOrder Int
+}
+
+model Comment {
+  id        Int      @id @default(autoincrement())
+  content   String
+  task      Task     @relation(fields: [taskId], references: [id])
+  taskId    Int
+  author    User     @relation(fields: [authorId], references: [id])
+  authorId  Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
