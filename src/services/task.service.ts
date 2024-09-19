@@ -2,6 +2,14 @@
 
 import prisma from "prisma/prisma-client";
 
+const getTasks = async (boardId: string) => {
+  const tasks = await prisma.task.findMany({
+    where: { boardId: Number(boardId) },
+  });
+
+  return tasks;
+};
+
 const getTask = async (taskId: string) => {
   const task = await prisma.task.findUnique({
     where: { id: Number(taskId) },
@@ -42,4 +50,4 @@ const createTask = async (title: string, boardId: string) => {
   return task;
 };
 
-export default { getTask, updateTask, deleteTask, createTask };
+export default { getTask, updateTask, deleteTask, createTask, getTasks };
