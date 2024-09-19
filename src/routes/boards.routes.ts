@@ -1,33 +1,27 @@
 /** @format */
 
 import express from "express";
-import { requireAuth } from "../middleware/auth.middleware";
-import {
-  getBoards,
-  getBoard,
-  createBoard,
-  updateBoard,
-  deleteBoard,
-} from "../controllers/board.controller";
+import { withAuth } from "../middleware/auth.middleware";
+import BoardController from "../controllers/board.controller";
 
 const router = express.Router();
 
 // Apply auth middleware to all routes in this router
-router.use(requireAuth);
+router.use(withAuth);
 
 // GET /boards
-router.get("/", getBoards);
+router.get("/", BoardController.getBoards);
 
 // GET /boards/:id
-router.get("/:id", getBoard);
+router.get("/:id", BoardController.getBoard);
 
 // POST /boards
-router.post("/", createBoard);
+router.post("/", BoardController.createBoard);
 
 // PUT /boards/:id
-router.put("/:id", updateBoard);
+router.put("/:id", BoardController.updateBoard);
 
 // DELETE /boards/:id
-router.delete("/:id", deleteBoard);
+router.delete("/:id", BoardController.deleteBoard);
 
 export default router;

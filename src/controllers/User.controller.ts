@@ -1,66 +1,21 @@
 /** @format */
 
-// /** @format */
-// import { NextFunction, Request, Response, Router } from "express";
+import { Request, Response } from "express";
+import userService from "../services/user.service";
 
-// const router = Router();
+export const getUserFromSession = async (req: Request, res: Response) => {
+  try {
+    const userId = req.session.userId;
 
-// /**
-//  * Get profile
-//  * @auth optional
-//  * @route {GET} /profiles/:username
-//  * @param username string
-//  * @returns profile
-//  */
-// router.get(
-//   '/profiles/:username',
-// //   auth.optional,
-//   async (req: Request, res: Response, next: NextFunction) => {
-//     try {
-//       const profile = await getProfile(req.params?.username, req.user?.username as string);
-//       res.json({ profile });
-//     } catch (error) {
-//       next(error);
-//     }
-//   },
-// );
+    if (!userId) {
+      return res.status(401).json({ message: "User is not logged in" });
+    }
 
-// Router.get("/profile", async (req, res) => {
-//   const posts = await prisma.post.findMany({
-//     where: { published: true },
-//     include: { author: true },
-//   });
-//   res.json(posts);
-// });
+    const user = await userService.getUserById(userId);
+    res.status(200).json(user);
+  } catch (error) {
+    res.status(500).json({ error: (error as any).message });
+  }
+};
 
-// app.post("/post", async (req, res) => {
-//   const { title, content, authorEmail } = req.body;
-//   const post = await prisma.post.create({
-//     data: {
-//       title,
-//       content,
-//       published: false,
-//       author: { connect: { email: authorEmail } },
-//     },
-//   });
-//   res.json(post);
-// });
-
-// app.put("/publish/:id", async (req, res) => {
-//   const { id } = req.params;
-//   const post = await prisma.post.update({
-//     where: { id },
-//     data: { published: true },
-//   });
-//   res.json(post);
-// });
-
-// app.delete("/user/:id", async (req, res) => {
-//   const { id } = req.params;
-//   const user = await prisma.user.delete({
-//     where: {
-//       id,
-//     },
-//   });
-//   res.json(user);
-// });
+export default { getUserFromSession };

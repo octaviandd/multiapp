@@ -1,22 +1,21 @@
 /** @format */
 
-import prisma from "prisma/prisma-client";
+import { Request, Response } from "express";
+import BoardService from "src/services/board.service";
 
-export const getBoards = async (req: Request, res: Response) => {
+const getBoards = async (req: Request, res: Response) => {
   try {
-    const boards = await prisma.board.findMany();
+    const boards = BoardService.getBoards();
     return res.status(200).json(boards);
   } catch (error) {
     return res.status(500).json({ message: "Internal server error" });
   }
 };
 
-export const getBoard = async (req: Request, res: Response) => {
+const getBoard = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const board = await prisma.board.findUnique({
-      where: { id },
-    });
+    const board = BoardService.getBoard(id);
 
     if (!board) {
       return res.status(404).json({ message: "Board not found" });
@@ -28,14 +27,10 @@ export const getBoard = async (req: Request, res: Response) => {
   }
 };
 
-export const createBoard = async (req: Request, res: Response) => {
+const createBoard = async (req: Request, res: Response) => {
   try {
-    const { title } = req.body;
-    const board = await prisma.board.create({
-      data: {
-        title,
-      },
-    });
+    const { title, displayOrder } = req.body;
+    const board = BoardService.createBoard(title, displayOrder);
 
     return res.status(201).json(board);
   } catch (error) {
@@ -43,12 +38,10 @@ export const createBoard = async (req: Request, res: Response) => {
   }
 };
 
-export const deleteBoard = async (req: Request, res: Response) => {
+const deleteBoard = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const board = await prisma.board.delete({
-      where: { id },
-    });
+    const board = BoardService.deleteBoard(id);
 
     return res.status(200).json(board);
   } catch (error) {
@@ -56,17 +49,15 @@ export const deleteBoard = async (req: Request, res: Response) => {
   }
 };
 
-export const updateBoard = async (req: Request, res: Response) => {
+const updateBoard = async (req: Request, res: Response) => {
   try {
-    const { id } = req.params;
-    const { title } = req.body;
-    const board = await prisma.board.update({
-      where: { id },
-      data: { title },
-    });
+    const { id, title } = req.body;
+    const board = BoardService.updateBoard(id, title);
 
     return res.status(200).json(board);
   } catch (error) {
     return res.status(500).json({ message: "Internal server error" });
   }
 };
+
+export default { getBoards, getBoard, createBoard, deleteBoard, updateBoard };
