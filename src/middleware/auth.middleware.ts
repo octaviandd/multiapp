@@ -12,6 +12,14 @@ export const withAuth = (req: Request, res: Response, next: () => void) => {
   if (req.session.userId) {
     next();
   } else {
-    res.redirect("/login");
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+};
+
+export const checkAuth = (req: Request, res: Response) => {
+  if (!req.session.userId) {
+    return res.status(401).json({ authenticated: false });
+  } else {
+    return res.status(200).json({ authenticated: true });
   }
 };

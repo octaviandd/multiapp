@@ -17,6 +17,7 @@ import Files from "./views/Tasks/Files";
 import { LoginForm } from "./views/Login/LoginPage";
 import { RegisterForm } from "./views/Register/RegisterPage";
 import { StoreProvider } from "./store/index";
+import ProtectedRoute from "./protected-route";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
@@ -25,11 +26,15 @@ const root = ReactDOM.createRoot(
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Root />,
+    element: (
+      <ProtectedRoute>
+        <Root />
+      </ProtectedRoute>
+    ),
     errorElement: <Errors />,
     children: [
       {
-        path: "/home",
+        path: "/",
         element: <Home />,
       },
       {

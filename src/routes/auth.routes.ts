@@ -59,4 +59,12 @@ router.post("/logout", (req, res) => {
   res.status(200).json({ message: "User logged out" });
 });
 
+router.get("/check-auth", (req, res) => {
+  if (req.session.userId) {
+    return res.status(200).json({ authenticated: true });
+  } else {
+    return res.status(401).json({ authenticated: false });
+  }
+});
+
 export default router;

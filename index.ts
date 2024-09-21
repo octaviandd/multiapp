@@ -11,6 +11,7 @@ import boardRoutes from "./src/routes/board.routes";
 import transactionRoutes from "./src/routes/transaction.routes";
 import notesRoutes from "./src/routes/note.routes";
 import homeRoutes from "./src/routes/home.routes";
+import { withAuth } from "./src/middleware/auth.middleware";
 
 dotenv.config();
 
@@ -50,7 +51,9 @@ main()
     process.exit(1);
   });
 
-app.use("/", router);
+app.get("/", withAuth, (req: Request, res: Response) => {
+  res.send("Hello World");
+});
 
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
