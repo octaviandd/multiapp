@@ -2,6 +2,7 @@
 
 import express from "express";
 import prisma from "../../prisma/prisma-client";
+import bcrypt from "bcrypt";
 
 const router = express.Router();
 
@@ -18,11 +19,12 @@ router.post("/register", async (req, res) => {
     if (user) {
       res.status(400).json({ message: "User already exists" });
     } else {
+      const hashedPassword = await bcrypt.hash(password, 10);
       const newUser = await prisma.user.create({
         data: {
           email,
-          password,
-          role: "", // Add a role property with a default value
+          password: hashedPassword,
+          role: "",
         },
       });
       req.session.userId = newUser.id;
@@ -47,7 +49,9 @@ router.post("/login", async (req, res) => {
       return res.status(400).json({ message: "User not found" });
     }
 
-    if (user.password !== password) {
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+
+    if (!isPasswordValid) {
       return res.status(400).json({ message: "Invalid password" });
     }
 

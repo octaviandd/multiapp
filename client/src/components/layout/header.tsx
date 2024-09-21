@@ -28,6 +28,7 @@ export default function Header({ displaySidebar, setDisplaySidebar }: Props) {
   const navigate = useNavigate();
 
   const logOut = () => {
+    setLoading(true);
     fetch("/api/auth/logout", {
       method: "POST",
       headers: {
