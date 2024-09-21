@@ -8,24 +8,28 @@ const router = express.Router();
 // Route for user registration
 router.post("/register", async (req, res) => {
   const { email, password } = req.body;
-  const user = await prisma.user.findUnique({
-    where: {
-      email: email,
-    },
-  });
-
-  if (user) {
-    res.status(400).json({ message: "User already exists" });
-  } else {
-    const newUser = await prisma.user.create({
-      data: {
-        email,
-        password,
-        username: "", // Add a username property with a default value
-        role: "", // Add a role property with a default value
+  try {
+    const user = await prisma.user.findUnique({
+      where: {
+        email: email,
       },
     });
-    res.status(201).json(newUser);
+
+    if (user) {
+      res.status(400).json({ message: "User already exists" });
+    } else {
+      const newUser = await prisma.user.create({
+        data: {
+          email,
+          password,
+          role: "", // Add a role property with a default value
+        },
+      });
+      req.session.userId = newUser.id;
+      res.status(201).json(newUser);
+    }
+  } catch (error) {
+    res.status(500).json({ error: (error as any).message });
   }
 });
 

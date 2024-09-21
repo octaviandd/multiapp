@@ -1,41 +1,47 @@
 /** @format */
 
-import React, { useEffect, useState, ReactNode } from "react";
-import { Navigate, useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Navigate } from "react-router-dom";
 
-type Props = {
-  children: ReactNode;
-};
+interface Props {
+  children: React.ReactNode; // Typing for children prop
+}
 
 export default function ProtectedRoute({
   children,
 }: Props): JSX.Element | null {
-  const navigate = useNavigate();
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(false);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null); // `null` for initial state
+  const [loading, setLoading] = useState<boolean>(true); // Track loading state
 
   useEffect(() => {
+    setLoading(true); // Start loading
     fetch("/api/auth/check-auth", {
       headers: {
         "Content-Type": "application/json",
-        type: "GET",
-        credentials: "include",
       },
+      credentials: "include", // Ensure credentials like cookies are included
     })
       .then((res) => res.json())
       .then((data) => {
-        setIsAuthenticated(data.authenticated);
+        setIsAuthenticated(data.authenticated); // Update auth state
+        setLoading(false); // Stop loading
       })
       .catch((error) => {
+        console.error("Error fetching auth status:", error);
         setIsAuthenticated(false);
+        setLoading(false);
+      })
+      .finally(() => {
+        setLoading(false);
       });
-  });
+  }, []);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   if (isAuthenticated) {
     return <>{children}</>;
-  }
-
-  if (!isAuthenticated === null) {
-    return <div>Loading...</div>;
   }
 
   return <Navigate to="/login" />;

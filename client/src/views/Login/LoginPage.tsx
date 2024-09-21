@@ -18,7 +18,7 @@ import {
   FormDescription,
 } from "@/components/layout/form";
 import { Input } from "@/components/layout/input";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 const formSchema = z.object({
@@ -31,6 +31,7 @@ const formSchema = z.object({
 });
 
 export function LoginForm() {
+  const navigate = useNavigate();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -39,9 +40,18 @@ export function LoginForm() {
     },
   });
   const onSubmit = (values: z.infer<typeof formSchema>) => {
-    console.log(values);
-    fetch("/api/login").then((res) => {
-      console.log(res);
+    fetch("/api/auth/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(values),
+    }).then((res) => {
+      if (res.status == 200) {
+        navigate("/");
+      } else {
+        console.log("Login failed");
+      }
     });
   };
 

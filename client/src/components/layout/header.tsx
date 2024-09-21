@@ -1,25 +1,10 @@
 /** @format */
 
-import React from "react";
+import React, { useState } from "react";
 import Searchbar from "./searchbar";
 import { Avatar, AvatarFallback, AvatarImage } from "./avatar";
 import { Button } from "./button";
-import {
-  Cloud,
-  CreditCard,
-  Github,
-  Keyboard,
-  LifeBuoy,
-  LogOut,
-  Mail,
-  MessageSquare,
-  Plus,
-  PlusCircle,
-  Settings,
-  User,
-  UserPlus,
-  Users,
-} from "lucide-react";
+import { CreditCard, Github, LogOut, Plus, Settings, User } from "lucide-react";
 
 import {
   DropdownMenu,
@@ -27,14 +12,11 @@ import {
   DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuPortal,
   DropdownMenuSeparator,
   DropdownMenuShortcut,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/layout/dropdown-menu";
+import { useNavigate } from "react-router-dom";
 
 type Props = {
   displaySidebar: boolean;
@@ -42,6 +24,31 @@ type Props = {
 };
 
 export default function Header({ displaySidebar, setDisplaySidebar }: Props) {
+  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
+
+  const logOut = () => {
+    fetch("/api/auth/logout", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        setLoading(false);
+        navigate("/login");
+      })
+      .catch((error) => {
+        console.error("Error logging out:", error);
+        setLoading(false);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
+
   return (
     <header className="flex items-center justify-between bg-[#2e2e30] w-full px-6 py-3 border-b border-[#424244]">
       <div className="flex items-center gap-x-4">
@@ -84,20 +91,29 @@ export default function Header({ displaySidebar, setDisplaySidebar }: Props) {
             >
               <DropdownMenuSeparator />
               <DropdownMenuGroup>
-                <   DropdownMenuItem>
+                <DropdownMenuItem>
                   <User color="black" className="mr-2 h-4 w-4" />
                   <span className="text-black">Task</span>
-                  <DropdownMenuShortcut className="text-black">⇧⌘P</DropdownMenuShortcut>
+                  <DropdownMenuShortcut className="text-black">
+                    ⇧⌘P
+                  </DropdownMenuShortcut>
                 </DropdownMenuItem>
                 <DropdownMenuItem>
-                  <CreditCard color="black" className="mr-2 h-4 w-4 text-black" />
+                  <CreditCard
+                    color="black"
+                    className="mr-2 h-4 w-4 text-black"
+                  />
                   <span className="text-black">Note</span>
-                  <DropdownMenuShortcut className="text-black">⌘B</DropdownMenuShortcut>
+                  <DropdownMenuShortcut className="text-black">
+                    ⌘B
+                  </DropdownMenuShortcut>
                 </DropdownMenuItem>
                 <DropdownMenuItem>
                   <Settings color="black" className="mr-2 h-4 w-4" />
                   <span className="text-black">Transaction</span>
-                  <DropdownMenuShortcut className="text-black">⌘S</DropdownMenuShortcut>
+                  <DropdownMenuShortcut className="text-black">
+                    ⌘S
+                  </DropdownMenuShortcut>
                 </DropdownMenuItem>
               </DropdownMenuGroup>
             </DropdownMenuContent>
@@ -134,18 +150,24 @@ export default function Header({ displaySidebar, setDisplaySidebar }: Props) {
             align="end"
             alignOffset={10}
           >
-            <DropdownMenuLabel className="text-black">My Account</DropdownMenuLabel>
+            <DropdownMenuLabel className="text-black">
+              My Account
+            </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
               <DropdownMenuItem>
                 <User color="black" className="mr-2 h-4 w-4" />
                 <span className="text-black">Profile</span>
-                <DropdownMenuShortcut className="text-black">⇧⌘P</DropdownMenuShortcut>
+                <DropdownMenuShortcut className="text-black">
+                  ⇧⌘P
+                </DropdownMenuShortcut>
               </DropdownMenuItem>
               <DropdownMenuItem>
                 <Settings color="black" className="mr-2 h-4 w-4" />
                 <span className="text-black">Settings</span>
-                <DropdownMenuShortcut className="text-black">⌘S</DropdownMenuShortcut>
+                <DropdownMenuShortcut className="text-black">
+                  ⌘S
+                </DropdownMenuShortcut>
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
@@ -154,10 +176,12 @@ export default function Header({ displaySidebar, setDisplaySidebar }: Props) {
               <span className="text-black">GitHub</span>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={() => logOut}>
               <LogOut color="black" className="mr-2 h-4 w-4" />
               <span className="text-black">Log out</span>
-              <DropdownMenuShortcut className="text-black">⇧⌘Q</DropdownMenuShortcut>
+              <DropdownMenuShortcut className="text-black">
+                ⇧⌘Q
+              </DropdownMenuShortcut>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

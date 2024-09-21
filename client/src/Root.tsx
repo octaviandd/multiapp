@@ -18,15 +18,6 @@ export default function Root({}: Props) {
     });
   };
 
-  fetch("/api", {
-    headers: {
-      "Content-Type": "application/json",
-      type: "GET",
-    },
-  }).then((res) => {
-    console.log(res);
-  });
-
   return (
     <div className="overflow-hidden h-screen flex flex-col">
       <Header

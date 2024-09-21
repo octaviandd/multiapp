@@ -17,7 +17,7 @@ import {
   FormDescription,
 } from "@/components/layout/form";
 import { Input } from "@/components/layout/input";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -34,9 +34,8 @@ const formSchema = z.object({
   }),
 });
 
-
 export function RegisterForm() {
-
+  const navigate = useNavigate();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -47,8 +46,18 @@ export function RegisterForm() {
   });
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     console.log(values);
-    fetch("/api/register").then((res) => {
-      console.log(res);
+    fetch("/api/auth/register", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(values),
+    }).then((res) => {
+      if (res.status == 201) {
+        navigate("/");
+      } else {
+        console.log(res);
+      }
     });
   };
 
@@ -119,16 +128,16 @@ export function RegisterForm() {
                   </FormItem>
                 )}
               />
+              <div className="grid gap-4 mt-4">
+                <Button type="submit" className="w-full">
+                  Register
+                </Button>
+                <Button variant="outline" className="w-full">
+                  Register with Google
+                </Button>
+              </div>
             </form>
           </Form>
-          <div className="grid gap-4 mt-4">
-            <Button type="submit" className="w-full">
-              Register
-            </Button>
-            <Button variant="outline" className="w-full">
-              Register with Google
-            </Button>
-          </div>
           <div className="mt-4 text-center text-sm">
             Already have an account?{" "}
             <Link to="/login" className="underline">
