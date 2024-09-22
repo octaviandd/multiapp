@@ -36,7 +36,6 @@ import { Item } from "./BoardItem/index";
 import { Plus } from "lucide-react";
 import { SortableItemBoard } from "./SortableItemBoard";
 import DroppableContainer from "./DroppableContainer";
-import SideTask from "../layout/side-task";
 
 const defaultInitializer = (index: number) => index;
 
@@ -66,7 +65,6 @@ type Board = {
   id: UniqueIdentifier;
   title: string;
   items: Item[];
-  type: string;
 };
 
 interface Props {
@@ -99,84 +97,6 @@ interface Props {
 const PLACEHOLDER_ID = "placeholder";
 const empty: UniqueIdentifier[] = [];
 
-const defaultBoards = [
-  {
-    type: "board",
-    id: uniqid(),
-    title: "Recently assigned",
-    items: [
-      { id: uniqid(), title: "Recently assigned" },
-      { id: uniqid(), title: "A2" },
-    ],
-  },
-  {
-    type: "board",
-    id: uniqid(),
-    title: "Do today",
-    items: [
-      { id: uniqid(), title: "Do toda" },
-      { id: uniqid(), title: "B2" },
-    ],
-  },
-  {
-    type: "board",
-    id: uniqid(),
-    title: "Do next week",
-    items: [
-      { id: uniqid(), title: "Do next wee" },
-      { id: uniqid(), title: "C2" },
-    ],
-  },
-  {
-    type: "board",
-    id: uniqid(),
-    title: "Do Later",
-    items: [
-      { id: uniqid(), title: "Do Late" },
-      { id: uniqid(), title: "D2" },
-    ],
-  },
-];
-
-// const getSortableItemDragOverlay = (
-//   id: UniqueIdentifier,
-//   container: Board,
-//   handle: boolean,
-//   getItemStyles: (args: {
-//     value: UniqueIdentifier;
-//     index: number;
-//     overIndex: number;
-//     isDragging: boolean;
-//     containerId: UniqueIdentifier;
-//     isSorting: boolean;
-//     isDragOverlay: boolean;
-//   }) => React.CSSProperties,
-//   getIndex: (id: UniqueIdentifier) => number,
-//   wrapperStyle: (args: { index: number }) => React.CSSProperties,
-//   renderItem: any
-// ) => {
-//   const item = container?.items.find((item: Item) => item.id === id) as Item;
-//   return (
-//     <Item
-//       value={item.title}
-//       handle={handle}
-//       style={getItemStyles({
-//         containerId: container?.id as UniqueIdentifier,
-//         overIndex: -1,
-//         index: getIndex(id),
-//         value: id,
-//         isSorting: true,
-//         isDragging: true,
-//         isDragOverlay: true,
-//       })}
-//       color="#fff"
-//       wrapperStyle={wrapperStyle({ index: 0 })}
-//       renderItem={renderItem}
-//       dragOverlay
-//     />
-//   );
-// };
-
 export default function MultipleContainers({
   adjustScale = false,
   cancelDrop,
@@ -192,7 +112,7 @@ export default function MultipleContainers({
   vertical = false,
   scrollable,
 }: Props) {
-  const [boards, setBoards] = useState<Board[]>(defaultBoards);
+  const [boards, setBoards] = useState<Board[]>([]);
   const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null);
   const lastOverId = useRef<UniqueIdentifier | null>(null);
   const recentlyMovedToNewBoard = useRef(false);
@@ -392,14 +312,27 @@ export default function MultipleContainers({
     setBoards((boards) => boards.filter((board) => board.id !== boardId));
   }
 
-  function handleAddColumn() {
+  async function handleAddColumn(boardsLength: number) {
     const newBoardId = getNextBoardId();
     const newBoard = {
       id: newBoardId,
       title: `Board ${newBoardId}`,
+      displayOrder: boardsLength + 1,
       items: [],
-      type: "board",
     };
+
+    await fetch("/api/boards", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify(newBoard),
+    }).then((res) => {
+      if (res.ok) {
+        console.log("Board added successfully");
+      }
+    });
 
     unstable_batchedUpdates(() => {
       setBoards((boards) => [...boards, newBoard]);
@@ -602,7 +535,7 @@ export default function MultipleContainers({
               : horizontalListSortingStrategy
           }
         >
-          {boards.map((board) => (
+          {boards.map((board, index) => (
             <DroppableContainer
               key={board.id}
               id={board.id}
@@ -655,7 +588,7 @@ export default function MultipleContainers({
             id={PLACEHOLDER_ID}
             disabled={isSortingBoard}
             items={empty}
-            onClick={handleAddColumn}
+            onClick={() => handleAddColumn(boards.length)}
             placeholder
           >
             <span className="text-white">+ Add Board</span>
