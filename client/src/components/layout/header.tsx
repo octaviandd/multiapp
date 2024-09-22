@@ -177,7 +177,7 @@ export default function Header({ displaySidebar, setDisplaySidebar }: Props) {
               <span className="text-black">GitHub</span>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => logOut}>
+            <DropdownMenuItem className="cursor-pointer" onClick={() => logOut}>
               <LogOut color="black" className="mr-2 h-4 w-4" />
               <span className="text-black">Log out</span>
               <DropdownMenuShortcut className="text-black">

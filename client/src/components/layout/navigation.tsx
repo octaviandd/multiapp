@@ -2,7 +2,7 @@
 
 import React from "react";
 import { Link } from "react-router-dom";
-import { Landmark, Activity, ListTodo, Home, Notebook } from "lucide-react";
+import { Landmark, ListTodo, Home, Notebook } from "lucide-react";
 
 type Props = {
   displaySidebar: boolean;

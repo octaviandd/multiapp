@@ -5,8 +5,8 @@ import { Request, Response } from "express";
 
 const getTasks = async (req: Request, res: Response) => {
   try {
-    const { id } = req.params;
-    const tasks = TaskService.getTasks(id);
+    const { boardId } = req.params;
+    const tasks = TaskService.getTasks(boardId);
 
     return res.status(200).json(tasks);
   } catch (error) {
@@ -18,8 +18,8 @@ const getTasks = async (req: Request, res: Response) => {
 
 const getTask = async (req: Request, res: Response) => {
   try {
-    const { id } = req.params;
-    const task = TaskService.getTask(id);
+    const { taskId } = req.params;
+    const task = TaskService.getTask(taskId);
 
     if (!task) {
       return res.status(404).json({

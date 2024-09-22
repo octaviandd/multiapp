@@ -15,9 +15,7 @@ type Props = {};
 export default function Tasks({}: Props) {
   const { store } = useContext(StoreContext);
 
-  useEffect(() => {
-    console.log("store", store);
-  }, [store.currentBoardItem]);
+  useEffect(() => {}, [store.currentBoardItem]);
 
   return (
     <div className="flex flex-col w-full transition-all ease-in-out duration-300 h-full dark-scroll relative">

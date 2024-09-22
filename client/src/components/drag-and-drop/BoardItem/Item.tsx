@@ -119,7 +119,8 @@ export const Item = React.memo(
             styles.Wrapper,
             fadeIn && styles.fadeIn,
             sorting && styles.sorting,
-            dragOverlay && styles.dragOverlay
+            dragOverlay && styles.dragOverlay,
+            store.currentBoardItem === id && styles.active
           )}
           style={
             {
@@ -168,7 +169,11 @@ export const Item = React.memo(
               <p className="small">{value}</p>
             </div>
             <div className="flex justify-between items-center mt-7">
-              <CalendarClock width={14} height={14} />
+              <CalendarClock
+                width={14}
+                height={14}
+                className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 ease-in-out border-dotted rounded-full"
+              />
               <ThumbsUp
                 className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 ease-in-out"
                 width={14}

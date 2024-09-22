@@ -14,6 +14,20 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
 
   useEffect(() => {
     if (selectedItem) {
+      fetch(`/api/boards/tasks/${selectedItem}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          console.log(data);
+        })
+        .catch((error) => {
+          console.error("Error fetching task:", error);
+        });
       setIsOpen(true);
     }
   }, [selectedItem]);
@@ -21,8 +35,8 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
   return (
     <div
       id="taskSidebar"
-      className={`absolute border-[#424244] border-l right-0 top-0 h-full w-full sm:w-2/5 md:w-1/3 lg:w-1/3 bg-[#1E1F21] shadow-lg transform translate-x-full transition-transform duration-300 ease-in-out overflow-y-auto ${
-        isOpen ? "translate-x-0" : ""
+      className={`absolute border-[#424244] border-l right-0 top-0 h-full w-full sm:w-2/5 md:w-1/3 lg:w-1/3 bg-[#1E1F21] shadow-lg transform transition-transform duration-300 ease-in-out overflow-y-auto ${
+        isOpen ? "translate-x-0" : "translate-x-full"
       }`}
     >
       <div className="flex items-center justify-between p-4 border-b border-[#424244]">

@@ -19,11 +19,11 @@ router.put("/:id", BoardController.updateBoard);
 router.delete("/:id", BoardController.deleteBoard);
 
 // Task Routes (nested under boards)
-router.get("/:id/tasks", TaskController.getTasks);
-router.get("/:id/tasks/:taskId", TaskController.getTask);
-router.post("/:id/tasks", TaskController.createTask);
-router.put("/:id/tasks/:taskId", TaskController.updateTask);
-router.delete("/:id/tasks/:taskId", TaskController.deleteTask);
+router.get("/:boardId/tasks", TaskController.getTasks);
+router.get("/tasks/:taskId", TaskController.getTask);
+router.post("/:boardId/tasks", TaskController.createTask);
+router.put("/tasks/:taskId", TaskController.updateTask);
+router.delete("/tasks/:taskId", TaskController.deleteTask);
 
 // Comment Routes (nested under tasks)
 router.get("/:id/tasks/:taskId/comments", CommentController.getComments);

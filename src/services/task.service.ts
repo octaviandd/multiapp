@@ -3,23 +3,31 @@
 import prisma from "../../prisma/prisma-client";
 
 const getTasks = async (boardId: string) => {
-  const tasks = await prisma.task.findMany({
-    where: { boardId: Number(boardId) },
-  });
+  try {
+    const tasks = await prisma.task.findMany({
+      where: { boardId: Number(boardId) },
+    });
 
-  return tasks;
+    if (tasks.length == 0) {
+      throw new Error("No tasks found on this board");
+    }
+    return tasks;
+  } catch (error) {
+    console.log("Error fetching tasks:", error);
+    throw new Error("Failed to fetch tasks");
+  }
 };
 
 const getTask = async (taskId: string) => {
-  const task = await prisma.task.findUnique({
-    where: { id: Number(taskId) },
-  });
+  try {
+    const task = await prisma.task.findUnique({
+      where: { id: Number(taskId) },
+    });
 
-  if (!task) {
+    return task;
+  } catch (error) {
     throw new Error("Task not found");
   }
-
-  return task;
 };
 
 const updateTask = async (taskId: string, title: string) => {

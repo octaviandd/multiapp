@@ -2,7 +2,7 @@
 
 import React from "react";
 import { BoardSortable } from "../../components/drag-and-drop/BoardSortable";
-import styles from "./home.module.scss"
+import styles from "./home.module.scss";
 
 type Props = {};
 
@@ -11,12 +11,16 @@ export default function Home({}: Props) {
     <div className={styles.Home}>
       <div className="p-6">
         <div className="mb-4">
-          <p className="text-[20px]">Home</p>
+          <p className="text-[20px] text-white">Home</p>
         </div>
         <div className="flex w-full justify-center flex-col">
           <div>
-            <p className="text-[16px] text-center">Saturday, March 30</p>
-            <p className="text-[32px] text-center">Good evening, Octavian</p>
+            <p className="text-[16px] text-center text-white">
+              Saturday, March 30
+            </p>
+            <p className="text-[32px] text-center text-white">
+              Good evening, Octavian
+            </p>
           </div>
           <div className="flex justify-center mt-4">
             <div className="flex justify-center bg-[#252628] rounded-full px-6 py-3">
@@ -45,7 +49,7 @@ export default function Home({}: Props) {
                   fill="none"
                   viewBox="0 0 24 24"
                   strokeWidth={1.5}
-                  stroke="currentColor"
+                  stroke="white"
                   className="w-4 h-4"
                 >
                   <path

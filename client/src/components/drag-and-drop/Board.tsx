@@ -603,55 +603,53 @@ export default function MultipleContainers({
           }
         >
           {boards.map((board) => (
-            <>
-              <DroppableContainer
-                key={board.id}
-                id={board.id}
-                label={`${board.title}`}
-                columns={columns}
-                items={board.items.map((item) => item.id)}
-                scrollable={scrollable}
-                style={containerStyle}
-                unstyled={false}
-                onRemove={() => handleRemove(board.id)}
-              >
-                <SortableContext items={board.items} strategy={strategy}>
-                  {board.items.map((value, index) => {
-                    return (
-                      <SortableItemBoard
-                        disabled={isSortingBoard}
-                        key={value.id}
-                        id={value.id}
-                        value={value.title}
-                        index={index}
-                        handle={handle}
-                        style={getItemStyles}
-                        wrapperStyle={wrapperStyle}
-                        renderItem={renderItem}
-                        containerId={board.id}
-                        getIndex={getIndex}
-                      />
-                    );
-                  })}
-                  <div
-                    className="py-1 flex justify-center items-center cursor-pointer rounded-lg bg-transparent hover:bg-[#3D3E40] transition-all ease-in-out duration-200"
-                    onClick={() => handleAddRow(board.id)}
-                  >
-                    <span className="w-[12px] h-[12px] mr-2">
-                      <Plus
-                        width={13}
-                        height={13}
-                        stroke="#A2A0A2"
-                        strokeWidth={3}
-                      />
-                    </span>
-                    <span className="text-[14px] leading-10 text-[#A2A0A2]">
-                      Add task
-                    </span>
-                  </div>
-                </SortableContext>
-              </DroppableContainer>
-            </>
+            <DroppableContainer
+              key={board.id}
+              id={board.id}
+              label={`${board.title}`}
+              columns={columns}
+              items={board.items.map((item) => item.id)}
+              scrollable={scrollable}
+              style={containerStyle}
+              unstyled={false}
+              onRemove={() => handleRemove(board.id)}
+            >
+              <SortableContext items={board.items} strategy={strategy}>
+                {board.items.map((value, index) => {
+                  return (
+                    <SortableItemBoard
+                      disabled={isSortingBoard}
+                      key={value.id}
+                      id={value.id}
+                      value={value.title}
+                      index={index}
+                      handle={handle}
+                      style={getItemStyles}
+                      wrapperStyle={wrapperStyle}
+                      renderItem={renderItem}
+                      containerId={board.id}
+                      getIndex={getIndex}
+                    />
+                  );
+                })}
+                <div
+                  className="py-1 flex justify-center items-center cursor-pointer rounded-lg bg-transparent hover:bg-[#3D3E40] transition-all ease-in-out duration-200"
+                  onClick={() => handleAddRow(board.id)}
+                >
+                  <span className="w-[12px] h-[12px] mr-2">
+                    <Plus
+                      width={13}
+                      height={13}
+                      stroke="#A2A0A2"
+                      strokeWidth={3}
+                    />
+                  </span>
+                  <span className="text-[14px] leading-10 text-[#A2A0A2]">
+                    Add task
+                  </span>
+                </div>
+              </SortableContext>
+            </DroppableContainer>
           ))}
           <DroppableContainer
             id={PLACEHOLDER_ID}
