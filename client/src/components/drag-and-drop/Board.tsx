@@ -56,7 +56,7 @@ const dropAnimation: DropAnimation = {
   }),
 };
 
-type Item = {
+type Task = {
   id: UniqueIdentifier;
   title: string;
 };
@@ -64,7 +64,7 @@ type Item = {
 type Board = {
   id: UniqueIdentifier;
   title: string;
-  items: Item[];
+  tasks: Task[];
 };
 
 interface Props {
@@ -126,6 +126,25 @@ export default function MultipleContainers({
     },
   };
 
+  useEffect(() => {
+    fetch("/api/boards", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+    })
+      .then((res) => {
+        return res.json();
+      })
+      .then((data: Board[]) => {
+        unstable_batchedUpdates(() => {
+          console.log(data);
+          setBoards(data);
+        });
+      });
+  }, []);
+
   const [clonedItems, setClonedItems] = useState<Board[] | null>(null);
   const sensors = useSensors(
     useSensor(MouseSensor, { activationConstraint: { distance: 8 } }),
@@ -137,17 +156,17 @@ export default function MultipleContainers({
 
   const findBoardByItemId = (id: UniqueIdentifier): Board => {
     return boards.find((board) =>
-      board.items.find((item) => item.id === id)
+      board.tasks.find((item) => item.id === id)
     ) as Board;
   };
 
-  const findItem = (id: UniqueIdentifier): Item => {
-    return findBoardByItemId(id).items.find((item) => item.id === id) as Item;
+  const findItem = (id: UniqueIdentifier): Task => {
+    return findBoardByItemId(id).tasks.find((item) => item.id === id) as Task;
   };
 
   const getIndex = (id: UniqueIdentifier) => {
     const board = findBoard(id);
-    return !board ? -1 : board.items.findIndex((item) => item.id === id);
+    return !board ? -1 : board.tasks.findIndex((item) => item.id === id);
   };
 
   useEffect(() => {
@@ -193,7 +212,7 @@ export default function MultipleContainers({
       if (overId != null && overId != undefined) {
         if (hasArrayObjectWithIndex(overId)) {
           //err
-          const containerItems = findBoard(overId)?.items;
+          const containerItems = findBoard(overId)?.tasks;
 
           if (containerItems && containerItems.length > 0) {
             // Return the closest droppable within that container
@@ -248,7 +267,7 @@ export default function MultipleContainers({
     // );
 
     const board = findBoard(id) as Board;
-    const item = findItem(id) as Item;
+    const item = findItem(id) as Task;
     return (
       <Item
         value={item.title}
@@ -284,7 +303,7 @@ export default function MultipleContainers({
         shadow
         unstyled={false}
       >
-        {board.items.map((item, index) => (
+        {board.tasks.map((item, index) => (
           <Item
             key={item.id}
             value={item.title}
@@ -318,7 +337,7 @@ export default function MultipleContainers({
       id: newBoardId,
       title: `Board ${newBoardId}`,
       displayOrder: boardsLength + 1,
-      items: [],
+      tasks: [],
     };
 
     await fetch("/api/boards", {
@@ -330,12 +349,10 @@ export default function MultipleContainers({
       body: JSON.stringify(newBoard),
     }).then((res) => {
       if (res.ok) {
-        console.log("Board added successfully");
+        unstable_batchedUpdates(() => {
+          setBoards((boards) => [...boards, newBoard]);
+        });
       }
-    });
-
-    unstable_batchedUpdates(() => {
-      setBoards((boards) => [...boards, newBoard]);
     });
   }
 
@@ -348,8 +365,8 @@ export default function MultipleContainers({
         const board = newItems.find((item) => item.id === boardID);
 
         if (board) {
-          board.items = [
-            ...board.items,
+          board.tasks = [
+            ...board.tasks,
             {
               id: newRowId,
               title: `New Task`,
@@ -394,8 +411,8 @@ export default function MultipleContainers({
 
     if (activeContainer !== overContainer) {
       setBoards((boards) => {
-        const activeItems = activeContainer.items;
-        const overItems = overContainer.items;
+        const activeItems = activeContainer.tasks;
+        const overItems = overContainer.tasks;
         const overIndex = overItems.findIndex((item) => item.id === overId);
         const activeIndex = activeItems.findIndex(
           (item) => item.id == activeId
@@ -431,11 +448,11 @@ export default function MultipleContainers({
         let newOverContainerIndex = newItems.findIndex(
           (item) => item.id === overContainer.id
         );
-        newItems[newActiveContainerIndex].items = activeItems.filter(
+        newItems[newActiveContainerIndex].tasks = activeItems.filter(
           (item) => item.id !== activeId
         );
 
-        newItems[newOverContainerIndex].items = [
+        newItems[newOverContainerIndex].tasks = [
           ...overItems.slice(0, newIndex),
           activeItems[activeIndex],
           ...overItems.slice(newIndex, overItems.length),
@@ -476,11 +493,11 @@ export default function MultipleContainers({
     const overBoardByItemId = findBoardByItemId(overId);
 
     if (overBoardByItemId) {
-      const activeIndex = activeBoard.items.findIndex(
+      const activeIndex = activeBoard.tasks.findIndex(
         (item) => item.id === activeId
       );
 
-      const overIndex = overBoardByItemId.items.findIndex(
+      const overIndex = overBoardByItemId.tasks.findIndex(
         (item) => item.id === overId
       );
 
@@ -490,11 +507,11 @@ export default function MultipleContainers({
           let targetItem =
             newItems[items.findIndex((item) => item.id === activeBoard.id)];
           let modifiedNestedItems = arrayMove(
-            targetItem.items,
+            targetItem.tasks,
             activeIndex,
             overIndex
           );
-          targetItem.items = modifiedNestedItems;
+          targetItem.tasks = modifiedNestedItems;
           return newItems;
         });
       }
@@ -535,55 +552,56 @@ export default function MultipleContainers({
               : horizontalListSortingStrategy
           }
         >
-          {boards.map((board, index) => (
-            <DroppableContainer
-              key={board.id}
-              id={board.id}
-              label={`${board.title}`}
-              columns={columns}
-              items={board.items.map((item) => item.id)}
-              scrollable={scrollable}
-              style={containerStyle}
-              unstyled={false}
-              onRemove={() => handleRemove(board.id)}
-            >
-              <SortableContext items={board.items} strategy={strategy}>
-                {board.items.map((value, index) => {
-                  return (
-                    <SortableItemBoard
-                      disabled={isSortingBoard}
-                      key={value.id}
-                      id={value.id}
-                      value={value.title}
-                      index={index}
-                      handle={handle}
-                      style={getItemStyles}
-                      wrapperStyle={wrapperStyle}
-                      renderItem={renderItem}
-                      containerId={board.id}
-                      getIndex={getIndex}
-                    />
-                  );
-                })}
-                <div
-                  className="py-1 flex justify-center items-center cursor-pointer rounded-lg bg-transparent hover:bg-[#3D3E40] transition-all ease-in-out duration-200"
-                  onClick={() => handleAddRow(board.id)}
-                >
-                  <span className="w-[12px] h-[12px] mr-2">
-                    <Plus
-                      width={13}
-                      height={13}
-                      stroke="#A2A0A2"
-                      strokeWidth={3}
-                    />
-                  </span>
-                  <span className="text-[14px] leading-10 text-[#A2A0A2]">
-                    Add task
-                  </span>
-                </div>
-              </SortableContext>
-            </DroppableContainer>
-          ))}
+          {boards &&
+            boards.map((board, index) => (
+              <DroppableContainer
+                key={board.id}
+                id={board.id}
+                label={`${board.title}`}
+                columns={columns}
+                items={board?.tasks.map((item) => item.id)}
+                scrollable={scrollable}
+                style={containerStyle}
+                unstyled={false}
+                onRemove={() => handleRemove(board.id)}
+              >
+                <SortableContext items={board.tasks} strategy={strategy}>
+                  {board.tasks.map((value, index) => {
+                    return (
+                      <SortableItemBoard
+                        disabled={isSortingBoard}
+                        key={value.id}
+                        id={value.id}
+                        value={value.title}
+                        index={index}
+                        handle={handle}
+                        style={getItemStyles}
+                        wrapperStyle={wrapperStyle}
+                        renderItem={renderItem}
+                        containerId={board.id}
+                        getIndex={getIndex}
+                      />
+                    );
+                  })}
+                  <div
+                    className="py-1 flex justify-center items-center cursor-pointer rounded-lg bg-transparent hover:bg-[#3D3E40] transition-all ease-in-out duration-200"
+                    onClick={() => handleAddRow(board.id)}
+                  >
+                    <span className="w-[12px] h-[12px] mr-2">
+                      <Plus
+                        width={13}
+                        height={13}
+                        stroke="#A2A0A2"
+                        strokeWidth={3}
+                      />
+                    </span>
+                    <span className="text-[14px] leading-10 text-[#A2A0A2]">
+                      Add task
+                    </span>
+                  </div>
+                </SortableContext>
+              </DroppableContainer>
+            ))}
           <DroppableContainer
             id={PLACEHOLDER_ID}
             disabled={isSortingBoard}

@@ -5,7 +5,7 @@ import BoardService from "../services/board.service";
 
 const getBoards = async (req: Request, res: Response) => {
   try {
-    const boards = BoardService.getBoards();
+    const boards = await BoardService.getBoards();
     return res.status(200).json(boards);
   } catch (error) {
     return res.status(500).json({ message: "Internal server error" });

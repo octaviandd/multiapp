@@ -3,12 +3,14 @@
 import prisma from "../../prisma/prisma-client";
 
 const getBoards = async () => {
-  const boards = await prisma.board.findMany();
-  if (!boards) {
+  try {
+    const boards = await prisma.board.findMany({
+      include: { tasks: true },
+    });
+    return boards;
+  } catch (error) {
     throw new Error("Boards not found");
   }
-
-  return boards;
 };
 
 const getBoard = async (boardId: string) => {
