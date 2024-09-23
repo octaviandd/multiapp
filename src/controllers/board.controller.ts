@@ -51,7 +51,8 @@ const deleteBoard = async (req: Request, res: Response) => {
 
 const updateBoard = async (req: Request, res: Response) => {
   try {
-    const { id, title } = req.body;
+    const { id } = req.params;
+    const { title } = req.body;
     const board = BoardService.updateBoard(id, title);
 
     return res.status(200).json(board);

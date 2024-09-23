@@ -126,6 +126,19 @@ export default function MultipleContainers({
     },
   };
 
+  const onChangeBoardTitle = (boardId: UniqueIdentifier, title: string) => {
+    setBoards((boards) => {
+      const newItems = [...boards];
+      const board = newItems.find((item) => item.id === boardId);
+
+      if (board) {
+        board.title = title;
+      }
+
+      return newItems;
+    });
+  };
+
   useEffect(() => {
     fetch("/api/boards", {
       method: "GET",
@@ -300,6 +313,7 @@ export default function MultipleContainers({
           height: "100%",
           border: "1px solid #424244",
         }}
+        id={boardId}
         shadow
         unstyled={false}
       >
@@ -563,6 +577,9 @@ export default function MultipleContainers({
                 scrollable={scrollable}
                 style={containerStyle}
                 unstyled={false}
+                onChangeBoardTitle={(title: string) =>
+                  onChangeBoardTitle(board.id, title)
+                }
                 onRemove={() => handleRemove(board.id)}
               >
                 <SortableContext items={board.tasks} strategy={strategy}>

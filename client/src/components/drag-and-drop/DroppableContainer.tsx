@@ -63,6 +63,7 @@ export default function DroppableContainer({
         ...attributes,
         ...listeners,
       }}
+      id={id}
       columns={columns}
       {...props}
     >
