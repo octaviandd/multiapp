@@ -8,18 +8,14 @@ import {
   rectSwappingStrategy,
 } from "@dnd-kit/sortable";
 
-import { GridContainer } from "./Grid/GridContainer";
+import { GridContainer } from "../Grid/GridContainer";
 import { Sortable, Props as SortableProps } from "./Sortable";
 
-import { NotesWidget } from "../layout/notes-widget";
-import { TasksWidget } from "../layout/tasks-widget";
-import { FinanceWidget } from "../layout/finance-widget";
+import { NotesWidget } from "../../layout/notes-widget";
+import { TasksWidget } from "../../layout/tasks-widget";
+import { FinanceWidget } from "../../layout/finance-widget";
 
-const items = [
-  NotesWidget,
-  TasksWidget,
-  FinanceWidget,
-];
+const items = [NotesWidget, TasksWidget, FinanceWidget];
 
 const createRange = () => {
   return items.map((Component, index) => {

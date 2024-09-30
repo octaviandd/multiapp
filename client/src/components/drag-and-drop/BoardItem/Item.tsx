@@ -13,8 +13,6 @@ import { Handle } from "./Handle";
 import { cn } from "@/utils/helpers/utils";
 import { CalendarClock, CircleCheck, ThumbsUp } from "lucide-react";
 import { StoreContext } from "@/store";
-import { use } from "passport";
-import { set } from "zod";
 
 export interface Props {
   dragOverlay?: boolean;
@@ -33,8 +31,10 @@ export interface Props {
   id: UniqueIdentifier;
   transition?: string | null;
   wrapperStyle?: React.CSSProperties;
-  value: React.ReactNode;
+  value: string;
   onRemove?(): void;
+  onChangeTaskTitle?(title: string): void;
+  removeTemporaryTask?(): void;
   renderItem?(args: {
     dragOverlay: boolean;
     dragging: boolean;
@@ -66,6 +66,8 @@ export const Item = React.memo(
         id,
         listeners,
         onRemove,
+        removeTemporaryTask,
+        onChangeTaskTitle,
         renderItem,
         sorting,
         style,
@@ -84,6 +86,19 @@ export const Item = React.memo(
           ...prev,
           currentBoardItem: id,
         }));
+      };
+
+      const setTaskTitle = (e: React.ChangeEvent<HTMLInputElement>) => {
+        e.preventDefault();
+        if (value) {
+          if (onChangeTaskTitle) onChangeTaskTitle(e.target.value);
+        }
+      };
+
+      const onBlurTask = (e: React.FocusEvent<HTMLInputElement>) => {
+        if (!e.target.value) {
+          if (removeTemporaryTask) removeTemporaryTask();
+        }
       };
 
       useEffect(() => {
@@ -166,7 +181,13 @@ export const Item = React.memo(
               <div className="mr-2">
                 <CircleCheck width={14} height={14} />
               </div>
-              <p className="small">{value}</p>
+              <input
+                className="large bg-transparent px-2 py-1"
+                value={value}
+                onChange={setTaskTitle}
+                onBlur={onBlurTask}
+                placeholder="Write a new task"
+              ></input>
             </div>
             <div className="flex justify-between items-center mt-7">
               <CalendarClock
@@ -184,11 +205,6 @@ export const Item = React.memo(
               {handle ? <Handle {...handleProps} {...listeners} /> : null}
             </span>
           </div>
-          {/* {isSideTaskOpen &&
-            createPortal(
-              <SideTask taskData={value} />,
-              document.querySelector("#root") as HTMLElement
-            )} */}
         </li>
       );
     }

@@ -32,7 +32,7 @@ import {
 } from "@dnd-kit/sortable";
 
 import { BoardContainer } from "./BoardContainer/index";
-import { Item } from "./BoardItem/index";
+import { Item } from "../BoardItem/index";
 import { Plus } from "lucide-react";
 import { SortableItemBoard } from "./SortableItemBoard";
 import DroppableContainer from "./DroppableContainer";
@@ -294,6 +294,7 @@ export default function MultipleContainers({
           isDragging: true,
           isDragOverlay: true,
         })}
+        removeTemporaryTask={() => handleRemoveRow(board.id, item.id)}
         id={id}
         color="#fff"
         wrapperStyle={wrapperStyle({ index: 0 })}
@@ -322,6 +323,7 @@ export default function MultipleContainers({
             key={item.id}
             value={item.title}
             handle={handle}
+            removeTemporaryTask={() => handleRemoveRow(boardId, item.id)}
             style={getItemStyles({
               boardId,
               overIndex: -1,
@@ -375,21 +377,42 @@ export default function MultipleContainers({
 
     unstable_batchedUpdates(() => {
       setBoards((boards) => {
-        const newItems = [...boards];
-        const board = newItems.find((item) => item.id === boardID);
+        const newItems = boards.map((board) => {
+          if (board.id === boardID) {
+            return {
+              ...board,
+              tasks: [
+                ...board.tasks,
+                {
+                  id: newRowId,
+                  title: ``,
+                },
+              ],
+            };
+          }
 
-        if (board) {
-          board.tasks = [
-            ...board.tasks,
-            {
-              id: newRowId,
-              title: `New Task`,
-            },
-          ];
-        }
+          return board;
+        });
 
         return newItems;
       });
+    });
+  }
+
+  function handleRemoveRow(boardID: UniqueIdentifier, rowID: UniqueIdentifier) {
+    setBoards((boards) => {
+      const newItems = boards.map((board) => {
+        if (board.id === boardID) {
+          return {
+            ...board,
+            tasks: board.tasks.filter((task) => task.id !== rowID),
+          };
+        }
+
+        return board;
+      });
+
+      return newItems;
     });
   }
 

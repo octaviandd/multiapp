@@ -1,11 +1,10 @@
 /** @format */
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 import { createPortal } from "react-dom";
 
 import {
   Active,
-  Announcements,
   closestCenter,
   CollisionDetection,
   DragOverlay,
@@ -17,7 +16,6 @@ import {
   MouseSensor,
   MeasuringConfiguration,
   PointerActivationConstraint,
-  ScreenReaderInstructions,
   TouchSensor,
   UniqueIdentifier,
   useSensor,
@@ -35,7 +33,8 @@ import {
   NewIndexGetter,
 } from "@dnd-kit/sortable";
 
-import { Item, Wrapper, List } from "./index";
+import { SortableItem } from "./SortableItem";
+import { Item, Wrapper, List } from "../index";
 
 const defaultInitializer = (index: number) => index;
 
@@ -93,14 +92,6 @@ const dropAnimationConfig: DropAnimation = {
   }),
 };
 
-const screenReaderInstructions: ScreenReaderInstructions = {
-  draggable: `
-    To pick up a sortable item, press the space bar.
-    While sorting, use the arrow keys to move the item.
-    Press space again to drop the item in its new position, or press escape to cancel.
-  `,
-};
-
 export function Sortable({
   activationConstraint,
   animateLayoutChanges,
@@ -142,91 +133,43 @@ export function Sortable({
       activationConstraint,
     }),
     useSensor(KeyboardSensor, {
-      // Disable smooth scrolling in Cypress automated tests
       scrollBehavior: "Cypress" in window ? "auto" : undefined,
       coordinateGetter,
     })
   );
-  const isFirstAnnouncement = useRef(true);
   const getIndex = (id: UniqueIdentifier) => items.indexOf(id);
-  const getPosition = (id: UniqueIdentifier) => getIndex(id) + 1;
   const activeIndex = activeId ? getIndex(activeId) : -1;
   const handleRemove = removable
     ? (id: UniqueIdentifier) =>
         setItems((items) => items.filter((item) => item !== id))
     : undefined;
-  const announcements: Announcements = {
-    onDragStart({ active: { id } }) {
-      return `Picked up sortable item ${String(
-        id
-      )}. Sortable item ${id} is in position ${getPosition(id)} of ${
-        items.length
-      }`;
-    },
-    onDragOver({ active, over }) {
-      // In this specific use-case, the picked up item's `id` is always the same as the first `over` id.
-      // The first `onDragOver` event therefore doesn't need to be announced, because it is called
-      // immediately after the `onDragStart` announcement and is redundant.
-      if (isFirstAnnouncement.current === true) {
-        isFirstAnnouncement.current = false;
-        return;
-      }
 
-      if (over) {
-        return `Sortable item ${
-          active.id
-        } was moved into position ${getPosition(over.id)} of ${items.length}`;
-      }
-
+  const onDragStart = ({ active }: any) => {
+    if (!active) {
       return;
-    },
-    onDragEnd({ active, over }) {
-      if (over) {
-        return `Sortable item ${
-          active.id
-        } was dropped at position ${getPosition(over.id)} of ${items.length}`;
-      }
+    }
 
-      return;
-    },
-    onDragCancel({ active: { id } }) {
-      return `Sorting was cancelled. Sortable item ${id} was dropped and returned to position ${getPosition(
-        id
-      )} of ${items.length}.`;
-    },
+    setActiveId(active.id);
   };
 
-  useEffect(() => {
-    if (!activeId) {
-      isFirstAnnouncement.current = true;
+  const onDragEnd = ({ over }: any) => {
+    console.log(over);
+    setActiveId(null);
+
+    if (over) {
+      const overIndex = getIndex(over.id);
+      if (activeIndex !== overIndex) {
+        setItems((items) => reorderItems(items, activeIndex, overIndex));
+      }
     }
-  }, [activeId]);
+  };
 
   return (
     <DndContext
-      accessibility={{
-        announcements,
-        screenReaderInstructions,
-      }}
       sensors={sensors}
       collisionDetection={collisionDetection}
-      onDragStart={({ active }) => {
-        if (!active) {
-          return;
-        }
-
-        setActiveId(active.id);
-      }}
-      onDragEnd={({ over }) => {
-        setActiveId(null);
-
-        if (over) {
-          const overIndex = getIndex(over.id);
-          if (activeIndex !== overIndex) {
-            setItems((items) => reorderItems(items, activeIndex, overIndex));
-          }
-        }
-      }}
+      onDragStart={onDragStart}
+      onDragEnd={onDragEnd}
       onDragCancel={() => setActiveId(null)}
       measuring={measuring}
       modifiers={modifiers}
@@ -286,87 +229,5 @@ export function Sortable({
           )
         : null}
     </DndContext>
-  );
-}
-
-export interface SortableItemProps {
-  animateLayoutChanges?: AnimateLayoutChanges;
-  disabled?: boolean;
-  getNewIndex?: NewIndexGetter;
-  id: UniqueIdentifier;
-  index: number;
-  handle: boolean;
-  useDragOverlay?: boolean;
-  onRemove?(id: UniqueIdentifier): void;
-  style(values: any): React.CSSProperties;
-  renderItem?(args: any): React.ReactElement;
-  wrapperStyle: Props["wrapperStyle"];
-}
-
-export function SortableItem({
-  disabled,
-  animateLayoutChanges,
-  getNewIndex,
-  handle,
-  id,
-  index,
-  onRemove,
-  style,
-  renderItem,
-  useDragOverlay,
-  wrapperStyle,
-}: SortableItemProps) {
-  const {
-    active,
-    attributes,
-    isDragging,
-    isSorting,
-    listeners,
-    overIndex,
-    setNodeRef,
-    setActivatorNodeRef,
-    transform,
-    transition,
-  } = useSortable({
-    id,
-    animateLayoutChanges,
-    disabled,
-    getNewIndex,
-  });
-
-  return (
-    <Item
-      ref={setNodeRef}
-      value={id}
-      disabled={disabled}
-      dragging={isDragging}
-      sorting={isSorting}
-      handle={handle}
-      handleProps={
-        handle
-          ? {
-              ref: setActivatorNodeRef,
-            }
-          : undefined
-      }
-      renderItem={renderItem}
-      index={index}
-      style={style({
-        index,
-        id,
-        isDragging,
-        isSorting,
-        overIndex,
-      })}
-      onRemove={onRemove ? () => onRemove(id) : undefined}
-      transform={transform}
-      transition={transition}
-      wrapperStyle={wrapperStyle?.({ index, isDragging, active, id })}
-      listeners={listeners}
-      data-index={index}
-      data-id={id}
-      dragOverlay={!useDragOverlay && isDragging}
-      {...attributes}
-    />
   );
 }

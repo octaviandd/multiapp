@@ -89,7 +89,6 @@ export const Item = React.memo(
       }, [dragOverlay]);
 
       const handleMouseDown = (event: React.MouseEvent) => {
-        console.log("hit");
         // Store the mouse down position
         setMouseDownPosition({ x: event.clientX, y: event.clientY });
       };
@@ -184,7 +183,6 @@ export const Item = React.memo(
             )}
             style={style}
             data-cypress="draggable-item"
-            // {...(!handle ? listeners : undefined)}
             {...props}
             tabIndex={!handle ? 0 : undefined}
           >

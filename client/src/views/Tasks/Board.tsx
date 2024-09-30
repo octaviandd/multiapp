@@ -1,7 +1,7 @@
 /** @format */
 
 import React from "react";
-import MultipleContainers from "../../components/drag-and-drop/Board";
+import MultipleContainers from "../../components/drag-and-drop/tasks/Board";
 
 type Props = {};
 

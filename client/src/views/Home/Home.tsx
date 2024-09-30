@@ -1,7 +1,7 @@
 /** @format */
 
 import React from "react";
-import { BoardSortable } from "../../components/drag-and-drop/BoardSortable";
+import { BoardSortable } from "../../components/drag-and-drop/home/BoardSortable";
 import styles from "./home.module.scss";
 
 type Props = {};

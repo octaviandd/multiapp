@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 
 import { UniqueIdentifier } from "@dnd-kit/core";
 import { useSortable } from "@dnd-kit/sortable";
-import { Item } from "./BoardItem/index";
+import { Item } from "../BoardItem/index";
 
 interface SortableItemProps {
   containerId: UniqueIdentifier;
@@ -16,6 +16,7 @@ interface SortableItemProps {
   style(args: any): React.CSSProperties;
   getIndex(id: UniqueIdentifier): number;
   renderItem(): React.ReactElement;
+  removeTemporaryTask?(): void;
   wrapperStyle({ index }: { index: number }): React.CSSProperties;
 }
 
@@ -38,6 +39,7 @@ export const SortableItemBoard = ({
   value,
   handle,
   renderItem,
+  removeTemporaryTask,
   style,
   containerId,
   getIndex,
@@ -84,6 +86,7 @@ export const SortableItemBoard = ({
       fadeIn={mountedWhileDragging}
       listeners={listeners}
       renderItem={renderItem}
+      removeTemporaryTask={removeTemporaryTask}
     />
   );
 };
