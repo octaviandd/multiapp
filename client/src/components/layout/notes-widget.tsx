@@ -1,6 +1,6 @@
 /** @format */
 
-import { ActionProps } from "@/components/drag-and-drop/Item/Action";
+import { ActionProps } from "@/components/drag-and-drop/home/Item/Action";
 import { Folder, Plus } from "lucide-react";
 import React, { forwardRef, useState } from "react";
 

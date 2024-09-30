@@ -8,7 +8,7 @@ import styles from "./item.module.scss";
 import { Handle } from "./Handle";
 import { Remove } from "./Remove";
 
-import { cn } from "../../../utils/helpers/utils";
+import { cn } from "../../../../utils/helpers/utils";
 
 export interface Props {
   dragOverlay?: boolean;

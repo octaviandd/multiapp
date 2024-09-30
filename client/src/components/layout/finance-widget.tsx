@@ -1,6 +1,6 @@
 /** @format */
 
-import { ActionProps } from "@/components/drag-and-drop/Item/Action";
+import { ActionProps } from "@/components/drag-and-drop/home/Item/Action";
 import React, { forwardRef } from "react";
 
 import {

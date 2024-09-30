@@ -8,7 +8,7 @@ import {
   rectSwappingStrategy,
 } from "@dnd-kit/sortable";
 
-import { GridContainer } from "../Grid/GridContainer";
+import { GridContainer } from "./Grid/GridContainer";
 import { Sortable, Props as SortableProps } from "./Sortable";
 
 import { NotesWidget } from "../../layout/notes-widget";
