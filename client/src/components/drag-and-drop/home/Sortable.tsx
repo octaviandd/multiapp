@@ -34,7 +34,7 @@ import {
 } from "@dnd-kit/sortable";
 
 import { SortableItem } from "./SortableItem";
-import { Item, Wrapper, List } from "../index";
+import { Item, Wrapper, List } from "./index";
 
 const defaultInitializer = (index: number) => index;
 

@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 
 import { UniqueIdentifier } from "@dnd-kit/core";
 import { useSortable } from "@dnd-kit/sortable";
-import { Item } from "./index";
+import { Item } from "../home/index";
 
 interface SortableItemProps {
   containerId: UniqueIdentifier;

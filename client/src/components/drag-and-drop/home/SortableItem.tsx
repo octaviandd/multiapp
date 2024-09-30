@@ -5,7 +5,7 @@ import {
   NewIndexGetter,
   useSortable,
 } from "@dnd-kit/sortable";
-import { Item } from "../index";
+import { Item } from "./index";
 import { UniqueIdentifier } from "@dnd-kit/core";
 
 import { Props } from "./Sortable";

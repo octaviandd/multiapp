@@ -2,7 +2,7 @@
 
 import React, { forwardRef, useState } from "react";
 
-import { Handle } from "../../BoardItem/Handle";
+import { Handle } from "../BoardItem/Handle";
 import { cn } from "@/utils/helpers/utils";
 import styles from "./container.module.scss";
 import { Plus } from "lucide-react";

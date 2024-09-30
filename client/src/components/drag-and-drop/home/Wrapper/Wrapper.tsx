@@ -1,7 +1,7 @@
 /** @format */
 
 import React from "react";
-import { cn } from "../../../utils/helpers/utils";
+import { cn } from "../../../../utils/helpers/utils";
 
 import styles from "./wrapper.module.scss";
 

@@ -32,7 +32,7 @@ import {
 } from "@dnd-kit/sortable";
 
 import { BoardContainer } from "./BoardContainer/index";
-import { Item } from "../BoardItem/index";
+import { Item } from "./BoardItem/index";
 import { Plus } from "lucide-react";
 import { SortableItemBoard } from "./SortableItemBoard";
 import DroppableContainer from "./DroppableContainer";
