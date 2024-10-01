@@ -1,6 +1,6 @@
 /** @format */
 
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState, useRef } from "react";
 import type {
   DraggableSyntheticListeners,
   UniqueIdentifier,
@@ -29,6 +29,7 @@ export interface Props {
   sorting?: boolean;
   style?: React.CSSProperties;
   id: UniqueIdentifier;
+  recentlyAdded?: boolean;
   transition?: string | null;
   wrapperStyle?: React.CSSProperties;
   value: string;
@@ -65,6 +66,7 @@ export const Item = React.memo(
         index,
         id,
         listeners,
+        recentlyAdded,
         onRemove,
         removeTemporaryTask,
         onChangeTaskTitle,
@@ -80,6 +82,7 @@ export const Item = React.memo(
       ref
     ) => {
       const { store, setStore } = useContext(StoreContext);
+      const inputRef = useRef<HTMLInputElement>(null);
 
       const updateStoreCurrentBoardItem = (id: UniqueIdentifier) => {
         setStore((prev) => ({
@@ -88,18 +91,19 @@ export const Item = React.memo(
         }));
       };
 
-      const setTaskTitle = (e: React.ChangeEvent<HTMLInputElement>) => {
-        e.preventDefault();
-        if (value) {
+      const onBlurTask = (e: React.FocusEvent<HTMLInputElement>) => {
+        if (!e.target.value) {
+          if (removeTemporaryTask) removeTemporaryTask();
+        } else {
           if (onChangeTaskTitle) onChangeTaskTitle(e.target.value);
         }
       };
 
-      const onBlurTask = (e: React.FocusEvent<HTMLInputElement>) => {
-        if (!e.target.value) {
-          if (removeTemporaryTask) removeTemporaryTask();
+      useEffect(() => {
+        if (recentlyAdded) {
+          inputRef.current?.focus();
         }
-      };
+      }, [recentlyAdded]);
 
       useEffect(() => {
         if (!dragOverlay) {
@@ -182,10 +186,10 @@ export const Item = React.memo(
                 <CircleCheck width={14} height={14} />
               </div>
               <input
-                className="large bg-transparent px-2 py-1"
-                value={value}
-                onChange={setTaskTitle}
+                className="large bg-transparent px-2 py-1 border-0 focus:outline-none"
+                defaultValue={value}
                 onBlur={onBlurTask}
+                ref={inputRef}
                 placeholder="Write a new task"
               ></input>
             </div>

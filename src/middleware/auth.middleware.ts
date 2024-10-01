@@ -1,6 +1,7 @@
 /** @format */
 import { Request, Response } from "express";
 import { Session } from "express-session";
+import prisma from "../../prisma/prisma-client";
 
 declare module "express-session" {
   interface Session {
@@ -8,7 +9,11 @@ declare module "express-session" {
   }
 }
 
-export const withAuth = (req: Request, res: Response, next: () => void) => {
+export const withAuth = async (
+  req: Request,
+  res: Response,
+  next: () => void
+) => {
   if (req.session.userId) {
     next();
   } else {

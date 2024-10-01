@@ -38,18 +38,19 @@ const getTask = async (req: Request, res: Response) => {
 const createTask = async (req: Request, res: Response) => {
   try {
     const { title, boardId, displayOrder } = req.body;
-    const currentUserId = (req.user as { id: string }).id;
+    console.log(req.user);
+    const currentUserId = req.session.userId;
     const task = TaskService.createTask(
       title,
       boardId,
       displayOrder,
-      currentUserId
+      String(currentUserId)
     );
 
     return res.status(201).json(task);
-  } catch (error) {
+  } catch (error: any) {
     return res.status(500).json({
-      message: "Internal server error",
+      message: error.message,
     });
   }
 };

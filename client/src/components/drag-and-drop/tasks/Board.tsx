@@ -59,6 +59,7 @@ const dropAnimation: DropAnimation = {
 type Task = {
   id: UniqueIdentifier;
   title: string;
+  recentlyAdded?: boolean;
 };
 
 type Board = {
@@ -372,6 +373,26 @@ export default function MultipleContainers({
     });
   }
 
+  async function saveTask(boardId: UniqueIdentifier, title: string) {
+    await fetch(`/api/boards/${boardId}/tasks`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify({
+        title,
+        boardId,
+        displayOrder: boards.find((board) => board.id === boardId)?.tasks
+          .length,
+      }),
+    }).then((res) => {
+      if (res.ok) {
+        console.log("Task saved");
+      }
+    });
+  }
+
   function handleAddRow(boardID: UniqueIdentifier) {
     const newRowId = getNextRowId();
 
@@ -386,6 +407,7 @@ export default function MultipleContainers({
                 {
                   id: newRowId,
                   title: ``,
+                  recentlyAdded: true,
                 },
               ],
             };
@@ -610,13 +632,18 @@ export default function MultipleContainers({
                     return (
                       <SortableItemBoard
                         disabled={isSortingBoard}
+                        recentlyAdded={value.recentlyAdded}
                         key={value.id}
                         id={value.id}
                         value={value.title}
                         index={index}
                         handle={handle}
                         style={getItemStyles}
+                        onChangeTaskTitle={(title) => saveTask(board.id, title)}
                         wrapperStyle={wrapperStyle}
+                        removeTemporaryTask={() =>
+                          handleRemoveRow(board.id, value.id)
+                        }
                         renderItem={renderItem}
                         containerId={board.id}
                         getIndex={getIndex}
