@@ -28,6 +28,7 @@ router.post(
   },
   TaskController.createTask
 );
+router.post("/:boardId/tasks/update-board", TaskController.updateTaskBoard);
 router.put("/tasks/:taskId", TaskController.updateTask);
 router.delete("/tasks/:taskId", TaskController.deleteTask);
 

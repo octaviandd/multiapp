@@ -39,6 +39,19 @@ const updateTask = async (taskId: string, title: string) => {
   return task;
 };
 
+const updateTaskBoard = async (
+  taskId: string,
+  boardId: string,
+  displayOrder: number
+) => {
+  const task = await prisma.task.update({
+    where: { id: Number(taskId) },
+    data: { boardId: Number(boardId), displayOrder },
+  });
+
+  return task;
+};
+
 const deleteTask = async (taskId: string) => {
   const task = await prisma.task.delete({
     where: { id: Number(taskId) },
@@ -65,4 +78,11 @@ const createTask = async (
   return task;
 };
 
-export default { getTask, updateTask, deleteTask, createTask, getTasks };
+export default {
+  getTask,
+  updateTask,
+  deleteTask,
+  createTask,
+  getTasks,
+  updateTaskBoard,
+};

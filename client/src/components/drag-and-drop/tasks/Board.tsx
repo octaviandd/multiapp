@@ -152,8 +152,8 @@ export default function MultipleContainers({
         return res.json();
       })
       .then((data: Board[]) => {
+        data.map((board) => board.tasks.map((task) => (task.id = uniqid())));
         unstable_batchedUpdates(() => {
-          console.log(data);
           setBoards(data);
         });
       });
@@ -393,6 +393,29 @@ export default function MultipleContainers({
     });
   }
 
+  async function moveTask(
+    boardId: UniqueIdentifier,
+    taskId: UniqueIdentifier,
+    newIndex: number
+  ) {
+    await fetch(`/api/boards/${boardId}/tasks/update-board`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify({
+        taskId,
+        boardId,
+        displayOrder: newIndex,
+      }),
+    }).then((res) => {
+      if (res.ok) {
+        console.log("Task saved");
+      }
+    });
+  }
+
   function handleAddRow(boardID: UniqueIdentifier) {
     const newRowId = getNextRowId();
 
@@ -574,6 +597,7 @@ export default function MultipleContainers({
           return newItems;
         });
       }
+      moveTask(overBoardByItemId.id, activeIndex, overIndex);
     }
     setActiveId(null);
   }

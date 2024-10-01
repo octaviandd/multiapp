@@ -81,10 +81,24 @@ const updateTask = async (req: Request, res: Response) => {
   }
 };
 
+const updateTaskBoard = async (req: Request, res: Response) => {
+  try {
+    const { taskId, boardId, displayOrder } = req.body;
+    const task = TaskService.updateTaskBoard(taskId, boardId, displayOrder);
+
+    return res.status(200).json(task);
+  } catch (error) {
+    return res.status(500).json({
+      message: "Internal server error",
+    });
+  }
+};
+
 export default {
   getTasks,
   getTask,
   createTask,
   deleteTask,
   updateTask,
+  updateTaskBoard,
 };
