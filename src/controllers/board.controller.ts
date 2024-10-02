@@ -61,4 +61,28 @@ const updateBoard = async (req: Request, res: Response) => {
   }
 };
 
-export default { getBoards, getBoard, createBoard, deleteBoard, updateBoard };
+const moveBoard = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const { replacedBoardId, displayOrder, replacedBoardIndex } = req.body;
+    const board = BoardService.moveBoard(
+      id,
+      replacedBoardId,
+      displayOrder,
+      replacedBoardIndex
+    );
+
+    return res.status(200).json(board);
+  } catch (error) {
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+export default {
+  getBoards,
+  getBoard,
+  createBoard,
+  deleteBoard,
+  updateBoard,
+  moveBoard,
+};

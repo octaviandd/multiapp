@@ -38,7 +38,6 @@ const getTask = async (req: Request, res: Response) => {
 const createTask = async (req: Request, res: Response) => {
   try {
     const { title, boardId, displayOrder } = req.body;
-    console.log(req.user);
     const currentUserId = req.session.userId;
     const task = TaskService.createTask(
       title,
@@ -70,8 +69,10 @@ const deleteTask = async (req: Request, res: Response) => {
 
 const updateTask = async (req: Request, res: Response) => {
   try {
-    const { id, title } = req.body;
-    const task = TaskService.updateTask(id, title);
+    console.log(req.params);
+    const { title } = req.body;
+    const { taskId } = req.params;
+    const task = TaskService.updateTask(taskId, title);
 
     return res.status(200).json(task);
   } catch (error) {

@@ -376,8 +376,8 @@ export default function MultipleContainers({
     });
   }
 
-  async function saveTask(boardId: UniqueIdentifier, title: string) {
-    await fetch(`/api/boards/${boardId}/tasks`, {
+  async function updateTaskTitle(taskId: UniqueIdentifier, title: string) {
+    await fetch(`/api/boards/tasks/${taskId}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -385,13 +385,64 @@ export default function MultipleContainers({
       credentials: "include",
       body: JSON.stringify({
         title,
-        boardId,
-        displayOrder: boards.find((board) => board.id === boardId)?.tasks
-          .length,
       }),
     }).then((res) => {
       if (res.ok) {
-        console.log("Task saved");
+        console.log("Task updated");
+      }
+    });
+  }
+
+  async function saveTask(
+    boardId: UniqueIdentifier,
+    title: string,
+    taskId: UniqueIdentifier,
+    newTask: boolean = false
+  ) {
+    if (!newTask) {
+      updateTaskTitle(String(taskId).replace("T", ""), title);
+    } else {
+      await fetch(`/api/boards/${boardId}/tasks`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({
+          title,
+          boardId,
+          displayOrder: boards.find((board) => board.id === boardId)?.tasks
+            .length,
+        }),
+      }).then((res) => {
+        if (res.ok) {
+          console.log("Task saved");
+        }
+      });
+    }
+  }
+
+  async function moveBoard(
+    movingBoardId: UniqueIdentifier,
+    replacedBoardId: UniqueIdentifier,
+    newIndex: number,
+    replacedBoardIndex: number
+  ) {
+    await fetch(`/api/boards/${movingBoardId}/move-board`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify({
+        boardId: movingBoardId,
+        replacedBoardId,
+        displayOrder: newIndex,
+        replacedBoardIndex,
+      }),
+    }).then((res) => {
+      if (res.ok) {
+        console.log("Board saved");
       }
     });
   }
@@ -401,7 +452,7 @@ export default function MultipleContainers({
     taskId: UniqueIdentifier,
     newIndex: number
   ) {
-    await fetch(`/api/boards/${boardId}/tasks/update-board`, {
+    await fetch(`/api/boards/${boardId}/tasks/move-task`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -559,6 +610,7 @@ export default function MultipleContainers({
         const activeIndex = boards.findIndex((item) => item.id === activeId);
         const overIndex = boards.findIndex((item) => item.id === overId);
 
+        moveBoard(activeId, overId, overIndex, activeIndex);
         return arrayMove(boards, activeIndex, overIndex);
       });
     }
@@ -666,7 +718,9 @@ export default function MultipleContainers({
                         index={index}
                         handle={handle}
                         style={getItemStyles}
-                        onChangeTaskTitle={(title) => saveTask(board.id, title)}
+                        onChangeTaskTitle={(title, taskId) =>
+                          saveTask(board.id, title, taskId, false)
+                        }
                         wrapperStyle={wrapperStyle}
                         removeTemporaryTask={() =>
                           handleRemoveRow(board.id, value.id)

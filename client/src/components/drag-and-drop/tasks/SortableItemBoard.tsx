@@ -17,7 +17,7 @@ interface SortableItemProps {
   getIndex(id: UniqueIdentifier): number;
   renderItem(): React.ReactElement;
   removeTemporaryTask?(): void;
-  onChangeTaskTitle?(title: string): void;
+  onChangeTaskTitle?(title: string, taskId: UniqueIdentifier): void;
   recentlyAdded: boolean | undefined;
   wrapperStyle({ index }: { index: number }): React.CSSProperties;
 }

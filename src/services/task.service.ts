@@ -38,8 +38,8 @@ const updateTask = async (taskId: string, title: string) => {
     });
 
     return task;
-  } catch (error) {
-    throw new Error("Failed to update task");
+  } catch (error: any) {
+    throw new Error("Failed to update task: " + error.message);
   }
 };
 
@@ -48,7 +48,6 @@ const updateTaskBoard = async (
   boardId: string,
   displayOrder: number
 ) => {
-  console.log(taskId, boardId, displayOrder);
   try {
     const task = await prisma.task.update({
       where: { id: Number(taskId) },

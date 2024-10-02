@@ -34,7 +34,7 @@ export interface Props {
   wrapperStyle?: React.CSSProperties;
   value: string;
   onRemove?(): void;
-  onChangeTaskTitle?(title: string): void;
+  onChangeTaskTitle?(title: string, taskId: UniqueIdentifier | null): void;
   removeTemporaryTask?(): void;
   renderItem?(args: {
     dragOverlay: boolean;
@@ -95,7 +95,7 @@ export const Item = React.memo(
         if (!e.target.value) {
           if (removeTemporaryTask) removeTemporaryTask();
         } else {
-          if (onChangeTaskTitle) onChangeTaskTitle(e.target.value);
+          if (onChangeTaskTitle) onChangeTaskTitle(e.target.value, id);
         }
       };
 
