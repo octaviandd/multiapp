@@ -69,7 +69,6 @@ const deleteTask = async (req: Request, res: Response) => {
 
 const updateTask = async (req: Request, res: Response) => {
   try {
-    console.log(req.params);
     const { title } = req.body;
     const { taskId } = req.params;
     const task = TaskService.updateTask(taskId, title);

@@ -87,7 +87,6 @@ interface Props {
   itemCount?: number;
   items?: Board;
   handle?: boolean;
-  renderItem?: any;
   strategy?: SortingStrategy;
   modifiers?: Modifiers;
   trashable?: boolean;
@@ -108,7 +107,6 @@ export default function MultipleContainers({
   getItemStyles = () => ({}),
   wrapperStyle = () => ({}),
   modifiers,
-  renderItem,
   strategy = verticalListSortingStrategy,
   vertical = false,
   scrollable,
@@ -280,7 +278,6 @@ export default function MultipleContainers({
     //   (getItemStyles = () => ({})),
     //   getIndex,
     //   wrapperStyle,
-    //   renderItem
     // );
 
     const board = findBoard(id) as Board;
@@ -302,7 +299,6 @@ export default function MultipleContainers({
         id={id}
         color="#fff"
         wrapperStyle={wrapperStyle({ index: 0 })}
-        renderItem={renderItem}
         dragOverlay
       />
     );
@@ -340,7 +336,6 @@ export default function MultipleContainers({
             id={boardId}
             color="#fff"
             wrapperStyle={wrapperStyle({ index })}
-            renderItem={renderItem}
           />
         ))}
       </BoardContainer>
@@ -725,7 +720,6 @@ export default function MultipleContainers({
                         removeTemporaryTask={() =>
                           handleRemoveRow(board.id, value.id)
                         }
-                        renderItem={renderItem}
                         containerId={board.id}
                         getIndex={getIndex}
                       />
