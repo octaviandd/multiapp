@@ -152,7 +152,10 @@ export default function MultipleContainers({
         return res.json();
       })
       .then((data: Board[]) => {
-        data.map((board) => board.tasks.map((task) => (task.id = uniqid())));
+        data.map((board) =>
+          board.tasks.map((task) => (task.id = "T" + task.id))
+        );
+        console.log(data);
         unstable_batchedUpdates(() => {
           setBoards(data);
         });
@@ -405,7 +408,7 @@ export default function MultipleContainers({
       },
       credentials: "include",
       body: JSON.stringify({
-        taskId,
+        taskId: Number(String(taskId).replace("T", "")),
         boardId,
         displayOrder: newIndex,
       }),
@@ -597,7 +600,7 @@ export default function MultipleContainers({
           return newItems;
         });
       }
-      moveTask(overBoardByItemId.id, activeIndex, overIndex);
+      moveTask(overBoardByItemId.id, active.id, overIndex);
     }
     setActiveId(null);
   }

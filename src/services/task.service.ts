@@ -31,12 +31,16 @@ const getTask = async (taskId: string) => {
 };
 
 const updateTask = async (taskId: string, title: string) => {
-  const task = await prisma.task.update({
-    where: { id: Number(taskId) },
-    data: { title },
-  });
+  try {
+    const task = await prisma.task.update({
+      where: { id: Number(taskId) },
+      data: { title },
+    });
 
-  return task;
+    return task;
+  } catch (error) {
+    throw new Error("Failed to update task");
+  }
 };
 
 const updateTaskBoard = async (
@@ -44,20 +48,29 @@ const updateTaskBoard = async (
   boardId: string,
   displayOrder: number
 ) => {
-  const task = await prisma.task.update({
-    where: { id: Number(taskId) },
-    data: { boardId: Number(boardId), displayOrder },
-  });
+  console.log(taskId, boardId, displayOrder);
+  try {
+    const task = await prisma.task.update({
+      where: { id: Number(taskId) },
+      data: { boardId: Number(boardId), displayOrder },
+    });
 
-  return task;
+    return task;
+  } catch (error) {
+    throw new Error("Failed to update task board");
+  }
 };
 
 const deleteTask = async (taskId: string) => {
-  const task = await prisma.task.delete({
-    where: { id: Number(taskId) },
-  });
+  try {
+    const task = await prisma.task.delete({
+      where: { id: Number(taskId) },
+    });
 
-  return true;
+    return true;
+  } catch (error) {
+    throw new Error("Failed to delete task");
+  }
 };
 
 const createTask = async (
@@ -66,16 +79,20 @@ const createTask = async (
   displayOrder: number,
   createdById: string
 ) => {
-  const task = await prisma.task.create({
-    data: {
-      title,
-      boardId: Number(boardId),
-      displayOrder,
-      createdById: Number(createdById),
-    },
-  });
+  try {
+    const task = await prisma.task.create({
+      data: {
+        title,
+        boardId: Number(boardId),
+        displayOrder,
+        createdById: Number(createdById),
+      },
+    });
 
-  return task;
+    return task;
+  } catch (error) {
+    throw new Error("Failed to create task");
+  }
 };
 
 export default {

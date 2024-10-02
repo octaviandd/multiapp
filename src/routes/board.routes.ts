@@ -21,13 +21,7 @@ router.delete("/:id", BoardController.deleteBoard);
 // Task Routes (nested under boards)
 router.get("/:boardId/tasks", TaskController.getTasks);
 router.get("/tasks/:taskId", TaskController.getTask);
-router.post(
-  "/:boardId/tasks",
-  (req, res, next) => {
-    next();
-  },
-  TaskController.createTask
-);
+router.post("/:boardId/tasks", TaskController.createTask);
 router.post("/:boardId/tasks/update-board", TaskController.updateTaskBoard);
 router.put("/tasks/:taskId", TaskController.updateTask);
 router.delete("/tasks/:taskId", TaskController.deleteTask);
