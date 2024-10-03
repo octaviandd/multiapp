@@ -20,11 +20,13 @@ export default function DroppableContainer({
   id,
   items,
   style,
+  saveBoard,
   ...props
 }: ContainerProps & {
   disabled?: boolean;
   id: UniqueIdentifier;
   items: UniqueIdentifier[];
+  saveBoard?: (items: UniqueIdentifier[]) => void;
   style?: React.CSSProperties;
 }) {
   const {
@@ -44,6 +46,7 @@ export default function DroppableContainer({
     },
     animateLayoutChanges,
   });
+
   const isOverContainer = over
     ? (id === over.id && active?.data.current?.type !== "container") ||
       items.includes(over.id)

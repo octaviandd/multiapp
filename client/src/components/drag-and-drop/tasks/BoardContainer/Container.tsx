@@ -1,6 +1,12 @@
 /** @format */
 
-import React, { forwardRef, useState } from "react";
+import React, {
+  forwardRef,
+  useEffect,
+  useState,
+  useRef,
+  ChangeEvent,
+} from "react";
 
 import { Handle } from "../BoardItem/Handle";
 import { cn } from "@/utils/helpers/utils";
@@ -17,6 +23,8 @@ export interface Props {
   hover?: boolean;
   handleProps?: React.HTMLAttributes<any>;
   scrollable?: boolean;
+  recentlyAdded?: boolean;
+  removeTemporaryBoard?: () => void;
   id: UniqueIdentifier;
   shadow?: boolean;
   placeholder?: boolean;
@@ -39,44 +47,35 @@ export const BoardContainer = forwardRef<HTMLDivElement, Props>(
       onClick,
       onRemove,
       onChangeBoardTitle,
+      removeTemporaryBoard,
       label,
       id,
       placeholder,
       style,
       scrollable,
       shadow,
+      recentlyAdded,
       unstyled,
       ...props
     }: Props,
     ref
   ) => {
     const Component = onClick ? "button" : "div";
+    const inputRef = useRef<HTMLInputElement>(null);
 
-    const changeBoardTitle = (e: React.ChangeEvent<HTMLInputElement>) => {
-      e.preventDefault();
-      if (label) {
+    const onBlurTask = (e: React.FocusEvent<HTMLInputElement>) => {
+      if (!e.target.value) {
+        if (removeTemporaryBoard) removeTemporaryBoard();
+      } else {
         if (onChangeBoardTitle) onChangeBoardTitle(e.target.value);
       }
     };
 
-    const updateBackEnd = () => {
-      fetch(`/api/boards/${id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          title: label,
-        }),
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          console.log("Success:", data);
-        })
-        .catch((error) => {
-          console.error("Error:", error);
-        });
-    };
+    useEffect(() => {
+      if (recentlyAdded) {
+        inputRef.current?.focus();
+      }
+    }, [recentlyAdded]);
 
     return (
       <Component
@@ -96,13 +95,13 @@ export const BoardContainer = forwardRef<HTMLDivElement, Props>(
         onClick={onClick}
         tabIndex={onClick ? 0 : undefined}
       >
-        {label ? (
+        {!placeholder ? (
           <div className="flex items-center justify-between mb-4 board-container-title cursor-pointer">
             <input
-              className="large bg-transparent px-2 py-1"
-              value={label}
-              onChange={changeBoardTitle}
-              onBlur={updateBackEnd}
+              className="large bg-transparent px-2 py-1 focus:outline-2"
+              defaultValue={label}
+              onBlur={onBlurTask}
+              ref={inputRef}
             ></input>
             <div className="flex items-center gap-x-3">
               <div className="flex items-center justify-between">

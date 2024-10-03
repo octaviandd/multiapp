@@ -59,9 +59,9 @@ const deleteComment = async (req: Request, res: Response) => {
 const updateComment = async (req: Request, res: Response) => {
   try {
     const { id, content } = req.body;
-    const comment = CommentService.updateComment(id, content);
+    // const comment = CommentService.updateComment(id, content);
 
-    return res.status(200).json(comment);
+    // return res.status(200).json(comment);
   } catch (error) {
     return res.status(500).json({ message: "Internal server error" });
   }

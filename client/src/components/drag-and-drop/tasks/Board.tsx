@@ -31,9 +31,6 @@ import {
   horizontalListSortingStrategy,
 } from "@dnd-kit/sortable";
 
-import { BoardContainer } from "./BoardContainer/index";
-import { Item } from "./BoardItem/index";
-import { Plus } from "lucide-react";
 import { SortableItemBoard } from "./SortableItemBoard";
 import DroppableContainer from "./DroppableContainer";
 import renderSortableItemDragOverlay from "./SortableItemDragOverlay";
@@ -60,6 +57,7 @@ export type Board = {
   id: UniqueIdentifier;
   title: string;
   tasks: Task[];
+  recentlyAdded?: boolean;
 };
 
 interface Props {
@@ -114,19 +112,6 @@ export default function MultipleContainers({
     droppable: {
       strategy: MeasuringStrategy.Always,
     },
-  };
-
-  const onChangeBoardTitle = (boardId: UniqueIdentifier, title: string) => {
-    setBoards((boards) => {
-      const newItems = [...boards];
-      const board = newItems.find((item) => item.id === boardId);
-
-      if (board) {
-        board.title = title;
-      }
-
-      return newItems;
-    });
   };
 
   useEffect(() => {
@@ -262,18 +247,16 @@ export default function MultipleContainers({
   };
 
   function sortableItemDragOverlay(id: UniqueIdentifier) {
-    return renderSortableItemDragOverlay(
-      {
-        id,
-        findBoard,
-        findItem,
-        handle: false,
-        getIndex,
-        getItemStyles,
-        handleRemoveRow,
-        wrapperStyle,
-      }
-    )
+    return renderSortableItemDragOverlay({
+      id,
+      findBoard,
+      findItem,
+      handle: false,
+      getIndex,
+      getItemStyles,
+      handleRemoveRow,
+      wrapperStyle,
+    });
   }
 
   function containerDragOverlay(boardId: UniqueIdentifier) {
@@ -292,31 +275,6 @@ export default function MultipleContainers({
     setBoards((boards) => boards.filter((board) => board.id !== boardId));
   }
 
-  async function handleAddColumn(boardsLength: number) {
-    const newBoardId = getNextBoardId();
-    const newBoard = {
-      id: newBoardId,
-      title: `Board ${newBoardId}`,
-      displayOrder: boardsLength + 1,
-      tasks: [],
-    };
-
-    await fetch("/api/boards", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      credentials: "include",
-      body: JSON.stringify(newBoard),
-    }).then((res) => {
-      if (res.ok) {
-        unstable_batchedUpdates(() => {
-          setBoards((boards) => [...boards, newBoard]);
-        });
-      }
-    });
-  }
-
   async function updateTaskTitle(taskId: UniqueIdentifier, title: string) {
     await fetch(`/api/boards/tasks/${taskId}`, {
       method: "POST",
@@ -332,6 +290,51 @@ export default function MultipleContainers({
         console.log("Task updated");
       }
     });
+  }
+
+  const updateBoardTitle = (boardId: UniqueIdentifier, title: string) => {
+    fetch(`/api/boards/${boardId}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        title,
+      }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log("Success:", data);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  };
+
+  async function saveBoard(
+    boardId: UniqueIdentifier,
+    title: string,
+    newBoard: boolean = false
+  ) {
+    if (!newBoard) {
+      updateBoardTitle(boardId, title);
+    } else {
+      await fetch(`/api/boards`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({
+          title,
+          displayOrder: boards.length,
+        }),
+      }).then((res) => {
+        if (res.ok) {
+          console.log("Board saved");
+        }
+      });
+    }
   }
 
   async function saveTask(
@@ -408,6 +411,21 @@ export default function MultipleContainers({
       if (res.ok) {
         console.log("Task saved");
       }
+    });
+  }
+
+  async function handleAddColumn(boardsLength: number) {
+    const newBoardId = getNextBoardId();
+    const newBoard = {
+      id: newBoardId,
+      title: ``,
+      displayOrder: boardsLength + 1,
+      tasks: [],
+      recentlyAdded: true,
+    };
+
+    unstable_batchedUpdates(() => {
+      setBoards((boards) => [...boards, newBoard]);
     });
   }
 
@@ -633,10 +651,12 @@ export default function MultipleContainers({
                 items={board?.tasks.map((item) => item.id)}
                 scrollable={scrollable}
                 style={containerStyle}
+                recentlyAdded={board.recentlyAdded}
                 unstyled={false}
                 onChangeBoardTitle={(title: string) =>
-                  onChangeBoardTitle(board.id, title)
+                  saveBoard(board.id, title, board.recentlyAdded)
                 }
+                removeTemporaryBoard={() => handleRemove(board.id)}
                 onRemove={() => handleRemove(board.id)}
               >
                 <SortableContext items={board.tasks} strategy={strategy}>
@@ -652,7 +672,7 @@ export default function MultipleContainers({
                         handle={handle}
                         style={getItemStyles}
                         onChangeTaskTitle={(title, taskId) =>
-                          saveTask(board.id, title, taskId, false)
+                          saveTask(board.id, title, taskId, value.recentlyAdded)
                         }
                         wrapperStyle={wrapperStyle}
                         removeTemporaryTask={() =>
@@ -663,7 +683,10 @@ export default function MultipleContainers({
                       />
                     );
                   })}
-                  <BoardTaskAdder board={board} handleAddRow={handleAddRow}></BoardTaskAdder>
+                  <BoardTaskAdder
+                    board={board}
+                    handleAddRow={handleAddRow}
+                  ></BoardTaskAdder>
                 </SortableContext>
               </DroppableContainer>
             ))}
