@@ -38,6 +38,7 @@ import { SortableItemBoard } from "./SortableItemBoard";
 import DroppableContainer from "./DroppableContainer";
 import renderSortableItemDragOverlay from "./SortableItemDragOverlay";
 import renderContainerDragOverlay from "./DroppableContainerDragOverlay";
+import BoardTaskAdder from "./BoardTaskAdder";
 
 const defaultInitializer = (index: number) => index;
 
@@ -682,22 +683,7 @@ export default function MultipleContainers({
                       />
                     );
                   })}
-                  <div
-                    className="py-1 flex justify-center items-center cursor-pointer rounded-lg bg-transparent hover:bg-[#3D3E40] transition-all ease-in-out duration-200"
-                    onClick={() => handleAddRow(board.id)}
-                  >
-                    <span className="w-[12px] h-[12px] mr-2">
-                      <Plus
-                        width={13}
-                        height={13}
-                        stroke="#A2A0A2"
-                        strokeWidth={3}
-                      />
-                    </span>
-                    <span className="text-[14px] leading-10 text-[#A2A0A2]">
-                      Add task
-                    </span>
-                  </div>
+                  <BoardTaskAdder board={board} handleAddRow={handleAddRow}></BoardTaskAdder>
                 </SortableContext>
               </DroppableContainer>
             ))}
