@@ -36,6 +36,8 @@ import { Item } from "./BoardItem/index";
 import { Plus } from "lucide-react";
 import { SortableItemBoard } from "./SortableItemBoard";
 import DroppableContainer from "./DroppableContainer";
+import renderSortableItemDragOverlay from "./SortableItemDragOverlay";
+import renderContainerDragOverlay from "./DroppableContainerDragOverlay";
 
 const defaultInitializer = (index: number) => index;
 
@@ -56,13 +58,13 @@ const dropAnimation: DropAnimation = {
   }),
 };
 
-type Task = {
+export type Task = {
   id: UniqueIdentifier;
   title: string;
   recentlyAdded?: boolean;
 };
 
-type Board = {
+export type Board = {
   id: UniqueIdentifier;
   title: string;
   tasks: Task[];
@@ -270,76 +272,31 @@ export default function MultipleContainers({
     setClonedItems(null);
   };
 
-  function renderSortableItemDragOverlay(id: UniqueIdentifier) {
-    // return getSortableItemDragOverlay(
-    //   id,
-    //   board,
-    //   handle,
-    //   (getItemStyles = () => ({})),
-    //   getIndex,
-    //   wrapperStyle,
-    // );
-
-    const board = findBoard(id) as Board;
-    const item = findItem(id) as Task;
-    return (
-      <Item
-        value={item.title}
-        handle={handle}
-        style={getItemStyles({
-          boardId: board?.id as UniqueIdentifier,
-          overIndex: -1,
-          index: getIndex(id),
-          value: id,
-          isSorting: true,
-          isDragging: true,
-          isDragOverlay: true,
-        })}
-        removeTemporaryTask={() => handleRemoveRow(board.id, item.id)}
-        id={id}
-        color="#fff"
-        wrapperStyle={wrapperStyle({ index: 0 })}
-        dragOverlay
-      />
-    );
+  function sortableItemDragOverlay(id: UniqueIdentifier) {
+    return renderSortableItemDragOverlay(
+      {
+        id,
+        findBoard,
+        findItem,
+        handle: false,
+        getIndex,
+        getItemStyles,
+        handleRemoveRow,
+        wrapperStyle,
+      }
+    )
   }
 
-  function renderContainerDragOverlay(boardId: UniqueIdentifier) {
-    const board = findBoard(boardId) as Board;
-    return (
-      <BoardContainer
-        label={`${board.title}`}
-        columns={columns}
-        style={{
-          height: "100%",
-          border: "1px solid #424244",
-        }}
-        id={boardId}
-        shadow
-        unstyled={false}
-      >
-        {board.tasks.map((item, index) => (
-          <Item
-            key={item.id}
-            value={item.title}
-            handle={handle}
-            removeTemporaryTask={() => handleRemoveRow(boardId, item.id)}
-            style={getItemStyles({
-              boardId,
-              overIndex: -1,
-              index: getIndex(item.id),
-              value: item.id,
-              isDragging: false,
-              isSorting: false,
-              isDragOverlay: false,
-            })}
-            id={boardId}
-            color="#fff"
-            wrapperStyle={wrapperStyle({ index })}
-          />
-        ))}
-      </BoardContainer>
-    );
+  function containerDragOverlay(boardId: UniqueIdentifier) {
+    return renderContainerDragOverlay({
+      boardId,
+      findBoard,
+      handleRemoveRow,
+      getIndex,
+      getItemStyles,
+      wrapperStyle,
+      handle,
+    });
   }
 
   function handleRemove(boardId: UniqueIdentifier) {
@@ -759,8 +716,8 @@ export default function MultipleContainers({
         <DragOverlay adjustScale={adjustScale} dropAnimation={dropAnimation}>
           {activeId
             ? boards.find((board) => board.id == activeId)
-              ? renderContainerDragOverlay(activeId)
-              : renderSortableItemDragOverlay(activeId)
+              ? containerDragOverlay(activeId)
+              : sortableItemDragOverlay(activeId)
             : null}
         </DragOverlay>,
         document.body
