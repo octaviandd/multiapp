@@ -37,15 +37,6 @@ import { Plus } from "lucide-react";
 import { SortableItemBoard } from "./SortableItemBoard";
 import DroppableContainer from "./DroppableContainer";
 
-const defaultInitializer = (index: number) => index;
-
-export function createRange<T = number>(
-  length: number,
-  initializer: (index: number) => any = defaultInitializer
-): T[] {
-  return [...new Array(length)].map((_, index) => initializer(index));
-}
-
 const dropAnimation: DropAnimation = {
   sideEffects: defaultDropAnimationSideEffects({
     styles: {
@@ -84,8 +75,6 @@ interface Props {
     isDragOverlay: boolean;
   }): React.CSSProperties;
   wrapperStyle?(args: { index: number }): React.CSSProperties;
-  itemCount?: number;
-  items?: Board;
   handle?: boolean;
   strategy?: SortingStrategy;
   modifiers?: Modifiers;
@@ -102,7 +91,6 @@ export default function MultipleContainers({
   cancelDrop,
   columns,
   handle = false,
-  items: initialItems,
   containerStyle,
   getItemStyles = () => ({}),
   wrapperStyle = () => ({}),
@@ -672,18 +660,10 @@ export default function MultipleContainers({
       onDragCancel={onDragCancel}
       modifiers={modifiers}
     >
-      <div
-        className={`inline-grid p-5 h-full overflow-y-hidden overflow-x-scroll w-full ${
-          vertical ? "grid-flow-row" : "grid-flow-col"
-        }`}
-      >
+      <div className="inline-grid p-5 h-full overflow-y-hidden overflow-x-scroll w-full grid-flow-col">
         <SortableContext
           items={[...boards.map((board) => board.id), PLACEHOLDER_ID]}
-          strategy={
-            vertical
-              ? verticalListSortingStrategy
-              : horizontalListSortingStrategy
-          }
+          strategy={horizontalListSortingStrategy}
         >
           {boards &&
             boards.map((board, index) => (
