@@ -4,45 +4,57 @@ import prisma from "../../prisma/prisma-client";
 import { Note } from "../types/note";
 
 const getNote = async (noteId: string) => {
-  const note = await prisma.note.findUnique({
-    where: { id: Number(noteId) },
-  });
+  try {
+    const note = await prisma.note.findUnique({
+      where: { id: Number(noteId) },
+    });
 
-  if (!note) {
-    throw new Error("Note not found");
+    return note
+  } catch (error: any) {
+    throw new Error("Note not found: " + error.message);
   }
-
-  return note;
 };
 
 const updateNote = async (noteId: string, data: Partial<Note>) => {
-  const updatedNote = await prisma.note.update({
-    where: { id: Number(noteId) },
-    data,
-  });
+  try {
+    const updatedNote = await prisma.note.update({
+      where: { id: Number(noteId) },
+      data,
+    });
 
-  return updatedNote;
+    return updatedNote;
+  } catch (error: any) {
+    throw new Error("Note not found: " + error.message);
+  }
 };
 
 const deleteNote = async (noteId: string) => {
-  const deletedNote = await prisma.note.delete({
-    where: { id: Number(noteId) },
-  });
+  try {
+    const deletedNote = await prisma.note.delete({
+      where: { id: Number(noteId) },
+    });
 
-  return deletedNote;
+    return true;
+  } catch (error: any) {
+    throw new Error("Note not found: " + error.message);
+  }
 };
 
-// const createNote = async (data: Partial<Note>) => {
-//   const createdNote = await prisma.note.create({
-//     data,
-//   });
+const createNote = async (data: Partial<Note>) => {
+  try {
+    const createdNote = await prisma.note.create({
+      data,
+    });
 
-//   return createdNote;
-// };
+    return createdNote;
+  } catch (error: any) {
+    throw new Error("Failed to create note: " + error.message);
+  }
+};
 
 export default {
   getNote,
   updateNote,
   deleteNote,
-  // createNote,
+  createNote,
 };
