@@ -12,25 +12,25 @@ interface SideTaskProps {
 const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
   const [isOpen, setIsOpen] = useState(false);
 
-  // useEffect(() => {
-  //   if (selectedItem) {
-  //     fetch(`/api/boards/tasks/${selectedItem}`, {
-  //       method: "GET",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //       credentials: "include",
-  //     })
-  //       .then((res) => res.json())
-  //       .then((data) => {
-  //         console.log(data);
-  //       })
-  //       .catch((error) => {
-  //         console.error("Error fetching task:", error);
-  //       });
-  //     setIsOpen(true);
-  //   }
-  // }, [selectedItem]);
+  useEffect(() => {
+    if (selectedItem) {
+      fetch(`/api/boards/tasks/${String(selectedItem).replace("T", "")}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          console.log(data);
+        })
+        .catch((error) => {
+          console.error("Error fetching task:", error);
+        });
+      setIsOpen(true);
+    }
+  }, [selectedItem]);
 
   return (
     <div

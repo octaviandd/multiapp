@@ -89,6 +89,8 @@ export const Item = React.memo(
           ...prev,
           currentBoardItem: id,
         }));
+        console.log("updateStoreCurrentBoardItem", id);
+        console.log("store.currentBoardItem", store.currentBoardItem);
       };
 
       const onBlurTask = (e: React.FocusEvent<HTMLInputElement>) => {
@@ -125,7 +127,7 @@ export const Item = React.memo(
             fadeIn && styles.fadeIn,
             sorting && styles.sorting,
             dragOverlay && styles.dragOverlay,
-            store.currentBoardItem === id && styles.active
+            store.currentBoardItem === "T" + id && styles.active
           )}
           style={listItemStyles}
           ref={ref}
