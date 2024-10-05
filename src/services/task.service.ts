@@ -91,8 +91,8 @@ const createTask = async (
     });
 
     return task;
-  } catch (error) {
-    throw new Error("Failed to create task");
+  } catch (error: any) {
+    throw new Error("Failed to create task: " + error.message);
   }
 };
 

@@ -394,12 +394,17 @@ export default function MultipleContainers({
           boardId,
           displayOrder: boards.find((board) => board.id === boardId)?.tasks
             .length,
+          temporaryId: taskId,
         }),
-      }).then((res) => {
-        if (res.ok) {
-          console.log("Task saved");
-        }
-      });
+      })
+        .then((res) => {
+          if (res.ok) {
+            console.log("Task saved");
+          }
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
     }
   }
 
@@ -690,6 +695,7 @@ export default function MultipleContainers({
                 style={containerStyle}
                 recentlyAdded={board.recentlyAdded}
                 removeBoard={() => removeBoard(board.id)}
+                createTask={() => handleAddRow(board.id)}
                 unstyled={false}
                 onChangeBoardTitle={(title: string) =>
                   saveBoard(board.id, title, board.recentlyAdded)

@@ -33,6 +33,7 @@ export interface Props {
   onClick?(): void;
   onRemove?(): void;
   onChangeBoardTitle?(title: string): void;
+  createTask?(boardId: UniqueIdentifier): void;
 }
 
 export type { Props as ContainerProps };
@@ -50,6 +51,7 @@ export const BoardContainer = forwardRef<HTMLDivElement, Props>(
       onChangeBoardTitle,
       removeTemporaryBoard,
       removeBoard,
+      createTask,
       label,
       id,
       placeholder,
@@ -71,6 +73,10 @@ export const BoardContainer = forwardRef<HTMLDivElement, Props>(
       } else {
         if (onChangeBoardTitle) onChangeBoardTitle(e.target.value);
       }
+    };
+
+    const handleCreateTaskFromBoard = () => {
+      if (createTask) createTask(id);
     };
 
     const handleRemoveBoard = (
@@ -108,7 +114,7 @@ export const BoardContainer = forwardRef<HTMLDivElement, Props>(
         {!placeholder ? (
           <div className="flex items-center justify-between mb-4 board-container-title cursor-pointer">
             <input
-              className="large bg-transparent px-2 py-1 focus:outline-2"
+              className="large bg-transparent px-2 py-1 focus:outline-2 text-[20px] leading-5 font-medium"
               defaultValue={label}
               onBlur={onBlurTask}
               ref={inputRef}
@@ -139,7 +145,11 @@ export const BoardContainer = forwardRef<HTMLDivElement, Props>(
                 </DropdownMenu>
               </div>
               <div className="flex items-center justify-between p-1 rounded-md hover:bg-[#343638]">
-                <Plus width={16} height={16} />
+                <Plus
+                  width={16}
+                  height={16}
+                  onClick={() => handleCreateTaskFromBoard()}
+                />
               </div>
               <div className="flex items-center justify-between p-1">
                 <Handle {...handleProps} />
