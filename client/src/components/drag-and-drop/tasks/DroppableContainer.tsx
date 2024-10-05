@@ -20,13 +20,11 @@ export default function DroppableContainer({
   id,
   items,
   style,
-  saveBoard,
   ...props
 }: ContainerProps & {
   disabled?: boolean;
   id: UniqueIdentifier;
   items: UniqueIdentifier[];
-  saveBoard?: (items: UniqueIdentifier[]) => void;
   style?: React.CSSProperties;
 }) {
   const {

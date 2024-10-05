@@ -275,6 +275,20 @@ export default function MultipleContainers({
     setBoards((boards) => boards.filter((board) => board.id !== boardId));
   }
 
+  async function removeBoard(boardId: UniqueIdentifier) {
+    await fetch(`/api/boards/delete-board/${boardId}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+    }).then((res) => {
+      if (res.ok) {
+        console.log("Board removed");
+      }
+    });
+  }
+
   async function updateTaskTitle(taskId: UniqueIdentifier, title: string) {
     await fetch(`/api/boards/tasks/${taskId}`, {
       method: "POST",
@@ -652,6 +666,7 @@ export default function MultipleContainers({
                 scrollable={scrollable}
                 style={containerStyle}
                 recentlyAdded={board.recentlyAdded}
+                removeBoard={() => removeBoard(board.id)}
                 unstyled={false}
                 onChangeBoardTitle={(title: string) =>
                   saveBoard(board.id, title, board.recentlyAdded)

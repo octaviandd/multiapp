@@ -16,7 +16,7 @@ router.get("/", BoardController.getBoards);
 router.get("/:id", BoardController.getBoard);
 router.post("/", BoardController.createBoard);
 router.put("/:id", BoardController.updateBoard);
-router.delete("/:id", BoardController.deleteBoard);
+router.delete("/delete-board/:id", BoardController.deleteBoard);
 router.post("/:id/move-board", BoardController.moveBoard);
 
 // Task Routes (nested under boards)

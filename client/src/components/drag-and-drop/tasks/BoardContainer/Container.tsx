@@ -1,30 +1,18 @@
 /** @format */
 
-import React, {
-  forwardRef,
-  useEffect,
-  useState,
-  useRef,
-  ChangeEvent,
-} from "react";
+import React, { forwardRef, useEffect, useRef } from "react";
 
 import { Handle } from "../BoardItem/Handle";
 import { cn } from "@/utils/helpers/utils";
 import styles from "./container.module.scss";
-import { Plus, Ellipsis, Github, LogOut, Settings, User } from "lucide-react";
+import { Plus, Ellipsis, Pen, Trash } from "lucide-react";
 import { UniqueIdentifier } from "@dnd-kit/core";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuGroup,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@radix-ui/react-dropdown-menu";
-import { Button } from "@/components/layout/button";
-import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
-import { DropdownMenuShortcut } from "@/components/layout/dropdown-menu";
 
 export interface Props {
   children: React.ReactNode;
@@ -37,6 +25,7 @@ export interface Props {
   scrollable?: boolean;
   recentlyAdded?: boolean;
   removeTemporaryBoard?: () => void;
+  removeBoard?: (id: UniqueIdentifier) => void;
   id: UniqueIdentifier;
   shadow?: boolean;
   placeholder?: boolean;
@@ -60,6 +49,7 @@ export const BoardContainer = forwardRef<HTMLDivElement, Props>(
       onRemove,
       onChangeBoardTitle,
       removeTemporaryBoard,
+      removeBoard,
       label,
       id,
       placeholder,
@@ -81,6 +71,14 @@ export const BoardContainer = forwardRef<HTMLDivElement, Props>(
       } else {
         if (onChangeBoardTitle) onChangeBoardTitle(e.target.value);
       }
+    };
+
+    const handleRemoveBoard = (
+      e: React.MouseEvent<HTMLDivElement>,
+      id: UniqueIdentifier
+    ) => {
+      e.preventDefault();
+      if (removeBoard) removeBoard(id);
     };
 
     useEffect(() => {
@@ -126,10 +124,15 @@ export const BoardContainer = forwardRef<HTMLDivElement, Props>(
                     align="start"
                     alignOffset={10}
                   >
-                    <DropdownMenuItem className="cursor-pointer px-3 py-2 hover:bg-[#3D3E3F]">
+                    <DropdownMenuItem className="cursor-pointer px-3 py-2 hover:bg-[#3D3E3F] flex items-center">
+                      <Pen width={16} height={16} className="mr-2" />
                       Rename Section
                     </DropdownMenuItem>
-                    <DropdownMenuItem className="cursor-pointer px-3 py-2 hover:bg-[#3D3E3F]">
+                    <DropdownMenuItem
+                      className="cursor-pointer px-3 py-2 hover:bg-[#3D3E3F] flex items-center"
+                      onClick={(e) => handleRemoveBoard(e, id)}
+                    >
+                      <Trash width={16} height={16} className="mr-2" />
                       Delete Section
                     </DropdownMenuItem>
                   </DropdownMenuContent>

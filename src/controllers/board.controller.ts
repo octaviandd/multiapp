@@ -4,6 +4,7 @@ import { Request, Response } from "express";
 import BoardService from "../services/board.service";
 
 const getBoards = async (req: Request, res: Response) => {
+  console.log("hit");
   try {
     const boards = await BoardService.getBoards();
     return res.status(200).json(boards);
