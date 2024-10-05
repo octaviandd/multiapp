@@ -51,6 +51,7 @@ export type Task = {
   id: UniqueIdentifier;
   title: string;
   recentlyAdded?: boolean;
+  body?: string;
 };
 
 export type Board = {

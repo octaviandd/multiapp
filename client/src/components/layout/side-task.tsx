@@ -2,8 +2,11 @@
 
 import { UniqueIdentifier } from "@dnd-kit/core";
 import { Folder, PlusCircle } from "lucide-react";
-import { use } from "passport";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import { Task } from "../drag-and-drop/tasks/Board";
+import { Editor } from "react-draft-wysiwyg";
+import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
+import { EditorState } from "draft-js";
 
 interface SideTaskProps {
   selectedItem: UniqueIdentifier;
@@ -11,8 +14,12 @@ interface SideTaskProps {
 
 const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [currentTask, setCurrentTask] = useState<Task | null>(null);
+  const [editorState, setEditorState] = useState(EditorState.createEmpty());
 
   useEffect(() => {
+    setIsLoading(true);
     if (selectedItem) {
       fetch(`/api/boards/tasks/${String(selectedItem).replace("T", "")}`, {
         method: "GET",
@@ -23,14 +30,19 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
       })
         .then((res) => res.json())
         .then((data) => {
-          console.log(data);
+          setCurrentTask(data);
+          setIsLoading(false);
+          setIsOpen(true);
         })
         .catch((error) => {
           console.error("Error fetching task:", error);
         });
-      setIsOpen(true);
     }
   }, [selectedItem]);
+
+  if (isLoading) {
+    return <div>Loading..</div>;
+  }
 
   return (
     <div
@@ -41,7 +53,7 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
     >
       <div className="flex items-center justify-between p-4 border-b border-[#424244]">
         <h2 className="pb-0 mb-0 text-xl border-none font-semibold text-white">
-          Task Title
+          {currentTask?.title}
         </h2>
         <button
           onClick={() => setIsOpen(false)}
@@ -88,11 +100,34 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
         </div>
 
         <div>
-          <h3 className="text-sm font-medium text-white">Description</h3>
-          <p className="mt-2 text-sm text-white">
-            This is a detailed description of the task. It explains what needs
-            to be done and any other relevant information.
-          </p>
+          <h3 className="text-sm font-medium mb-2 text-white">Description</h3>
+          {editorState && (
+            <Editor
+              editorState={editorState}
+              onEditorStateChange={setEditorState}
+              toolbar={{
+                options: ["inline", "list"],
+                inline: {
+                  options: ["bold", "italic", "underline"],
+                },
+              }}
+              wrapperStyle={{
+                display: "flex",
+                flexDirection: "column",
+                border: "1px solid #424242",
+              }}
+              editorStyle={{
+                order: 1,
+                color: "white",
+                padding: "5px 10px",
+              }}
+              toolbarStyle={{
+                border: "none",
+                order: 2,
+                backgroundColor: "#1E1F21",
+              }}
+            />
+          )}
         </div>
 
         <div className="py-3 border-b border-[#424242]">

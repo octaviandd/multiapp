@@ -69,7 +69,6 @@ export const Item = React.memo(
     ) => {
       const { store, setStore } = useContext(StoreContext);
       const inputRef = useRef<HTMLInputElement>(null);
-      const elementRef = useRef<HTMLLIElement>(null);
 
       const listItemStyles = {
         ...wrapperStyle,

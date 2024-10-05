@@ -159,3 +159,27 @@ ul {
 .toggle-button:hover {
   background-color: #0056b3;
 }
+
+.mce-content-body {
+  background-color: #1e1f21 !important;
+}
+
+.box-statusbar__right-container {
+  display: none;
+}
+
+.tox-statusbar {
+  display: none;
+}
+
+.wrapperClass {
+  display: flex;
+  flex-direction: column;
+  background-color: #1e1f21;
+}
+.editorClass {
+  order: 1;
+}
+.toolbarClass {
+  order: 2;
+}
