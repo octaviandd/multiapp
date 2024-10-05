@@ -8,9 +8,17 @@ import { cn } from "@/utils/helpers/utils";
 import { Button } from "./button";
 import { Calendar } from "./calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "./popover";
+import dayjs from "dayjs";
 
-export function DatePicker() {
-  const [date, setDate] = React.useState<Date>();
+interface DatePickerProps {
+  date: Date | undefined;
+  setDate: (date: any) => void;
+}
+
+export function DatePicker({ date, setDate }: DatePickerProps) {
+  const onHandleDate = (date: any) => {
+    setDate(date);
+  };
 
   return (
     <Popover>
@@ -29,7 +37,7 @@ export function DatePicker() {
         <Calendar
           mode="single"
           selected={date}
-          onSelect={setDate}
+          onSelect={(date) => onHandleDate(date)}
           initialFocus
         />
       </PopoverContent>

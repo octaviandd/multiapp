@@ -16,7 +16,7 @@ interface SortableItemProps {
   style(args: any): React.CSSProperties;
   getIndex(id: UniqueIdentifier): number;
   removeTemporaryTask?(): void;
-  onChangeTaskTitle?(title: string, taskId: UniqueIdentifier): void;
+  saveTask?(title: string, taskId: UniqueIdentifier): void;
   recentlyAdded: boolean | undefined;
   wrapperStyle({ index }: { index: number }): React.CSSProperties;
 }
@@ -40,7 +40,7 @@ export const SortableItemBoard = ({
   value,
   handle,
   removeTemporaryTask,
-  onChangeTaskTitle,
+  saveTask,
   style,
   containerId,
   recentlyAdded,
@@ -89,7 +89,7 @@ export const SortableItemBoard = ({
       fadeIn={mountedWhileDragging}
       listeners={listeners}
       removeTemporaryTask={removeTemporaryTask}
-      onChangeTaskTitle={onChangeTaskTitle}
+      saveTask={saveTask}
     />
   );
 };

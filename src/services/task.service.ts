@@ -72,22 +72,10 @@ const deleteTask = async (taskId: string) => {
   }
 };
 
-const createTask = async (
-  title: string,
-  boardId: string,
-  displayOrder: number,
-  createdById: string,
-  temporaryId: string
-) => {
+const createTask = async (data: any) => {
   try {
     const task = await prisma.task.create({
-      data: {
-        title,
-        boardId: Number(boardId),
-        displayOrder,
-        createdById: Number(createdById),
-        temporaryId,
-      },
+      data,
     });
 
     return task;

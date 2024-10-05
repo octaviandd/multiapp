@@ -728,7 +728,7 @@ export default function MultipleContainers({
                         index={index}
                         handle={handle}
                         style={getItemStyles}
-                        onChangeTaskTitle={(title, taskId) =>
+                        saveTask={(title, taskId) =>
                           saveTask(board.id, title, taskId, value.recentlyAdded)
                         }
                         wrapperStyle={wrapperStyle}

@@ -34,7 +34,7 @@ export interface Props {
   wrapperStyle?: React.CSSProperties;
   value: string;
   onRemove?(): void;
-  onChangeTaskTitle?(title: string, taskId: UniqueIdentifier | null): void;
+  saveTask?(title: string, taskId: UniqueIdentifier | null): void;
   removeTemporaryTask?(): void;
 }
 
@@ -56,7 +56,7 @@ export const Item = React.memo(
         recentlyAdded,
         onRemove,
         removeTemporaryTask,
-        onChangeTaskTitle,
+        saveTask,
         sorting,
         style,
         transition,
@@ -88,15 +88,14 @@ export const Item = React.memo(
           ...prev,
           currentBoardItem: id,
         }));
-        console.log("updateStoreCurrentBoardItem", id);
-        console.log("store.currentBoardItem", store.currentBoardItem);
       };
 
       const onBlurTask = (e: React.FocusEvent<HTMLInputElement>) => {
         if (!e.target.value) {
           if (removeTemporaryTask) removeTemporaryTask();
         } else {
-          if (onChangeTaskTitle) onChangeTaskTitle(e.target.value, id);
+          console.log("onBlurTask", e.target.value, id);
+          if (saveTask) saveTask(e.target.value, id);
         }
       };
 

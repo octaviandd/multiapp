@@ -8,6 +8,7 @@ import { Editor } from "react-draft-wysiwyg";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import { EditorState, ContentState } from "draft-js";
 import { DatePicker } from "./date-picker";
+import dayjs from "dayjs";
 interface SideTaskProps {
   selectedItem: UniqueIdentifier;
 }
@@ -17,6 +18,7 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [currentTask, setCurrentTask] = useState<Task | null>(null);
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
+  const [currentDate, setDate] = useState<Date>();
 
   useEffect(() => {
     let isMounted = true;
@@ -39,6 +41,9 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
                 ContentState.createFromText(data.body || "")
               )
             );
+            if (data.dueDate) {
+              setDate(new Date(data.dueDate));
+            }
             setIsLoading(false);
             setIsOpen(true);
           }
@@ -53,7 +58,15 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
     };
   }, [selectedItem]);
 
-  const updateTask = async () => {
+  useEffect(() => {
+    if (currentTask) {
+      updateTask({
+        dueDate: dayjs(currentDate).toISOString(),
+      });
+    }
+  }, [currentDate]);
+
+  const updateTask = async (data: any) => {
     fetch(`/api/boards/tasks/${String(selectedItem).replace("T", "")}`, {
       method: "POST",
       headers: {
@@ -61,9 +74,7 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
       },
       credentials: "include",
       body: JSON.stringify({
-        data: {
-          body: editorState.getCurrentContent().getPlainText(),
-        },
+        data,
       }),
     })
       .then((res) => res.json())
@@ -152,8 +163,9 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
       </div>
 
       <div className="p-4 space-y-6">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col">
           <div className="flex items-center">
+            <span>Asignee: </span>
             <img
               src="https://via.placeholder.com/32"
               alt="Assignee Avatar"
@@ -161,8 +173,12 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
             />
             <span className="ml-2 text-sm text-white">Assigned to You</span>
           </div>
-          <div className="flex items-center">
-            <DatePicker></DatePicker>
+          <div className="flex items-center mt-3">
+            <span className="text-white">Due date:</span>
+            <DatePicker
+              date={currentDate}
+              setDate={(date) => setDate(date)}
+            ></DatePicker>
           </div>
         </div>
 
@@ -172,7 +188,11 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
             <Editor
               editorState={editorState}
               onEditorStateChange={setEditorState}
-              onBlur={() => updateTask()}
+              onBlur={() =>
+                updateTask({
+                  body: editorState.getCurrentContent().getPlainText(),
+                })
+              }
               toolbar={{
                 options: ["inline", "list"],
                 inline: {
@@ -219,7 +239,7 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
         </div>
 
         <div>
-          <h3 className="text-sm font-medium text-white">Attachments</h3>
+          <p className="extra-small pb-3 text-white">Attachments</p>
           <div className="mt-2">
             <div className="flex items-center space-x-2">
               <svg
@@ -244,10 +264,10 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
         </div>
 
         <div>
-          <h3 className="text-sm font-medium text-white">Comments</h3>
+          <p className="extra-small text-white">Comments</p>
           <div className="mt-2">
             <textarea
-              className="w-full p-2 text-[14px] hover:placeholder-h border rounded-md focus:outline-none bg-[#1E2021]"
+              className="w-full p-2 text-[14px] hover:placeholder-h border border-neutral-600 rounded-md focus:outline-none bg-[#1E2021]"
               rows={3}
               placeholder="Add a comment"
             ></textarea>
@@ -264,9 +284,9 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
               />
               <div>
                 <div className="text-sm font-medium text-white">User Name</div>
-                <div className="text-sm text-white">
+                <p className="extra-small p-1 text-white">
                   This is a comment on the task providing additional details.
-                </div>
+                </p>
                 <div className="text-xs text-gray-500 mt-1">Just now</div>
               </div>
             </div>
