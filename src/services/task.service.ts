@@ -76,7 +76,8 @@ const createTask = async (
   title: string,
   boardId: string,
   displayOrder: number,
-  createdById: string
+  createdById: string,
+  temporaryId: string
 ) => {
   try {
     const task = await prisma.task.create({
@@ -85,6 +86,7 @@ const createTask = async (
         boardId: Number(boardId),
         displayOrder,
         createdById: Number(createdById),
+        temporaryId,
       },
     });
 

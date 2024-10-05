@@ -37,13 +37,14 @@ const getTask = async (req: Request, res: Response) => {
 
 const createTask = async (req: Request, res: Response) => {
   try {
-    const { title, boardId, displayOrder } = req.body;
+    const { title, boardId, displayOrder, temporaryId } = req.body;
     const currentUserId = req.session.userId;
     const task = TaskService.createTask(
       title,
       boardId,
       displayOrder,
-      String(currentUserId)
+      String(currentUserId),
+      temporaryId
     );
 
     return res.status(201).json(task);

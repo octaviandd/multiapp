@@ -129,7 +129,6 @@ export default function MultipleContainers({
         data.map((board) =>
           board.tasks.map((task) => (task.id = "T" + task.id))
         );
-        console.log(data);
         unstable_batchedUpdates(() => {
           setBoards(data);
         });
@@ -282,11 +281,15 @@ export default function MultipleContainers({
         "Content-Type": "application/json",
       },
       credentials: "include",
-    }).then((res) => {
-      if (res.ok) {
-        console.log("Board removed");
-      }
-    });
+    })
+      .then((res) => {
+        if (res.ok) {
+          setBoards((boards) => boards.filter((board) => board.id !== boardId));
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
   }
 
   async function updateTaskTitle(taskId: UniqueIdentifier, title: string) {
@@ -342,12 +345,32 @@ export default function MultipleContainers({
         body: JSON.stringify({
           title,
           displayOrder: boards.length,
+          temporaryId: boardId,
         }),
-      }).then((res) => {
-        if (res.ok) {
-          console.log("Board saved");
-        }
-      });
+      })
+        .then((res) => {
+          return res.json();
+        })
+        .then((data) => {
+          setBoards((boards) => {
+            return boards.map((board) => {
+              if (board.id === boardId) {
+                return {
+                  ...board,
+                  id: data.id,
+                  title: data.title,
+                  tasks: [],
+                  recentlyAdded: false,
+                };
+              }
+
+              return board;
+            });
+          });
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
     }
   }
 

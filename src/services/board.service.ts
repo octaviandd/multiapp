@@ -27,12 +27,17 @@ const getBoard = async (boardId: string) => {
   }
 };
 
-const createBoard = async (title: string, displayOrder: number) => {
+const createBoard = async (
+  title: string,
+  displayOrder: number,
+  temporaryId: string
+) => {
   try {
     const board = await prisma.board.create({
       data: {
         title,
         displayOrder,
+        temporaryId,
       },
     });
 

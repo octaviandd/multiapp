@@ -28,6 +28,7 @@ model User {
 
 model Board {
   id           Int      @id @default(autoincrement())
+  temporaryId  String
   title        String
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
@@ -56,6 +57,7 @@ model File {
 
 model Task {
   id           Int        @id @default(autoincrement())
+  temporaryId  String
   title        String
   body         String?
   assignee     User?      @relation("TaskAssignee", fields: [assigneeId], references: [id])
