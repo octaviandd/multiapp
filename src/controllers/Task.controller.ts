@@ -73,8 +73,9 @@ const updateTask = async (req: Request, res: Response) => {
 
 const updateTaskBoard = async (req: Request, res: Response) => {
   try {
-    const { taskId, boardId, displayOrder } = req.body;
-    const task = TaskService.updateTaskBoard(taskId, boardId, displayOrder);
+    const { taskId } = req.params;
+    const { data } = req.body;
+    const task = TaskService.updateTaskBoard(taskId, data);
 
     return res.status(200).json(task);
   } catch (error) {

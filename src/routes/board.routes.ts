@@ -23,7 +23,10 @@ router.post("/:id/move-board", BoardController.moveBoard);
 router.get("/:boardId/tasks", TaskController.getTasks);
 router.get("/tasks/:taskId", TaskController.getTask);
 router.post("/:boardId/tasks", TaskController.createTask);
-router.post("/:boardId/tasks/move-task", TaskController.updateTaskBoard);
+router.post(
+  "/:boardId/tasks/move-task/:taskId",
+  TaskController.updateTaskBoard
+);
 router.post("/tasks/:taskId", TaskController.updateTask);
 router.delete("/tasks/:taskId", TaskController.deleteTask);
 

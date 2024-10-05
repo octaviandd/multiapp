@@ -449,20 +449,24 @@ export default function MultipleContainers({
     taskId: UniqueIdentifier,
     newIndex: number
   ) {
-    await fetch(`/api/boards/${boardId}/tasks/move-task`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      credentials: "include",
-      body: JSON.stringify({
-        data: {
-          taskId: Number(String(taskId).replace("T", "")),
-          boardId,
-          displayOrder: newIndex,
+    await fetch(
+      `/api/boards/${boardId}/tasks/move-task/${Number(
+        String(taskId).replace("T", "")
+      )}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-      }),
-    }).then((res) => {
+        credentials: "include",
+        body: JSON.stringify({
+          data: {
+            boardId,
+            displayOrder: newIndex,
+          },
+        }),
+      }
+    ).then((res) => {
       if (res.ok) {
         console.log("Task saved");
       }
