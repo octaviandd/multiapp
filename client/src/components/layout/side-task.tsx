@@ -6,7 +6,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { Task } from "../drag-and-drop/tasks/Board";
 import { Editor } from "react-draft-wysiwyg";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
-import { EditorState } from "draft-js";
+import { EditorState, ContentState } from "draft-js";
 
 interface SideTaskProps {
   selectedItem: UniqueIdentifier;
@@ -31,6 +31,11 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
         .then((res) => res.json())
         .then((data) => {
           setCurrentTask(data);
+          setEditorState(
+            EditorState.createWithContent(
+              ContentState.createFromText(data.body || "")
+            )
+          );
           setIsLoading(false);
           setIsOpen(true);
         })
@@ -39,6 +44,29 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
         });
     }
   }, [selectedItem]);
+
+  const updateTask = async () => {
+    console.log(editorState.getCurrentContent().getPlainText());
+    fetch(`/api/boards/tasks/${String(selectedItem).replace("T", "")}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify({
+        data: {
+          body: editorState.getCurrentContent().getPlainText(),
+        },
+      }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((error) => {
+        console.error("Error updating task:", error);
+      });
+  };
 
   if (isLoading) {
     return <div>Loading..</div>;
@@ -100,11 +128,12 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
         </div>
 
         <div>
-          <h3 className="text-sm font-medium mb-2 text-white">Description</h3>
+          <p className="extra-small pb-3 text-white">Description</p>
           {editorState && (
             <Editor
               editorState={editorState}
               onEditorStateChange={setEditorState}
+              onBlur={() => updateTask()}
               toolbar={{
                 options: ["inline", "list"],
                 inline: {

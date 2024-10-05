@@ -30,11 +30,11 @@ const getTask = async (taskId: string) => {
   }
 };
 
-const updateTask = async (taskId: string, title: string) => {
+const updateTask = async (taskId: string, data: any) => {
   try {
     const task = await prisma.task.update({
       where: { id: Number(taskId) },
-      data: { title },
+      data,
     });
 
     return task;

@@ -19,7 +19,7 @@ const getTasks = async (req: Request, res: Response) => {
 const getTask = async (req: Request, res: Response) => {
   try {
     const { taskId } = req.params;
-    const task = TaskService.getTask(taskId);
+    const task = await TaskService.getTask(taskId);
 
     return res.status(200).json(task);
   } catch (error: any) {
@@ -64,9 +64,9 @@ const deleteTask = async (req: Request, res: Response) => {
 
 const updateTask = async (req: Request, res: Response) => {
   try {
-    const { title } = req.body;
+    const { data } = req.body;
     const { taskId } = req.params;
-    const task = TaskService.updateTask(taskId, title);
+    const task = TaskService.updateTask(taskId, data);
 
     return res.status(200).json(task);
   } catch (error) {
