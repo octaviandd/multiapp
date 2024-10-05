@@ -307,7 +307,9 @@ export default function MultipleContainers({
       },
       credentials: "include",
       body: JSON.stringify({
-        title,
+        data: {
+          title,
+        },
       }),
     }).then((res) => {
       if (res.ok) {
@@ -397,11 +399,13 @@ export default function MultipleContainers({
         },
         credentials: "include",
         body: JSON.stringify({
-          title,
-          boardId,
-          displayOrder: boards.find((board) => board.id === boardId)?.tasks
-            .length,
-          temporaryId: taskId,
+          data: {
+            title,
+            boardId,
+            displayOrder: boards.find((board) => board.id === boardId)?.tasks
+              .length,
+            temporaryId: taskId,
+          },
         }),
       })
         .then((res) => {
@@ -452,9 +456,11 @@ export default function MultipleContainers({
       },
       credentials: "include",
       body: JSON.stringify({
-        taskId: Number(String(taskId).replace("T", "")),
-        boardId,
-        displayOrder: newIndex,
+        data: {
+          taskId: Number(String(taskId).replace("T", "")),
+          boardId,
+          displayOrder: newIndex,
+        },
       }),
     }).then((res) => {
       if (res.ok) {

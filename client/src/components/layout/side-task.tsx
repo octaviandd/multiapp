@@ -7,7 +7,7 @@ import { Task } from "../drag-and-drop/tasks/Board";
 import { Editor } from "react-draft-wysiwyg";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import { EditorState, ContentState } from "draft-js";
-
+import { DatePicker } from "./date-picker";
 interface SideTaskProps {
   selectedItem: UniqueIdentifier;
 }
@@ -19,6 +19,8 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
 
   useEffect(() => {
+    let isMounted = true;
+
     setIsLoading(true);
     if (selectedItem) {
       fetch(`/api/boards/tasks/${String(selectedItem).replace("T", "")}`, {
@@ -30,23 +32,28 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
       })
         .then((res) => res.json())
         .then((data) => {
-          setCurrentTask(data);
-          setEditorState(
-            EditorState.createWithContent(
-              ContentState.createFromText(data.body || "")
-            )
-          );
-          setIsLoading(false);
-          setIsOpen(true);
+          if (isMounted) {
+            setCurrentTask(data);
+            setEditorState(
+              EditorState.createWithContent(
+                ContentState.createFromText(data.body || "")
+              )
+            );
+            setIsLoading(false);
+            setIsOpen(true);
+          }
         })
         .catch((error) => {
           console.error("Error fetching task:", error);
         });
     }
+
+    return () => {
+      isMounted = false;
+    };
   }, [selectedItem]);
 
   const updateTask = async () => {
-    console.log(editorState.getCurrentContent().getPlainText());
     fetch(`/api/boards/tasks/${String(selectedItem).replace("T", "")}`, {
       method: "POST",
       headers: {
@@ -65,6 +72,52 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
       })
       .catch((error) => {
         console.error("Error updating task:", error);
+      });
+  };
+
+  const addSubtask = async () => {
+    fetch(
+      `/api/boards/tasks/${String(selectedItem).replace("T", "")}/subtasks`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({
+          title: "Subtask",
+        }),
+      }
+    )
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((error) => {
+        console.error("Error adding subtask:", error);
+      });
+  };
+
+  const addComment = async () => {
+    fetch(
+      `/api/boards/tasks/${String(selectedItem).replace("T", "")}/comments`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({
+          body: "This is a comment on the task providing additional details.",
+        }),
+      }
+    )
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((error) => {
+        console.error("Error adding comment:", error);
       });
   };
 
@@ -99,7 +152,7 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
       </div>
 
       <div className="p-4 space-y-6">
-        <div className="flex items-center space-x-4">
+        <div className="flex items-center justify-between">
           <div className="flex items-center">
             <img
               src="https://via.placeholder.com/32"
@@ -109,21 +162,7 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
             <span className="ml-2 text-sm text-white">Assigned to You</span>
           </div>
           <div className="flex items-center">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-5 w-5 text-white"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M8 7V3M16 7V3M4 11h16M4 19h16M5 11V5a2 2 0 012-2h10a2 2 0 012 2v6M5 19v-2a2 2 0 012-2h10a2 2 0 012 2v2"
-              />
-            </svg>
-            <span className="ml-2 text-sm text-white">Due Today</span>
+            <DatePicker></DatePicker>
           </div>
         </div>
 
