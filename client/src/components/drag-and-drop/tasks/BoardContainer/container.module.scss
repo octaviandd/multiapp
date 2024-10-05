@@ -5,7 +5,7 @@
   grid-auto-rows: max-content;
   box-sizing: border-box;
   appearance: none;
-  min-width: 350px;
+  min-width: 380px;
   margin: 10px;
   min-height: 200px;
   transition: background-color 350ms ease;
@@ -31,7 +31,7 @@
     align-items: center;
     cursor: pointer;
     color: white;
-    background-color: transparent;
+    background-color: #282a2c;
     border-style: dashed;
     border-color: rgba(0, 0, 0, 0.08);
 

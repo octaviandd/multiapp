@@ -87,6 +87,12 @@ export const BoardContainer = forwardRef<HTMLDivElement, Props>(
       if (removeBoard) removeBoard(id);
     };
 
+    const onClickFocus = () => {
+      setTimeout(() => {
+        inputRef.current?.focus();
+      }, 0);
+    };
+
     useEffect(() => {
       if (recentlyAdded) {
         inputRef.current?.focus();
@@ -112,7 +118,7 @@ export const BoardContainer = forwardRef<HTMLDivElement, Props>(
         tabIndex={onClick ? 0 : undefined}
       >
         {!placeholder ? (
-          <div className="flex items-center justify-between mb-4 board-container-title cursor-pointer">
+          <div className="flex items-center justify-between mb-4 cursor-pointer">
             <input
               className="large bg-transparent px-2 py-1 focus:outline-2 text-[20px] leading-5 font-medium"
               defaultValue={label}
@@ -130,7 +136,10 @@ export const BoardContainer = forwardRef<HTMLDivElement, Props>(
                     align="start"
                     alignOffset={10}
                   >
-                    <DropdownMenuItem className="cursor-pointer px-3 py-2 hover:bg-[#3D3E3F] flex items-center">
+                    <DropdownMenuItem
+                      className="cursor-pointer px-3 py-2 hover:bg-[#3D3E3F] flex items-center"
+                      onClick={() => onClickFocus()}
+                    >
                       <Pen width={16} height={16} className="mr-2" />
                       Rename Section
                     </DropdownMenuItem>
