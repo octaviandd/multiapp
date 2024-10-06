@@ -54,6 +54,14 @@ const dropAnimation: DropAnimation = {
   }),
 };
 
+export type User = {
+  id: UniqueIdentifier;
+  firstName: string;
+  lastName: string;
+  email: string;
+  role: string;
+};
+
 export type Task = {
   id: UniqueIdentifier;
   title: string;
@@ -65,6 +73,7 @@ export type Task = {
   dueDate?: Date;
   asignee?: string;
   completed?: boolean;
+  createdBy?: User;
 };
 
 export type Board = {
@@ -137,7 +146,6 @@ export default function MultipleContainers({
 
   useEffect(() => {
     if (store.removedItem) {
-      console.log(store.removedItem);
       setBoards((boards) => {
         return boards.map((board) => {
           return {

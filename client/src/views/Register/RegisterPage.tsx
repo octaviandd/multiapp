@@ -23,6 +23,12 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 const formSchema = z.object({
+  first_name: z.string().nonempty({
+    message: "First name is required.",
+  }),
+  last_name: z.string().nonempty({
+    message: "Last name is required.",
+  }),
   email: z.string().min(5, {
     message: "Must be a valid email address.",
   }),
@@ -39,6 +45,8 @@ export function RegisterForm() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      first_name: "",
+      last_name: "",
       email: "",
       password: "",
       confirm_password: "",
@@ -73,6 +81,36 @@ export function RegisterForm() {
         <CardContent>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-4">
+              <FormField
+                control={form.control}
+                name="first_name"
+                render={({ field, formState }) => (
+                  <FormItem className="grid gap-2">
+                    <FormLabel>First Name</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormDescription>
+                      {formState.errors.first_name?.message}
+                    </FormDescription>
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="last_name"
+                render={({ field, formState }) => (
+                  <FormItem className="grid gap-2">
+                    <FormLabel>Last Name</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormDescription>
+                      {formState.errors.last_name?.message}
+                    </FormDescription>
+                  </FormItem>
+                )}
+              />
               <FormField
                 control={form.control}
                 name="email"

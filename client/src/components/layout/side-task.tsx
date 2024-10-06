@@ -36,6 +36,7 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
       })
         .then((res) => res.json())
         .then((data) => {
+          console.log(data);
           if (isMounted) {
             setCurrentTask(data);
             setEditorState(
@@ -256,7 +257,12 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
                 alt="Assignee Avatar"
                 className="w-8 h-8 rounded-full"
               />
-              <span className="ml-2 text-sm text-white">Assigned to You</span>
+              {currentTask && currentTask.createdBy && (
+                <span className="ml-2 text-sm text-white">
+                  {currentTask.createdBy.firstName}{" "}
+                  {currentTask.createdBy.lastName}
+                </span>
+              )}
             </div>
           </div>
           <div className="flex items-center justify-between mt-3">
