@@ -410,8 +410,25 @@ export default function MultipleContainers({
       })
         .then((res) => {
           if (res.ok) {
-            console.log("Task saved");
+            return res.json();
           }
+        })
+        .then((data) => {
+          console.log(data);
+          setBoards((boards) => {
+            return boards.map((board) => {
+              if (board.id === boardId) {
+                return {
+                  ...board,
+                  tasks: [
+                    ...board.tasks.filter((task) => task.id !== taskId),
+                    data,
+                  ],
+                };
+              }
+              return board;
+            });
+          });
         })
         .catch((error) => {
           console.error("Error:", error);

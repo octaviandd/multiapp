@@ -18,7 +18,7 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [currentTask, setCurrentTask] = useState<Task | null>(null);
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
-  const [currentDate, setDate] = useState<Date>();
+  const [currentDate, setDate] = useState<Date | undefined>(undefined);
 
   useEffect(() => {
     let isMounted = true;
@@ -43,6 +43,8 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
             );
             if (data.dueDate) {
               setDate(new Date(data.dueDate));
+            } else {
+              setDate(undefined);
             }
             setIsLoading(false);
             setIsOpen(true);
@@ -164,17 +166,21 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
 
       <div className="p-4 space-y-6">
         <div className="flex flex-col">
-          <div className="flex items-center">
-            <span>Asignee: </span>
-            <img
-              src="https://via.placeholder.com/32"
-              alt="Assignee Avatar"
-              className="w-8 h-8 rounded-full"
-            />
-            <span className="ml-2 text-sm text-white">Assigned to You</span>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center">
+              <p className="mr-2 extra-small text-white">Asignee: </p>
+            </div>
+            <div className="flex items-center gap-x-1">
+              <img
+                src="https://via.placeholder.com/32"
+                alt="Assignee Avatar"
+                className="w-8 h-8 rounded-full"
+              />
+              <span className="ml-2 text-sm text-white">Assigned to You</span>
+            </div>
           </div>
-          <div className="flex items-center mt-3">
-            <span className="text-white">Due date:</span>
+          <div className="flex items-center justify-between mt-3">
+            <p className="extra-small text-white">Due date:</p>
             <DatePicker
               date={currentDate}
               setDate={(date) => setDate(date)}

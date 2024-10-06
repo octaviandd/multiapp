@@ -34,7 +34,7 @@ const createTask = async (req: Request, res: Response) => {
     const { data } = req.body;
     const currentUserId = req.session.userId;
     data.createdById = currentUserId;
-    const task = TaskService.createTask(data);
+    const task = await TaskService.createTask(data);
 
     return res.status(201).json(task);
   } catch (error: any) {
