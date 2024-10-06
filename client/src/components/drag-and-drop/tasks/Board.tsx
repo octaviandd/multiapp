@@ -111,6 +111,12 @@ export default function MultipleContainers({
   const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null);
   const lastOverId = useRef<UniqueIdentifier | null>(null);
   const recentlyMovedToNewBoard = useRef(false);
+  const [clonedItems, setClonedItems] = useState<Board[] | null>(null);
+  const sensors = useSensors(
+    useSensor(MouseSensor, { activationConstraint: { distance: 8 } }),
+    useSensor(TouchSensor)
+  );
+
   const isSortingBoard = activeId
     ? boards.some((board) => board.id === activeId)
     : false;
@@ -142,11 +148,6 @@ export default function MultipleContainers({
       });
   }, []);
 
-  const [clonedItems, setClonedItems] = useState<Board[] | null>(null);
-  const sensors = useSensors(
-    useSensor(MouseSensor, { activationConstraint: { distance: 8 } }),
-    useSensor(TouchSensor)
-  );
   const findBoard = (id: UniqueIdentifier): Board => {
     return boards.find((board) => board.id === id) as Board;
   };
@@ -311,11 +312,18 @@ export default function MultipleContainers({
           title,
         },
       }),
-    }).then((res) => {
-      if (res.ok) {
-        console.log("Task updated");
-      }
-    });
+    })
+      .then((res) => {
+        if (res.ok) {
+          return res.json();
+        }
+      })
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
   }
 
   const updateBoardTitle = (boardId: UniqueIdentifier, title: string) => {
@@ -414,7 +422,6 @@ export default function MultipleContainers({
           }
         })
         .then((data) => {
-          console.log(data);
           setBoards((boards) => {
             return boards.map((board) => {
               if (board.id === boardId) {

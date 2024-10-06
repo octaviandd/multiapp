@@ -22,8 +22,6 @@ export function DatePicker({ date, setDate }: DatePickerProps) {
     setDate(date);
   };
 
-  console.log(date);
-
   return (
     <Popover>
       <PopoverTrigger asChild>

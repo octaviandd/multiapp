@@ -94,7 +94,6 @@ export const Item = React.memo(
         if (!e.target.value) {
           if (removeTemporaryTask) removeTemporaryTask();
         } else {
-          console.log("onBlurTask", e.target.value, id);
           if (saveTask) saveTask(e.target.value, id);
         }
       };

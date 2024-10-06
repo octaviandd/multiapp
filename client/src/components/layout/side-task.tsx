@@ -1,7 +1,7 @@
 /** @format */
 
 import { UniqueIdentifier } from "@dnd-kit/core";
-import { Folder, PlusCircle } from "lucide-react";
+import { Check, Folder, PlusCircle, ThumbsUp, Trash } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
 import { Task } from "../drag-and-drop/tasks/Board";
 import { Editor } from "react-draft-wysiwyg";
@@ -145,6 +145,20 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
         isOpen ? "translate-x-0" : "translate-x-full"
       }`}
     >
+      <div className="flex items-center px-2 py-2 border-b border-neutral-600">
+        <button className="flex items-center p-2 gap-x-1 border border-neutral-600 rounded-md hover:bg-[#2A2B2D] transition-background duration-300 ease-in-out">
+          <Check color="white" width={16} height={16} />
+          <p className="text-white small">Mark complete</p>
+        </button>
+        <div className="ml-auto flex items-center gap-x-3">
+          <button className="border rounded-md border-neutral-600 p-2 hover:bg-[#2A2B2D] transition-background duration-300 ease-in-out">
+            <ThumbsUp color="white" width={16} height={16} />
+          </button>
+          <button className="border rounded-md border-neutral-600 p-2 hover:bg-[#2A2B2D] transition-background duration-300 ease-in-out">
+            <Trash color="white" width={16} height={16} />
+          </button>
+        </div>
+      </div>
       <div className="flex items-center justify-between p-4 border-b border-[#424244]">
         <h2 className="pb-0 mb-0 text-xl border-none font-semibold text-white">
           {currentTask?.title}

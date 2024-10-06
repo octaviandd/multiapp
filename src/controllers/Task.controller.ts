@@ -6,7 +6,7 @@ import { Request, Response } from "express";
 const getTasks = async (req: Request, res: Response) => {
   try {
     const { boardId } = req.params;
-    const tasks = TaskService.getTasks(boardId);
+    const tasks = await TaskService.getTasks(boardId);
 
     return res.status(200).json(tasks);
   } catch (error) {
@@ -47,7 +47,7 @@ const createTask = async (req: Request, res: Response) => {
 const deleteTask = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const task = TaskService.deleteTask(id);
+    const task = await TaskService.deleteTask(id);
 
     return res.status(200).json(task);
   } catch (error) {
@@ -61,7 +61,7 @@ const updateTask = async (req: Request, res: Response) => {
   try {
     const { data } = req.body;
     const { taskId } = req.params;
-    const task = TaskService.updateTask(taskId, data);
+    const task = await TaskService.updateTask(taskId, data);
 
     return res.status(200).json(task);
   } catch (error) {
@@ -75,7 +75,7 @@ const updateTaskBoard = async (req: Request, res: Response) => {
   try {
     const { taskId } = req.params;
     const { data } = req.body;
-    const task = TaskService.updateTaskBoard(taskId, data);
+    const task = await TaskService.updateTaskBoard(taskId, data);
 
     return res.status(200).json(task);
   } catch (error) {
