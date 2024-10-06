@@ -63,8 +63,8 @@ const deleteTask = async (taskId: string) => {
     });
 
     return true;
-  } catch (error) {
-    throw new Error("Failed to delete task");
+  } catch (error: any) {
+    throw new Error("Failed to delete task: " + error.message);
   }
 };
 

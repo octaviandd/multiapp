@@ -5,6 +5,7 @@ import React, { createContext, useState, ReactNode } from "react";
 interface StoreState {
   displaySidebar: boolean;
   currentBoardItem: UniqueIdentifier | null;
+  removedItem: UniqueIdentifier | null;
 }
 
 interface StoreContextType {
@@ -17,6 +18,7 @@ export const StoreContext = createContext<StoreContextType>({
   store: {
     displaySidebar: false,
     currentBoardItem: null,
+    removedItem: null,
   },
   setStore: () => {},
 });
@@ -25,6 +27,7 @@ export const StoreProvider = ({ children }: { children: ReactNode }) => {
   const [store, setStore] = useState<StoreState>({
     displaySidebar: false,
     currentBoardItem: null,
+    removedItem: null,
   });
 
   return (

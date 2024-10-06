@@ -28,7 +28,7 @@ router.post(
   TaskController.updateTaskBoard
 );
 router.post("/tasks/:taskId", TaskController.updateTask);
-router.delete("/tasks/:taskId", TaskController.deleteTask);
+router.delete("/tasks/delete-task/:taskId", TaskController.deleteTask);
 
 // Comment Routes (nested under tasks)
 router.get("/:id/tasks/:taskId/comments", CommentController.getComments);

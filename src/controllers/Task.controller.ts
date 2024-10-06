@@ -9,9 +9,9 @@ const getTasks = async (req: Request, res: Response) => {
     const tasks = await TaskService.getTasks(boardId);
 
     return res.status(200).json(tasks);
-  } catch (error) {
+  } catch (error: any) {
     return res.status(500).json({
-      message: "Internal server error",
+      message: "Internal server error: " + error.message,
     });
   }
 };
@@ -39,20 +39,20 @@ const createTask = async (req: Request, res: Response) => {
     return res.status(201).json(task);
   } catch (error: any) {
     return res.status(500).json({
-      message: error.message,
+      message: "Internal server error: " + error.message,
     });
   }
 };
 
 const deleteTask = async (req: Request, res: Response) => {
   try {
-    const { id } = req.params;
-    const task = await TaskService.deleteTask(id);
+    const { taskId } = req.params;
+    const task = await TaskService.deleteTask(taskId);
 
     return res.status(200).json(task);
-  } catch (error) {
+  } catch (error: any) {
     return res.status(500).json({
-      message: "Internal server error",
+      message: "Internal server error: " + error.message,
     });
   }
 };
@@ -64,9 +64,9 @@ const updateTask = async (req: Request, res: Response) => {
     const task = await TaskService.updateTask(taskId, data);
 
     return res.status(200).json(task);
-  } catch (error) {
+  } catch (error: any) {
     return res.status(500).json({
-      message: "Internal server error",
+      message: "Internal server error: " + error.message,
     });
   }
 };
@@ -78,9 +78,9 @@ const updateTaskBoard = async (req: Request, res: Response) => {
     const task = await TaskService.updateTaskBoard(taskId, data);
 
     return res.status(200).json(task);
-  } catch (error) {
+  } catch (error: any) {
     return res.status(500).json({
-      message: "Internal server error",
+      message: "Internal server error: " + error.message,
     });
   }
 };

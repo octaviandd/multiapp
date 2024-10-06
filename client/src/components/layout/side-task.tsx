@@ -2,13 +2,14 @@
 
 import { UniqueIdentifier } from "@dnd-kit/core";
 import { Check, Folder, PlusCircle, ThumbsUp, Trash } from "lucide-react";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { Task } from "../drag-and-drop/tasks/Board";
 import { Editor } from "react-draft-wysiwyg";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import { EditorState, ContentState } from "draft-js";
 import { DatePicker } from "./date-picker";
 import dayjs from "dayjs";
+import { StoreContext } from "@/store";
 interface SideTaskProps {
   selectedItem: UniqueIdentifier;
 }
@@ -19,6 +20,7 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
   const [currentTask, setCurrentTask] = useState<Task | null>(null);
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
   const [currentDate, setDate] = useState<Date | undefined>(undefined);
+  const { store, setStore } = useContext(StoreContext);
 
   useEffect(() => {
     let isMounted = true;
@@ -88,6 +90,67 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
       });
   };
 
+  const removeTask = async () => {
+    fetch(
+      `/api/boards/tasks/delete-task/${String(selectedItem).replace("T", "")}`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+      }
+    )
+      .then((res) => res.json())
+      .then((data) => {
+        setStore((prev) => ({
+          ...prev,
+          currentBoardItem: null,
+          removedItem: currentTask?.id as UniqueIdentifier,
+        }));
+      })
+      .catch((error) => {
+        console.error("Error deleting task:", error);
+      });
+  };
+
+  const completeTask = async () => {
+    fetch(
+      `/api/boards/tasks/${String(selectedItem).replace("T", "")}/complete`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+      }
+    )
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((error) => {
+        console.error("Error completing task:", error);
+      });
+  };
+
+  const likeTask = async () => {
+    fetch(`/api/boards/tasks/${String(selectedItem).replace("T", "")}/like`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((error) => {
+        console.error("Error liking task:", error);
+      });
+  };
+
   const addSubtask = async () => {
     fetch(
       `/api/boards/tasks/${String(selectedItem).replace("T", "")}/subtasks`,
@@ -154,7 +217,10 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
           <button className="border rounded-md border-neutral-600 p-2 hover:bg-[#2A2B2D] transition-background duration-300 ease-in-out">
             <ThumbsUp color="white" width={16} height={16} />
           </button>
-          <button className="border rounded-md border-neutral-600 p-2 hover:bg-[#2A2B2D] transition-background duration-300 ease-in-out">
+          <button
+            className="border rounded-md border-neutral-600 p-2 hover:bg-[#2A2B2D] transition-background duration-300 ease-in-out"
+            onClick={removeTask}
+          >
             <Trash color="white" width={16} height={16} />
           </button>
         </div>
@@ -196,7 +262,7 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
           <div className="flex items-center justify-between mt-3">
             <p className="extra-small text-white">Due date:</p>
             <DatePicker
-              date={currentDate}
+              date={currentTask?.dueDate}
               setDate={(date) => setDate(date)}
             ></DatePicker>
           </div>

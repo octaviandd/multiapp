@@ -1,7 +1,13 @@
 /** @format */
 
 import uniqid from "uniqid";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { createPortal, unstable_batchedUpdates } from "react-dom";
 import {
   CancelDrop,
@@ -36,6 +42,7 @@ import DroppableContainer from "./DroppableContainer";
 import renderSortableItemDragOverlay from "./SortableItemDragOverlay";
 import renderContainerDragOverlay from "./DroppableContainerDragOverlay";
 import BoardTaskAdder from "./BoardTaskAdder";
+import { StoreContext } from "@/store";
 
 const dropAnimation: DropAnimation = {
   sideEffects: defaultDropAnimationSideEffects({
@@ -116,6 +123,7 @@ export default function MultipleContainers({
     useSensor(MouseSensor, { activationConstraint: { distance: 8 } }),
     useSensor(TouchSensor)
   );
+  const { store, setStore } = useContext(StoreContext);
 
   const isSortingBoard = activeId
     ? boards.some((board) => board.id === activeId)
@@ -126,6 +134,28 @@ export default function MultipleContainers({
       strategy: MeasuringStrategy.Always,
     },
   };
+
+  useEffect(() => {
+    if (store.removedItem) {
+      console.log(store.removedItem);
+      setBoards((boards) => {
+        return boards.map((board) => {
+          return {
+            ...board,
+            tasks: board.tasks.filter(
+              (task) => task.id !== "T" + store.removedItem
+            ),
+          };
+        });
+      });
+      setStore((store) => {
+        return {
+          ...store,
+          removedItem: null,
+        };
+      });
+    }
+  }, [store.removedItem]);
 
   useEffect(() => {
     fetch("/api/boards", {
