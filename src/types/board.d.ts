@@ -1,10 +1,10 @@
 /** @format */
 
-type Board = {
-  id: number;
-  name: string;
-  description: string;
-  // Add any other properties you need for your board type
-};
+import { Task } from "./task";
 
-export type { Board };
+export type Board = {
+  id: number;
+  title: string;
+  tasks: Task[];
+  recentlyAdded?: boolean;
+};

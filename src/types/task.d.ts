@@ -1,10 +1,19 @@
 /** @format */
 
+import { User } from "./user";
+
 type Task = {
-  id: number;
+  id: Number;
   title: string;
-  description: string;
-  completed: boolean;
+  recentlyAdded?: boolean;
+  body?: string;
+  subtasks?: Task[];
+  files?: string[];
+  comments?: Comment[];
+  dueDate?: Date;
+  asignee?: string;
+  completed?: boolean;
+  createdBy?: User;
 };
 
 export type { Task };

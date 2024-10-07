@@ -5,7 +5,6 @@ import { Item } from "./BoardItem";
 interface Props {
   id: UniqueIdentifier;
   findBoard: (id: UniqueIdentifier) => Board | undefined;
-  findItem: (id: UniqueIdentifier) => Task | undefined;
   handleRemoveRow: (boardId: UniqueIdentifier, itemId: UniqueIdentifier) => void;
   handle?: boolean;
   getIndex: (id: UniqueIdentifier) => number;
@@ -22,9 +21,9 @@ interface Props {
 }
 
 
-function renderSortableItemDragOverlay({id, findBoard, findItem, handle, getIndex, getItemStyles, handleRemoveRow, wrapperStyle}: Props) {
+function renderSortableItemDragOverlay({id, findBoard, handle, getIndex, getItemStyles, handleRemoveRow, wrapperStyle}: Props) {
   const board = findBoard(id) as Board;
-  const item = findItem(id) as Task;
+  const item = board.tasks.find((item) => item.id === id) as Task;
 
   return (
     <Item

@@ -196,10 +196,6 @@ export default function MultipleContainers({
     ) as Board;
   };
 
-  const findItem = (id: UniqueIdentifier): Task => {
-    return findBoardByItemId(id).tasks.find((item) => item.id === id) as Task;
-  };
-
   const getIndex = (id: UniqueIdentifier) => {
     const board = findBoard(id);
     return !board ? -1 : board.tasks.findIndex((item) => item.id === id);
@@ -295,29 +291,25 @@ export default function MultipleContainers({
     return renderSortableItemDragOverlay({
       id,
       findBoard,
-      findItem,
-      handle: false,
+      handleRemoveRow,
       getIndex,
       getItemStyles,
-      handleRemoveRow,
       wrapperStyle,
+      handle: false,
     });
   }
 
-  const containerDragOverlay = useCallback(
-    (boardId: UniqueIdentifier) => {
-      return renderContainerDragOverlay({
-        boardId,
-        findBoard,
-        handleRemoveRow,
-        getIndex,
-        getItemStyles,
-        wrapperStyle,
-        handle,
-      });
-    },
-    [findBoard, handle, handleRemoveRow, getIndex, getItemStyles, wrapperStyle]
-  );
+  function containerDragOverlay (boardId: UniqueIdentifier) {
+    return renderContainerDragOverlay({
+      boardId,
+      findBoard,
+      handleRemoveRow,
+      getIndex,
+      getItemStyles,
+      wrapperStyle,
+      handle,
+    });
+  }
 
   function handleRemove(boardId: UniqueIdentifier) {
     setBoards((boards) => boards.filter((board) => board.id !== boardId));
@@ -539,7 +531,7 @@ export default function MultipleContainers({
   }
 
   async function handleAddColumn(boardsLength: number) {
-    const newBoardId = getNextBoardId();
+    const newBoardId = uniqid();
     const newBoard = {
       id: newBoardId,
       title: ``,
@@ -554,7 +546,7 @@ export default function MultipleContainers({
   }
 
   function handleAddRow(boardID: UniqueIdentifier) {
-    const newRowId = getNextRowId();
+    const newRowId = uniqid();
 
     unstable_batchedUpdates(() => {
       setBoards((boards) => {
@@ -738,14 +730,6 @@ export default function MultipleContainers({
       moveTask(overBoardByItemId.id, active.id, overIndex);
     }
     setActiveId(null);
-  }
-
-  function getNextBoardId() {
-    return uniqid();
-  }
-
-  function getNextRowId() {
-    return uniqid();
   }
 
   return (
