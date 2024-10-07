@@ -124,7 +124,7 @@ export const Item = React.memo(
             fadeIn && styles.fadeIn,
             sorting && styles.sorting,
             dragOverlay && styles.dragOverlay,
-            store.currentBoardItem === "T" + id && styles.active
+            store.currentBoardItem === id && styles.active
           )}
           style={listItemStyles}
           ref={ref}
