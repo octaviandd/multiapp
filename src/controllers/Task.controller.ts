@@ -6,12 +6,12 @@ import { Request, Response } from "express";
 const getTasks = async (req: Request, res: Response) => {
   try {
     const { boardId } = req.params;
-    const tasks = TaskService.getTasks(boardId);
+    const tasks = await TaskService.getTasks(boardId);
 
     return res.status(200).json(tasks);
-  } catch (error) {
+  } catch (error: any) {
     return res.status(500).json({
-      message: "Internal server error",
+      message: "Internal server error: " + error.message,
     });
   }
 };
@@ -19,77 +19,68 @@ const getTasks = async (req: Request, res: Response) => {
 const getTask = async (req: Request, res: Response) => {
   try {
     const { taskId } = req.params;
-    const task = TaskService.getTask(taskId);
-
-    if (!task) {
-      return res.status(404).json({
-        message: "Task not found",
-      });
-    }
+    const task = await TaskService.getTask(taskId);
 
     return res.status(200).json(task);
-  } catch (error) {
+  } catch (error: any) {
     return res.status(500).json({
-      message: "Internal server error",
+      message: "Internal server error: " + error.message,
     });
   }
 };
 
 const createTask = async (req: Request, res: Response) => {
   try {
-    const { title, boardId, displayOrder } = req.body;
+    const { data } = req.body;
     const currentUserId = req.session.userId;
-    const task = TaskService.createTask(
-      title,
-      boardId,
-      displayOrder,
-      String(currentUserId)
-    );
+    data.createdById = currentUserId;
+    const task = await TaskService.createTask(data);
 
     return res.status(201).json(task);
   } catch (error: any) {
     return res.status(500).json({
-      message: error.message,
+      message: "Internal server error: " + error.message,
     });
   }
 };
 
 const deleteTask = async (req: Request, res: Response) => {
   try {
-    const { id } = req.params;
-    const task = TaskService.deleteTask(id);
+    const { taskId } = req.params;
+    const task = await TaskService.deleteTask(taskId);
 
     return res.status(200).json(task);
-  } catch (error) {
+  } catch (error: any) {
     return res.status(500).json({
-      message: "Internal server error",
+      message: "Internal server error: " + error.message,
     });
   }
 };
 
 const updateTask = async (req: Request, res: Response) => {
   try {
-    const { title } = req.body;
+    const { data } = req.body;
     const { taskId } = req.params;
-    const task = TaskService.updateTask(taskId, title);
+    const task = await TaskService.updateTask(taskId, data);
 
     return res.status(200).json(task);
-  } catch (error) {
+  } catch (error: any) {
     return res.status(500).json({
-      message: "Internal server error",
+      message: "Internal server error: " + error.message,
     });
   }
 };
 
 const updateTaskBoard = async (req: Request, res: Response) => {
   try {
-    const { taskId, boardId, displayOrder } = req.body;
-    const task = TaskService.updateTaskBoard(taskId, boardId, displayOrder);
+    const { taskId } = req.params;
+    const { data } = req.body;
+    const task = await TaskService.updateTaskBoard(taskId, data);
 
     return res.status(200).json(task);
-  } catch (error) {
+  } catch (error: any) {
     return res.status(500).json({
-      message: "Internal server error",
+      message: "Internal server error: " + error.message,
     });
   }
 };

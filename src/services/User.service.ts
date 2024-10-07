@@ -19,10 +19,9 @@ const updateUser = async (userId: number, data: any) => {
   try {
     const user = await prisma.user.findUnique({
       where: { id: userId },
-      data
     });
 
-    return user
+    return user;
   } catch (error: any) {
     throw new Error("User not found: " + error.message);
   }

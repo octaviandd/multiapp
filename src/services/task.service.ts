@@ -22,19 +22,22 @@ const getTask = async (taskId: string) => {
   try {
     const task = await prisma.task.findUnique({
       where: { id: Number(taskId) },
+      include: {
+        createdBy: true,
+      },
     });
 
     return task;
-  } catch (error) {
-    throw new Error("Task not found");
+  } catch (error: any) {
+    throw new Error("Task not found: " + error.message);
   }
 };
 
-const updateTask = async (taskId: string, title: string) => {
+const updateTask = async (taskId: string, data: any) => {
   try {
     const task = await prisma.task.update({
       where: { id: Number(taskId) },
-      data: { title },
+      data,
     });
 
     return task;
@@ -43,20 +46,16 @@ const updateTask = async (taskId: string, title: string) => {
   }
 };
 
-const updateTaskBoard = async (
-  taskId: string,
-  boardId: string,
-  displayOrder: number
-) => {
+const updateTaskBoard = async (taskId: string, data: any) => {
   try {
     const task = await prisma.task.update({
       where: { id: Number(taskId) },
-      data: { boardId: Number(boardId), displayOrder },
+      data,
     });
 
     return task;
-  } catch (error) {
-    throw new Error("Failed to update task board");
+  } catch (error: any) {
+    throw new Error("Failed to update task board: " + error.message);
   }
 };
 
@@ -67,30 +66,23 @@ const deleteTask = async (taskId: string) => {
     });
 
     return true;
-  } catch (error) {
-    throw new Error("Failed to delete task");
+  } catch (error: any) {
+    throw new Error("Failed to delete task: " + error.message);
   }
 };
 
-const createTask = async (
-  title: string,
-  boardId: string,
-  displayOrder: number,
-  createdById: string
-) => {
+const createTask = async (data: any) => {
   try {
     const task = await prisma.task.create({
-      data: {
-        title,
-        boardId: Number(boardId),
-        displayOrder,
-        createdById: Number(createdById),
+      data,
+      include: {
+        createdBy: true,
       },
     });
 
     return task;
-  } catch (error) {
-    throw new Error("Failed to create task");
+  } catch (error: any) {
+    throw new Error("Failed to create task: " + error.message);
   }
 };
 

@@ -9,6 +9,7 @@ export default function Board({}: Props) {
   return (
     <MultipleContainers
       scrollable={true}
+      trashable={true}
       containerStyle={{
         fontSize: "16px",
         lineHeight: "20px",

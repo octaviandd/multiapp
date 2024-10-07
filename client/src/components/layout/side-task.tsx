@@ -1,36 +1,206 @@
 /** @format */
 
 import { UniqueIdentifier } from "@dnd-kit/core";
-import { Folder, PlusCircle } from "lucide-react";
-import { use } from "passport";
-import React, { useEffect, useState } from "react";
-
+import { Check, Folder, PlusCircle, ThumbsUp, Trash } from "lucide-react";
+import React, { useContext, useEffect, useRef, useState } from "react";
+import { Task } from "../drag-and-drop/tasks/Board";
+import { Editor } from "react-draft-wysiwyg";
+import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
+import { EditorState, ContentState } from "draft-js";
+import { DatePicker } from "./date-picker";
+import dayjs from "dayjs";
+import { StoreContext } from "@/store";
 interface SideTaskProps {
   selectedItem: UniqueIdentifier;
 }
 
 const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [currentTask, setCurrentTask] = useState<Task | null>(null);
+  const [editorState, setEditorState] = useState(EditorState.createEmpty());
+  const [currentDate, setDate] = useState<Date | undefined>(undefined);
+  const { store, setStore } = useContext(StoreContext);
 
-  // useEffect(() => {
-  //   if (selectedItem) {
-  //     fetch(`/api/boards/tasks/${selectedItem}`, {
-  //       method: "GET",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //       credentials: "include",
-  //     })
-  //       .then((res) => res.json())
-  //       .then((data) => {
-  //         console.log(data);
-  //       })
-  //       .catch((error) => {
-  //         console.error("Error fetching task:", error);
-  //       });
-  //     setIsOpen(true);
-  //   }
-  // }, [selectedItem]);
+  useEffect(() => {
+    let isMounted = true;
+
+    setIsLoading(true);
+    if (selectedItem) {
+      fetch(`/api/boards/tasks/${String(selectedItem).replace("T", "")}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          console.log(data);
+          if (isMounted) {
+            setCurrentTask(data);
+            setEditorState(
+              EditorState.createWithContent(
+                ContentState.createFromText(data.body || "")
+              )
+            );
+            if (data.dueDate) {
+              setDate(new Date(data.dueDate));
+            } else {
+              setDate(undefined);
+            }
+            setIsLoading(false);
+            setIsOpen(true);
+          }
+        })
+        .catch((error) => {
+          console.error("Error fetching task:", error);
+        });
+    }
+
+    return () => {
+      isMounted = false;
+    };
+  }, [selectedItem]);
+
+  useEffect(() => {
+    if (currentTask) {
+      updateTask({
+        dueDate: dayjs(currentDate).toISOString(),
+      });
+    }
+  }, [currentDate]);
+
+  const updateTask = async (data: any) => {
+    fetch(`/api/boards/tasks/${String(selectedItem).replace("T", "")}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify({
+        data,
+      }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((error) => {
+        console.error("Error updating task:", error);
+      });
+  };
+
+  const removeTask = async () => {
+    fetch(
+      `/api/boards/tasks/delete-task/${String(selectedItem).replace("T", "")}`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+      }
+    )
+      .then((res) => res.json())
+      .then((data) => {
+        setStore((prev) => ({
+          ...prev,
+          currentBoardItem: null,
+          removedItem: currentTask?.id as UniqueIdentifier,
+        }));
+      })
+      .catch((error) => {
+        console.error("Error deleting task:", error);
+      });
+  };
+
+  const completeTask = async () => {
+    fetch(
+      `/api/boards/tasks/${String(selectedItem).replace("T", "")}/complete`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+      }
+    )
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((error) => {
+        console.error("Error completing task:", error);
+      });
+  };
+
+  const likeTask = async () => {
+    fetch(`/api/boards/tasks/${String(selectedItem).replace("T", "")}/like`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((error) => {
+        console.error("Error liking task:", error);
+      });
+  };
+
+  const addSubtask = async () => {
+    fetch(
+      `/api/boards/tasks/${String(selectedItem).replace("T", "")}/subtasks`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({
+          title: "Subtask",
+        }),
+      }
+    )
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((error) => {
+        console.error("Error adding subtask:", error);
+      });
+  };
+
+  const addComment = async () => {
+    fetch(
+      `/api/boards/tasks/${String(selectedItem).replace("T", "")}/comments`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({
+          body: "This is a comment on the task providing additional details.",
+        }),
+      }
+    )
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((error) => {
+        console.error("Error adding comment:", error);
+      });
+  };
+
+  if (isLoading) {
+    return <div>Loading..</div>;
+  }
 
   return (
     <div
@@ -39,9 +209,26 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
         isOpen ? "translate-x-0" : "translate-x-full"
       }`}
     >
+      <div className="flex items-center px-2 py-2 border-b border-neutral-600">
+        <button className="flex items-center p-2 gap-x-1 border border-neutral-600 rounded-md hover:bg-[#2A2B2D] transition-background duration-300 ease-in-out">
+          <Check color="white" width={16} height={16} />
+          <p className="text-white small">Mark complete</p>
+        </button>
+        <div className="ml-auto flex items-center gap-x-3">
+          <button className="border rounded-md border-neutral-600 p-2 hover:bg-[#2A2B2D] transition-background duration-300 ease-in-out">
+            <ThumbsUp color="white" width={16} height={16} />
+          </button>
+          <button
+            className="border rounded-md border-neutral-600 p-2 hover:bg-[#2A2B2D] transition-background duration-300 ease-in-out"
+            onClick={removeTask}
+          >
+            <Trash color="white" width={16} height={16} />
+          </button>
+        </div>
+      </div>
       <div className="flex items-center justify-between p-4 border-b border-[#424244]">
         <h2 className="pb-0 mb-0 text-xl border-none font-semibold text-white">
-          Task Title
+          {currentTask?.title}
         </h2>
         <button
           onClick={() => setIsOpen(false)}
@@ -59,40 +246,68 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
       </div>
 
       <div className="p-4 space-y-6">
-        <div className="flex items-center space-x-4">
-          <div className="flex items-center">
-            <img
-              src="https://via.placeholder.com/32"
-              alt="Assignee Avatar"
-              className="w-8 h-8 rounded-full"
-            />
-            <span className="ml-2 text-sm text-white">Assigned to You</span>
-          </div>
-          <div className="flex items-center">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-5 w-5 text-white"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M8 7V3M16 7V3M4 11h16M4 19h16M5 11V5a2 2 0 012-2h10a2 2 0 012 2v6M5 19v-2a2 2 0 012-2h10a2 2 0 012 2v2"
+        <div className="flex flex-col">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center">
+              <p className="mr-2 extra-small text-white">Asignee: </p>
+            </div>
+            <div className="flex items-center gap-x-1">
+              <img
+                src="https://via.placeholder.com/32"
+                alt="Assignee Avatar"
+                className="w-8 h-8 rounded-full"
               />
-            </svg>
-            <span className="ml-2 text-sm text-white">Due Today</span>
+              {currentTask && currentTask.createdBy && (
+                <span className="ml-2 text-sm text-white">
+                  {currentTask.createdBy.firstName}{" "}
+                  {currentTask.createdBy.lastName}
+                </span>
+              )}
+            </div>
+          </div>
+          <div className="flex items-center justify-between mt-3">
+            <p className="extra-small text-white">Due date:</p>
+            <DatePicker
+              date={currentTask?.dueDate}
+              setDate={(date) => setDate(date)}
+            ></DatePicker>
           </div>
         </div>
 
         <div>
-          <h3 className="text-sm font-medium text-white">Description</h3>
-          <p className="mt-2 text-sm text-white">
-            This is a detailed description of the task. It explains what needs
-            to be done and any other relevant information.
-          </p>
+          <p className="extra-small pb-3 text-white">Description</p>
+          {editorState && (
+            <Editor
+              editorState={editorState}
+              onEditorStateChange={setEditorState}
+              onBlur={() =>
+                updateTask({
+                  body: editorState.getCurrentContent().getPlainText(),
+                })
+              }
+              toolbar={{
+                options: ["inline", "list"],
+                inline: {
+                  options: ["bold", "italic", "underline"],
+                },
+              }}
+              wrapperStyle={{
+                display: "flex",
+                flexDirection: "column",
+                border: "1px solid #424242",
+              }}
+              editorStyle={{
+                order: 1,
+                color: "white",
+                padding: "5px 10px",
+              }}
+              toolbarStyle={{
+                border: "none",
+                order: 2,
+                backgroundColor: "#1E1F21",
+              }}
+            />
+          )}
         </div>
 
         <div className="py-3 border-b border-[#424242]">
@@ -116,7 +331,7 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
         </div>
 
         <div>
-          <h3 className="text-sm font-medium text-white">Attachments</h3>
+          <p className="extra-small pb-3 text-white">Attachments</p>
           <div className="mt-2">
             <div className="flex items-center space-x-2">
               <svg
@@ -141,10 +356,10 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
         </div>
 
         <div>
-          <h3 className="text-sm font-medium text-white">Comments</h3>
+          <p className="extra-small text-white">Comments</p>
           <div className="mt-2">
             <textarea
-              className="w-full p-2 text-[14px] hover:placeholder-h border rounded-md focus:outline-none bg-[#1E2021]"
+              className="w-full p-2 text-[14px] hover:placeholder-h border border-neutral-600 rounded-md focus:outline-none bg-[#1E2021]"
               rows={3}
               placeholder="Add a comment"
             ></textarea>
@@ -161,9 +376,9 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
               />
               <div>
                 <div className="text-sm font-medium text-white">User Name</div>
-                <div className="text-sm text-white">
+                <p className="extra-small p-1 text-white">
                   This is a comment on the task providing additional details.
-                </div>
+                </p>
                 <div className="text-xs text-gray-500 mt-1">Just now</div>
               </div>
             </div>

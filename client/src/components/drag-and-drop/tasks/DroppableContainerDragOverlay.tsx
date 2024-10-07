@@ -1,3 +1,5 @@
+/** @format */
+
 import { UniqueIdentifier } from "@dnd-kit/core";
 import { Board } from "./Board";
 import { BoardContainer } from "./BoardContainer";
@@ -6,7 +8,10 @@ import { Item } from "./BoardItem";
 interface Props {
   boardId: UniqueIdentifier;
   findBoard: (id: UniqueIdentifier) => Board | undefined;
-  handleRemoveRow: (boardId: UniqueIdentifier, itemId: UniqueIdentifier) => void;
+  handleRemoveRow: (
+    boardId: UniqueIdentifier,
+    itemId: UniqueIdentifier
+  ) => void;
   handle?: boolean;
   getIndex: (id: UniqueIdentifier) => number;
   getItemStyles: (args: {
@@ -21,8 +26,15 @@ interface Props {
   wrapperStyle: (args: { index: number }) => React.CSSProperties;
 }
 
-
-function renderContainerDragOverlay({boardId, findBoard, handleRemoveRow, getIndex, getItemStyles, wrapperStyle, handle}: Props) {
+function renderContainerDragOverlay({
+  boardId,
+  findBoard,
+  handleRemoveRow,
+  getIndex,
+  getItemStyles,
+  wrapperStyle,
+  handle,
+}: Props) {
   const board = findBoard(boardId) as Board;
   return (
     <BoardContainer
@@ -30,6 +42,7 @@ function renderContainerDragOverlay({boardId, findBoard, handleRemoveRow, getInd
       style={{
         height: "100%",
         border: "1px solid #424244",
+        color: "white",
       }}
       id={boardId}
       shadow

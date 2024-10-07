@@ -9,8 +9,8 @@ const getBoards = async () => {
       orderBy: { displayOrder: "asc" },
     });
     return boards;
-  } catch (error) {
-    throw new Error("Boards not found");
+  } catch (error: any) {
+    throw new Error("Boards not found: " + error.message);
   }
 };
 
@@ -21,40 +21,46 @@ const getBoard = async (boardId: string) => {
       include: { tasks: true },
     });
 
-    if (!board) {
-      throw new Error("Board not found");
-    }
-
     return board;
-  } catch (error) {
-    throw new Error("Board not found");
+  } catch (error: any) {
+    throw new Error("Board not found: " + error.message);
   }
 };
 
-const createBoard = async (title: string, displayOrder: number) => {
+const createBoard = async (
+  title: string,
+  displayOrder: number,
+  temporaryId: string
+) => {
   try {
     const board = await prisma.board.create({
       data: {
         title,
         displayOrder,
+        temporaryId,
       },
     });
 
     return board;
-  } catch (error) {
-    throw new Error("Failed to create board");
+  } catch (error: any) {
+    throw new Error("Failed to create board: " + error.message);
   }
 };
 
 const deleteBoard = async (boardId: string) => {
+  console.log({ boardId });
   try {
+    await prisma.task.deleteMany({
+      where: { boardId: Number(boardId) },
+    });
+
     const board = await prisma.board.delete({
       where: { id: Number(boardId) },
     });
 
-    return board;
-  } catch (error) {
-    throw new Error("Failed to delete board");
+    return true;
+  } catch (error: any) {
+    throw new Error("Failed to delete board: " + error.message);
   }
 };
 
@@ -66,8 +72,8 @@ const updateBoard = async (boardId: string, title: string) => {
     });
 
     return board;
-  } catch (error) {
-    throw new Error("Failed to update board");
+  } catch (error: any) {
+    throw new Error("Failed to update board: " + error.message);
   }
 };
 
@@ -89,8 +95,8 @@ const moveBoard = async (
     });
 
     return board;
-  } catch (error) {
-    throw new Error("Failed to move board");
+  } catch (error: any) {
+    throw new Error("Failed to move board: " + error.message);
   }
 };
 

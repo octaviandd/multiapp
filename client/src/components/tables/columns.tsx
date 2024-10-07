@@ -56,10 +56,6 @@ function CategoryCell<TData extends RowData, TValue>({
     return null;
   }
 
-  // React.useEffect(() => {
-  //   setValue(initialValue);
-  // }, [initialValue]);
-
   return (
     <div className="flex space-x-2">
       <Select>
@@ -69,7 +65,7 @@ function CategoryCell<TData extends RowData, TValue>({
         <SelectContent>
           <SelectGroup>
             {categories.map((category) => (
-              <SelectItem value={category.value}>
+              <SelectItem value={category.value} key={category.value}>
                 <div className="flex items-center">
                   {category.icon && (
                     <category.icon className="mr-2 h-4 w-4 stroke-neutral-500" />
@@ -152,7 +148,9 @@ export const columns: ColumnDef<Task>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="ID" />
     ),
-    cell: ({ row }) => <div className="text-white w-[80px]">{row.getValue("id")}</div>,
+    cell: ({ row }) => (
+      <div className="text-white w-[80px]">{row.getValue("id")}</div>
+    ),
     enableSorting: false,
     enableHiding: false,
   },

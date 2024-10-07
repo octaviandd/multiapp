@@ -15,7 +15,7 @@ const getBoards = async (req: Request, res: Response) => {
 const getBoard = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const board = BoardService.getBoard(id);
+    const board = await BoardService.getBoard(id);
 
     if (!board) {
       return res.status(404).json({ message: "Board not found" });
@@ -29,8 +29,12 @@ const getBoard = async (req: Request, res: Response) => {
 
 const createBoard = async (req: Request, res: Response) => {
   try {
-    const { title, displayOrder } = req.body;
-    const board = BoardService.createBoard(title, displayOrder);
+    const { title, displayOrder, temporaryId } = req.body;
+    const board = await BoardService.createBoard(
+      title,
+      displayOrder,
+      temporaryId
+    );
 
     return res.status(201).json(board);
   } catch (error) {
@@ -41,7 +45,7 @@ const createBoard = async (req: Request, res: Response) => {
 const deleteBoard = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const board = BoardService.deleteBoard(id);
+    const board = await BoardService.deleteBoard(id);
 
     return res.status(200).json(board);
   } catch (error) {
@@ -53,7 +57,7 @@ const updateBoard = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const { title } = req.body;
-    const board = BoardService.updateBoard(id, title);
+    const board = await BoardService.updateBoard(id, title);
 
     return res.status(200).json(board);
   } catch (error) {
@@ -65,7 +69,7 @@ const moveBoard = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const { replacedBoardId, displayOrder, replacedBoardIndex } = req.body;
-    const board = BoardService.moveBoard(
+    const board = await BoardService.moveBoard(
       id,
       replacedBoardId,
       displayOrder,

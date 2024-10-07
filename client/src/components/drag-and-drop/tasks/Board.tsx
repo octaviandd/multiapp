@@ -1,7 +1,13 @@
 /** @format */
 
 import uniqid from "uniqid";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { createPortal, unstable_batchedUpdates } from "react-dom";
 import {
   CancelDrop,
@@ -31,23 +37,12 @@ import {
   horizontalListSortingStrategy,
 } from "@dnd-kit/sortable";
 
-import { BoardContainer } from "./BoardContainer/index";
-import { Item } from "./BoardItem/index";
-import { Plus } from "lucide-react";
 import { SortableItemBoard } from "./SortableItemBoard";
 import DroppableContainer from "./DroppableContainer";
 import renderSortableItemDragOverlay from "./SortableItemDragOverlay";
 import renderContainerDragOverlay from "./DroppableContainerDragOverlay";
 import BoardTaskAdder from "./BoardTaskAdder";
-
-const defaultInitializer = (index: number) => index;
-
-export function createRange<T = number>(
-  length: number,
-  initializer: (index: number) => any = defaultInitializer
-): T[] {
-  return [...new Array(length)].map((_, index) => initializer(index));
-}
+import { StoreContext } from "@/store";
 
 const dropAnimation: DropAnimation = {
   sideEffects: defaultDropAnimationSideEffects({
@@ -59,16 +54,33 @@ const dropAnimation: DropAnimation = {
   }),
 };
 
+export type User = {
+  id: UniqueIdentifier;
+  firstName: string;
+  lastName: string;
+  email: string;
+  role: string;
+};
+
 export type Task = {
   id: UniqueIdentifier;
   title: string;
   recentlyAdded?: boolean;
+  body?: string;
+  subtasks?: Task[];
+  files?: string[];
+  comments?: Comment[];
+  dueDate?: Date;
+  asignee?: string;
+  completed?: boolean;
+  createdBy?: User;
 };
 
 export type Board = {
   id: UniqueIdentifier;
   title: string;
   tasks: Task[];
+  recentlyAdded?: boolean;
 };
 
 interface Props {
@@ -87,8 +99,6 @@ interface Props {
     isDragOverlay: boolean;
   }): React.CSSProperties;
   wrapperStyle?(args: { index: number }): React.CSSProperties;
-  itemCount?: number;
-  items?: Board;
   handle?: boolean;
   strategy?: SortingStrategy;
   modifiers?: Modifiers;
@@ -105,7 +115,6 @@ export default function MultipleContainers({
   cancelDrop,
   columns,
   handle = false,
-  items: initialItems,
   containerStyle,
   getItemStyles = () => ({}),
   wrapperStyle = () => ({}),
@@ -118,6 +127,13 @@ export default function MultipleContainers({
   const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null);
   const lastOverId = useRef<UniqueIdentifier | null>(null);
   const recentlyMovedToNewBoard = useRef(false);
+  const [clonedItems, setClonedItems] = useState<Board[] | null>(null);
+  const sensors = useSensors(
+    useSensor(MouseSensor, { activationConstraint: { distance: 8 } }),
+    useSensor(TouchSensor)
+  );
+  const { store, setStore } = useContext(StoreContext);
+
   const isSortingBoard = activeId
     ? boards.some((board) => board.id === activeId)
     : false;
@@ -128,18 +144,26 @@ export default function MultipleContainers({
     },
   };
 
-  const onChangeBoardTitle = (boardId: UniqueIdentifier, title: string) => {
-    setBoards((boards) => {
-      const newItems = [...boards];
-      const board = newItems.find((item) => item.id === boardId);
-
-      if (board) {
-        board.title = title;
-      }
-
-      return newItems;
-    });
-  };
+  useEffect(() => {
+    if (store.removedItem) {
+      setBoards((boards) => {
+        return boards.map((board) => {
+          return {
+            ...board,
+            tasks: board.tasks.filter(
+              (task) => task.id !== "T" + store.removedItem
+            ),
+          };
+        });
+      });
+      setStore((store) => {
+        return {
+          ...store,
+          removedItem: null,
+        };
+      });
+    }
+  }, [store.removedItem]);
 
   useEffect(() => {
     fetch("/api/boards", {
@@ -156,18 +180,12 @@ export default function MultipleContainers({
         data.map((board) =>
           board.tasks.map((task) => (task.id = "T" + task.id))
         );
-        console.log(data);
         unstable_batchedUpdates(() => {
           setBoards(data);
         });
       });
   }, []);
 
-  const [clonedItems, setClonedItems] = useState<Board[] | null>(null);
-  const sensors = useSensors(
-    useSensor(MouseSensor, { activationConstraint: { distance: 8 } }),
-    useSensor(TouchSensor)
-  );
   const findBoard = (id: UniqueIdentifier): Board => {
     return boards.find((board) => board.id === id) as Board;
   };
@@ -273,21 +291,18 @@ export default function MultipleContainers({
     setClonedItems(null);
   };
 
-  const sortableItemDragOverlay = useCallback(
-    (id: UniqueIdentifier) => {
-      return renderSortableItemDragOverlay({
-        id,
-        findBoard,
-        findItem,
-        handle: false,
-        getIndex,
-        getItemStyles,
-        handleRemoveRow,
-        wrapperStyle,
-      });
-    },
-    [findBoard, findItem, getIndex, getItemStyles, handleRemoveRow, wrapperStyle]
-  );
+  function sortableItemDragOverlay(id: UniqueIdentifier) {
+    return renderSortableItemDragOverlay({
+      id,
+      findBoard,
+      findItem,
+      handle: false,
+      getIndex,
+      getItemStyles,
+      handleRemoveRow,
+      wrapperStyle,
+    });
+  }
 
   const containerDragOverlay = useCallback(
     (boardId: UniqueIdentifier) => {
@@ -308,29 +323,22 @@ export default function MultipleContainers({
     setBoards((boards) => boards.filter((board) => board.id !== boardId));
   }
 
-  async function handleAddColumn(boardsLength: number) {
-    const newBoardId = getNextBoardId();
-    const newBoard = {
-      id: newBoardId,
-      title: `Board ${newBoardId}`,
-      displayOrder: boardsLength + 1,
-      tasks: [],
-    };
-
-    await fetch("/api/boards", {
-      method: "POST",
+  async function removeBoard(boardId: UniqueIdentifier) {
+    await fetch(`/api/boards/delete-board/${boardId}`, {
+      method: "DELETE",
       headers: {
         "Content-Type": "application/json",
       },
       credentials: "include",
-      body: JSON.stringify(newBoard),
-    }).then((res) => {
-      if (res.ok) {
-        unstable_batchedUpdates(() => {
-          setBoards((boards) => [...boards, newBoard]);
-        });
-      }
-    });
+    })
+      .then((res) => {
+        if (res.ok) {
+          setBoards((boards) => boards.filter((board) => board.id !== boardId));
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
   }
 
   async function updateTaskTitle(taskId: UniqueIdentifier, title: string) {
@@ -341,13 +349,87 @@ export default function MultipleContainers({
       },
       credentials: "include",
       body: JSON.stringify({
+        data: {
+          title,
+        },
+      }),
+    })
+      .then((res) => {
+        if (res.ok) {
+          return res.json();
+        }
+      })
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  }
+
+  const updateBoardTitle = (boardId: UniqueIdentifier, title: string) => {
+    fetch(`/api/boards/${boardId}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
         title,
       }),
-    }).then((res) => {
-      if (res.ok) {
-        console.log("Task updated");
-      }
-    });
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log("Success:", data);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  };
+
+  async function saveBoard(
+    boardId: UniqueIdentifier,
+    title: string,
+    newBoard: boolean = false
+  ) {
+    if (!newBoard) {
+      updateBoardTitle(boardId, title);
+    } else {
+      await fetch(`/api/boards`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({
+          title,
+          displayOrder: boards.length,
+          temporaryId: boardId,
+        }),
+      })
+        .then((res) => {
+          return res.json();
+        })
+        .then((data) => {
+          setBoards((boards) => {
+            return boards.map((board) => {
+              if (board.id === boardId) {
+                return {
+                  ...board,
+                  id: data.id,
+                  title: data.title,
+                  tasks: [],
+                  recentlyAdded: false,
+                };
+              }
+
+              return board;
+            });
+          });
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
+    }
   }
 
   async function saveTask(
@@ -366,16 +448,39 @@ export default function MultipleContainers({
         },
         credentials: "include",
         body: JSON.stringify({
-          title,
-          boardId,
-          displayOrder: boards.find((board) => board.id === boardId)?.tasks
-            .length,
+          data: {
+            title,
+            boardId,
+            displayOrder: boards.find((board) => board.id === boardId)?.tasks
+              .length,
+            temporaryId: taskId,
+          },
         }),
-      }).then((res) => {
-        if (res.ok) {
-          console.log("Task saved");
-        }
-      });
+      })
+        .then((res) => {
+          if (res.ok) {
+            return res.json();
+          }
+        })
+        .then((data) => {
+          setBoards((boards) => {
+            return boards.map((board) => {
+              if (board.id === boardId) {
+                return {
+                  ...board,
+                  tasks: [
+                    ...board.tasks.filter((task) => task.id !== taskId),
+                    data,
+                  ],
+                };
+              }
+              return board;
+            });
+          });
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
     }
   }
 
@@ -409,21 +514,42 @@ export default function MultipleContainers({
     taskId: UniqueIdentifier,
     newIndex: number
   ) {
-    await fetch(`/api/boards/${boardId}/tasks/move-task`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      credentials: "include",
-      body: JSON.stringify({
-        taskId: Number(String(taskId).replace("T", "")),
-        boardId,
-        displayOrder: newIndex,
-      }),
-    }).then((res) => {
+    await fetch(
+      `/api/boards/${boardId}/tasks/move-task/${Number(
+        String(taskId).replace("T", "")
+      )}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({
+          data: {
+            boardId,
+            displayOrder: newIndex,
+          },
+        }),
+      }
+    ).then((res) => {
       if (res.ok) {
         console.log("Task saved");
       }
+    });
+  }
+
+  async function handleAddColumn(boardsLength: number) {
+    const newBoardId = getNextBoardId();
+    const newBoard = {
+      id: newBoardId,
+      title: ``,
+      displayOrder: boardsLength + 1,
+      tasks: [],
+      recentlyAdded: true,
+    };
+
+    unstable_batchedUpdates(() => {
+      setBoards((boards) => [...boards, newBoard]);
     });
   }
 
@@ -634,18 +760,10 @@ export default function MultipleContainers({
       onDragCancel={onDragCancel}
       modifiers={modifiers}
     >
-      <div
-        className={`inline-grid p-5 h-full overflow-y-hidden overflow-x-scroll w-full ${
-          vertical ? "grid-flow-row" : "grid-flow-col"
-        }`}
-      >
+      <div className="inline-grid p-5 h-full overflow-y-hidden overflow-x-scroll w-full grid-flow-col">
         <SortableContext
           items={[...boards.map((board) => board.id), PLACEHOLDER_ID]}
-          strategy={
-            vertical
-              ? verticalListSortingStrategy
-              : horizontalListSortingStrategy
-          }
+          strategy={horizontalListSortingStrategy}
         >
           {boards &&
             boards.map((board, index) => (
@@ -657,10 +775,14 @@ export default function MultipleContainers({
                 items={board?.tasks.map((item) => item.id)}
                 scrollable={scrollable}
                 style={containerStyle}
+                recentlyAdded={board.recentlyAdded}
+                removeBoard={() => removeBoard(board.id)}
+                createTask={() => handleAddRow(board.id)}
                 unstyled={false}
                 onChangeBoardTitle={(title: string) =>
-                  onChangeBoardTitle(board.id, title)
+                  saveBoard(board.id, title, board.recentlyAdded)
                 }
+                removeTemporaryBoard={() => handleRemove(board.id)}
                 onRemove={() => handleRemove(board.id)}
               >
                 <SortableContext items={board.tasks} strategy={strategy}>
@@ -675,8 +797,8 @@ export default function MultipleContainers({
                         index={index}
                         handle={handle}
                         style={getItemStyles}
-                        onChangeTaskTitle={(title, taskId) =>
-                          saveTask(board.id, title, taskId, false)
+                        saveTask={(title, taskId) =>
+                          saveTask(board.id, title, taskId, value.recentlyAdded)
                         }
                         wrapperStyle={wrapperStyle}
                         removeTemporaryTask={() =>
@@ -687,7 +809,10 @@ export default function MultipleContainers({
                       />
                     );
                   })}
-                  <BoardTaskAdder board={board} handleAddRow={handleAddRow}></BoardTaskAdder>
+                  <BoardTaskAdder
+                    board={board}
+                    handleAddRow={handleAddRow}
+                  ></BoardTaskAdder>
                 </SortableContext>
               </DroppableContainer>
             ))}

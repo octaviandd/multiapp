@@ -19,7 +19,7 @@ const getNote = async (noteId: string) => {
       where: { id: Number(noteId) },
     });
 
-    return note
+    return note;
   } catch (error: any) {
     throw new Error("Note not found: " + error.message);
   }
@@ -50,22 +50,22 @@ const deleteNote = async (noteId: string) => {
   }
 };
 
-const createNote = async (data: Partial<Note>) => {
-  try {
-    const createdNote = await prisma.note.create({
-      data,
-    });
+// const createNote = async (data: Partial<Note>) => {
+//   try {
+//     const createdNote = await prisma.note.create({
+//       data,
+//     });
 
-    return createdNote;
-  } catch (error: any) {
-    throw new Error("Failed to create note: " + error.message);
-  }
-};
+//     return createdNote;
+//   } catch (error: any) {
+//     throw new Error("Failed to create note: " + error.message);
+//   }
+// };
 
 export default {
   getNotes,
   getNote,
   updateNote,
   deleteNote,
-  createNote,
+  // createNote,
 };

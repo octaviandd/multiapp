@@ -25,18 +25,18 @@ const getTransaction = async (id: string) => {
   }
 };
 
-const updateTransaction = async (id: string, data: Partial<Transaction>) => {
-  try {
-    const updatedTransaction = await prisma.transaction.update({
-      where: { id: Number(id) },
-      data,
-    });
+// const updateTransaction = async (id: string, data: Partial<Transaction>) => {
+//   try {
+//     const updatedTransaction = await prisma.transaction.update({
+//       where: { id: Number(id) },
+//       data,
+//     });
 
-    return updatedTransaction;
-  } catch (error: any) {
-    throw new Error("Transaction not found: " + error.message);
-  }
-};
+//     return updatedTransaction;
+//   } catch (error: any) {
+//     throw new Error("Transaction not found: " + error.message);
+//   }
+// };
 
 const deleteTransaction = async (id: string) => {
   try {
@@ -50,22 +50,22 @@ const deleteTransaction = async (id: string) => {
   }
 };
 
-const createTransaction = async (data: Partial<Transaction>) => {
-  try {
-    const createdTransaction = await prisma.transaction.create({
-      data,
-    });
+// const createTransaction = async (data: Partial<Transaction>) => {
+//   try {
+//     const createdTransaction = await prisma.transaction.create({
+//       data,
+//     });
 
-    return createdTransaction;
-  } catch (error: any) {
-    throw new Error("Failed to create transaction: " + error.message);
-  }
-};
+//     return createdTransaction;
+//   } catch (error: any) {
+//     throw new Error("Failed to create transaction: " + error.message);
+//   }
+// };
 
 export default {
   getTransactions,
   getTransaction,
-  updateTransaction,
+  // updateTransaction,
   deleteTransaction,
-  createTransaction,
+  // createTransaction,
 };

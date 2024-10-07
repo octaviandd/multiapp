@@ -44,6 +44,7 @@ export default function DroppableContainer({
     },
     animateLayoutChanges,
   });
+
   const isOverContainer = over
     ? (id === over.id && active?.data.current?.type !== "container") ||
       items.includes(over.id)
