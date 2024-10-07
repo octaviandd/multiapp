@@ -273,9 +273,9 @@ export default function MultipleContainers({
     setClonedItems(null);
   };
 
-  function sortableItemDragOverlay(id: UniqueIdentifier) {
-    return renderSortableItemDragOverlay(
-      {
+  const sortableItemDragOverlay = useCallback(
+    (id: UniqueIdentifier) => {
+      return renderSortableItemDragOverlay({
         id,
         findBoard,
         findItem,
@@ -284,21 +284,25 @@ export default function MultipleContainers({
         getItemStyles,
         handleRemoveRow,
         wrapperStyle,
-      }
-    )
-  }
+      });
+    },
+    [findBoard, findItem, getIndex, getItemStyles, handleRemoveRow, wrapperStyle]
+  );
 
-  function containerDragOverlay(boardId: UniqueIdentifier) {
-    return renderContainerDragOverlay({
-      boardId,
-      findBoard,
-      handleRemoveRow,
-      getIndex,
-      getItemStyles,
-      wrapperStyle,
-      handle,
-    });
-  }
+  const containerDragOverlay = useCallback(
+    (boardId: UniqueIdentifier) => {
+      return renderContainerDragOverlay({
+        boardId,
+        findBoard,
+        handleRemoveRow,
+        getIndex,
+        getItemStyles,
+        wrapperStyle,
+        handle,
+      });
+    },
+    [findBoard, handle, handleRemoveRow, getIndex, getItemStyles, wrapperStyle]
+  );
 
   function handleRemove(boardId: UniqueIdentifier) {
     setBoards((boards) => boards.filter((board) => board.id !== boardId));

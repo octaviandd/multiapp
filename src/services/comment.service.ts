@@ -9,8 +9,8 @@ const getComments = async (taskId: string) => {
     });
 
     return comments;
-  } catch (error) {
-    throw new Error("Comments not found");
+  } catch (error: any) {
+    throw new Error("Comments not found: " + error.message);
   }
 };
 

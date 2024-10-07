@@ -3,6 +3,16 @@
 import prisma from "../../prisma/prisma-client";
 import { Note } from "../types/note";
 
+const getNotes = async () => {
+  try {
+    const notes = await prisma.note.findMany();
+
+    return notes;
+  } catch (error: any) {
+    throw new Error("Notes not found: " + error.message);
+  }
+}
+
 const getNote = async (noteId: string) => {
   try {
     const note = await prisma.note.findUnique({
@@ -53,6 +63,7 @@ const createNote = async (data: Partial<Note>) => {
 };
 
 export default {
+  getNotes,
   getNote,
   updateNote,
   deleteNote,
