@@ -229,7 +229,7 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
           </button>
         </div>
       </div>
-      <div className="h-full overflow-y-scroll max-h-[700px]">
+      <div className="h-full overflow-y-scroll max-h-[650px]">
         <div className="flex items-center justify-between p-4 border-b border-[#424244]">
           <h2 className="pb-0 mb-0 text-xl border-none font-semibold text-white">
             {currentTask?.title}
@@ -394,47 +394,47 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
           </div>
         </div>
       </div>
-      <div className="border-t border-[#424242]">
-        <div>
-          {commentState && (
-            <Editor
-              editorState={commentState}
-              onEditorStateChange={setCommentEditorState}
-              placeholder="Add a comment"
-              // onBlur={() =>
-              //   updateTask({
-              //     body: commentState.getCurrentContent().getPlainText(),
-              //   })
-              // }
-              toolbar={{
-                options: ["inline", "list"],
-                inline: {
-                  options: ["bold", "italic", "underline"],
-                },
-              }}
-              wrapperStyle={{
-                display: "flex",
-                flexDirection: "column",
-                border: "1px solid #424242",
-              }}
-              editorStyle={{
-                order: 1,
-                color: "white",
-                padding: "5px 10px",
-                minHeight: "100px",
-                fontSize: "14px",
-              }}
-              toolbarStyle={{
-                border: "none",
-                order: 2,
-                backgroundColor: "#1E1F21",
-              }}
-            />
-          )}
-          <button className="mt-2 px-4 py-2 bg-[#4573D2] text-white rounded-md">
-            <p className="small text-white">Comment</p>
-          </button>
-        </div>
+      <div className="border-t border-[#424242] h-full">
+        {commentState && (
+          <Editor
+            editorState={commentState}
+            onEditorStateChange={setCommentEditorState}
+            toolbarCustomButtons={[
+              <button className="ml-auto px-4 py-1 bg-[#4573D2] text-white rounded-sm">
+                <p className="small text-white">Comment</p>
+              </button>,
+            ]}
+            placeholder="Add a comment"
+            // onBlur={() =>
+            //   updateTask({
+            //     body: commentState.getCurrentContent().getPlainText(),
+            //   })
+            // }
+            toolbar={{
+              options: ["inline", "list"],
+              inline: {
+                options: ["bold", "italic", "underline"],
+              },
+            }}
+            wrapperStyle={{
+              display: "flex",
+              flexDirection: "column",
+              border: "1px solid #424242",
+            }}
+            editorStyle={{
+              order: 1,
+              color: "white",
+              padding: "5px 10px",
+              minHeight: "100px",
+              fontSize: "14px",
+            }}
+            toolbarStyle={{
+              border: "none",
+              order: 2,
+              backgroundColor: "#1E1F21",
+            }}
+          />
+        )}
       </div>
     </div>
   );
