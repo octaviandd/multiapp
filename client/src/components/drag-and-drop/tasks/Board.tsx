@@ -62,6 +62,13 @@ export type User = {
   role: string;
 };
 
+export type Comment = {
+  id: UniqueIdentifier;
+  content: string;
+  createdAt: Date;
+  createdBy: User;
+};
+
 export type Task = {
   id: UniqueIdentifier;
   title: string;
@@ -299,7 +306,7 @@ export default function MultipleContainers({
     });
   }
 
-  function containerDragOverlay (boardId: UniqueIdentifier) {
+  function containerDragOverlay(boardId: UniqueIdentifier) {
     return renderContainerDragOverlay({
       boardId,
       findBoard,

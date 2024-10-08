@@ -39,7 +39,6 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
       })
         .then((res) => res.json())
         .then((data) => {
-          console.log(data);
           if (isMounted) {
             setCurrentTask(data);
             setEditorState(
@@ -178,7 +177,7 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
       });
   };
 
-  const addComment = async () => {
+  const addComment = async (data: any) => {
     fetch(
       `/api/boards/tasks/${String(selectedItem).replace("T", "")}/comments`,
       {
@@ -188,7 +187,7 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
         },
         credentials: "include",
         body: JSON.stringify({
-          body: "This is a comment on the task providing additional details.",
+          data,
         }),
       }
     )
@@ -364,35 +363,45 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
             <div className="border-b py-4 mb-3 border-neutral-500">
               <p className="text-[14px] leading-6 font-medium">Comments</p>
             </div>
-            <div className="flex items-center">
-              <div className="mx-2">
-                <div>
-                  <img src="https://via.placeholder.com/32" alt="User Avatar" />
-                </div>
-              </div>
-              <div className="flex flex-col gap-y-1 w-full">
-                <div className="flex justify-between">
-                  <div className="flex items-center gap-x-2">
+            {currentTask?.comments &&
+              currentTask?.comments.map((comment) => (
+                <div className="flex items-center">
+                  <div className="mx-2">
                     <div>
-                      <p className="small font-medium">Octavian David</p>
+                      <img
+                        src="https://via.placeholder.com/32"
+                        alt="User Avatar"
+                      />
+                    </div>
+                  </div>
+                  <div className="flex flex-col gap-y-1 w-full">
+                    <div className="flex justify-between">
+                      <div className="flex items-center gap-x-2">
+                        <div>
+                          <p className="small font-medium">Octavian David</p>
+                        </div>
+                        <div>
+                          <p className="extra-small">
+                            <span className="text-neutral-500">
+                              {dayjs(comment.createdAt).format(
+                                "dddd [at] HH:mm"
+                              )}
+                            </span>
+                          </p>
+                        </div>
+                      </div>
+                      <div className="ml-auto">
+                        <ThumbsUp width={16} height={16} />
+                      </div>
                     </div>
                     <div>
-                      <p className="extra-small">
-                        <span className="text-neutral-500">
-                          · Yesterday at 14:24
-                        </span>
+                      <p className="extra-small text-white">
+                        {comment.content}
                       </p>
                     </div>
                   </div>
-                  <div className="ml-auto">
-                    <ThumbsUp width={16} height={16} />
-                  </div>
                 </div>
-                <div>
-                  <p className="extra-small text-white">test</p>
-                </div>
-              </div>
-            </div>
+              ))}
           </div>
         </div>
       </div>
@@ -402,16 +411,18 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
             editorState={commentState}
             onEditorStateChange={setCommentEditorState}
             toolbarCustomButtons={[
-              <button className="ml-auto px-4 py-1 bg-[#4573D2] text-white rounded-sm">
+              <button
+                onClick={() =>
+                  addComment({
+                    content: commentState.getCurrentContent().getPlainText(),
+                  })
+                }
+                className="ml-auto px-4 py-1 bg-[#4573D2] text-white rounded-sm"
+              >
                 <p className="small text-white">Comment</p>
               </button>,
             ]}
             placeholder="Add a comment"
-            onBlur={() =>
-              updateTask({
-                body: commentState.getCurrentContent().getPlainText(),
-              })
-            }
             toolbar={{
               options: ["inline", "list"],
               inline: {

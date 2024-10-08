@@ -24,6 +24,7 @@ const getTask = async (taskId: string) => {
       where: { id: Number(taskId) },
       include: {
         createdBy: true,
+        comments: true,
       },
     });
 
@@ -77,6 +78,7 @@ const createTask = async (data: any) => {
       data,
       include: {
         createdBy: true,
+        comments: true,
       },
     });
 

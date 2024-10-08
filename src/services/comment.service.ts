@@ -26,18 +26,10 @@ const getComment = async (commentId: string) => {
   }
 };
 
-const createComment = async (
-  content: string,
-  taskId: string,
-  currentUserId: string
-) => {
+const createComment = async (commentData: any) => {
   try {
     const comment = await prisma.comment.create({
-      data: {
-        content,
-        taskId: Number(taskId),
-        authorId: Number(currentUserId),
-      },
+      data: commentData,
     });
 
     return comment;
@@ -58,23 +50,23 @@ const deleteComment = async (commentId: string) => {
   }
 };
 
-// const updateComment = async (commentId: string, content: string) => {
-//   try {
-//     const comment = await prisma.comment.findUnique({
-//       where: { id: Number(commentId) },
-//       data: { content },
-//     });
+const updateComment = async (commentId: string, content: string) => {
+  try {
+    const comment = await prisma.comment.findUnique({
+      where: { id: Number(commentId) },
+      // data: { content },
+    });
 
-//     return comment;
-//   } catch (error) {
-//     throw new Error("Failed to update comment: " + error.message);
-//   }
-// };
+    return comment;
+  } catch (error: any) {
+    throw new Error("Failed to update comment: " + error.message);
+  }
+};
 
 export default {
   getComments,
   getComment,
   createComment,
   deleteComment,
-  // updateComment,
+  updateComment,
 };

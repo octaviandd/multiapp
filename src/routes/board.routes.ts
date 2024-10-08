@@ -36,7 +36,7 @@ router.get(
   "/:id/tasks/:taskId/comments/:commentId",
   CommentController.getComment
 );
-router.post("/:id/tasks/:taskId/comments", CommentController.createComment);
+router.post("/tasks/:taskId/comments", CommentController.createComment);
 router.put(
   "/:id/tasks/:taskId/comments/:commentId",
   CommentController.updateComment
