@@ -364,32 +364,34 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
             <div className="border-b py-4 mb-3 border-neutral-500">
               <p className="text-[14px] leading-6 font-medium">Comments</p>
             </div>
-            <div className="flex flex-col">
-              <div className="flex items-center">
+            <div className="flex items-center">
+              <div className="mx-2">
                 <div>
-                  <div>
-                    <img
-                      src="https://via.placeholder.com/32"
-                      alt="User Avatar"
-                    />
-                  </div>
+                  <img src="https://via.placeholder.com/32" alt="User Avatar" />
                 </div>
+              </div>
+              <div className="flex flex-col gap-y-1 w-full">
                 <div className="flex justify-between">
                   <div className="flex items-center gap-x-2">
                     <div>
-                      <p className="small">Octavian David</p>
+                      <p className="small font-medium">Octavian David</p>
                     </div>
                     <div>
-                      <p className="extra-small">* Yesterday at 14:24</p>
+                      <p className="extra-small">
+                        <span className="text-neutral-500">
+                          · Yesterday at 14:24
+                        </span>
+                      </p>
                     </div>
                   </div>
                   <div className="ml-auto">
                     <ThumbsUp width={16} height={16} />
                   </div>
                 </div>
+                <div>
+                  <p className="extra-small text-white">test</p>
+                </div>
               </div>
-
-              <div>test</div>
             </div>
           </div>
         </div>
@@ -405,11 +407,11 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
               </button>,
             ]}
             placeholder="Add a comment"
-            // onBlur={() =>
-            //   updateTask({
-            //     body: commentState.getCurrentContent().getPlainText(),
-            //   })
-            // }
+            onBlur={() =>
+              updateTask({
+                body: commentState.getCurrentContent().getPlainText(),
+              })
+            }
             toolbar={{
               options: ["inline", "list"],
               inline: {
