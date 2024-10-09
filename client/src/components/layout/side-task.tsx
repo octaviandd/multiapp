@@ -14,13 +14,16 @@ interface SideTaskProps {
   selectedItem: UniqueIdentifier;
 }
 
+const defaultEditorState = EditorState.createEmpty();
+const defaultCommentEditorState = EditorState.createEmpty();
+
 const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [currentTask, setCurrentTask] = useState<Task | null>(null);
-  const [editorState, setEditorState] = useState(EditorState.createEmpty());
+  const [editorState, setEditorState] = useState(defaultEditorState);
   const [commentState, setCommentEditorState] = useState(
-    EditorState.createEmpty()
+    defaultCommentEditorState
   );
   const [currentDate, setDate] = useState<Date | undefined>(undefined);
   const { store, setStore } = useContext(StoreContext);
@@ -365,7 +368,7 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
             </div>
             {currentTask?.comments &&
               currentTask?.comments.map((comment) => (
-                <div className="flex items-center">
+                <div className="flex items-center my-2">
                   <div className="mx-2">
                     <div>
                       <img
@@ -391,7 +394,7 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
                         </div>
                       </div>
                       <div className="ml-auto">
-                        <ThumbsUp width={16} height={16} />
+                        <ThumbsUp width={14} height={14} />
                       </div>
                     </div>
                     <div>
