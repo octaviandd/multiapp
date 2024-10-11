@@ -141,11 +141,16 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
   };
 
   const likeTask = async () => {
-    fetch(`/api/boards/tasks/${String(selectedItem).replace("T", "")}/like`, {
+    fetch(`/api/boards/tasks/${String(selectedItem).replace("T", "")}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
+      body: JSON.stringify({
+        data: {
+          like: true,
+        },
+      }),
       credentials: "include",
     })
       .then((res) => res.json())
@@ -220,7 +225,10 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
           <p className="text-white small">Mark complete</p>
         </button>
         <div className="ml-auto flex items-center gap-x-3">
-          <button className="border rounded-md border-neutral-600 p-2 hover:bg-[#2A2B2D] transition-background duration-300 ease-in-out">
+          <button
+            className="border rounded-md border-neutral-600 p-2 hover:bg-[#2A2B2D] transition-background duration-300 ease-in-out"
+            onClick={() => likeTask()}
+          >
             <ThumbsUp color="white" width={16} height={16} />
           </button>
           <button

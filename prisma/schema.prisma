@@ -10,9 +10,14 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum LikableType {
+  Task
+  Comment
+}
+
 model User {
   id           Int           @id @default(autoincrement())
-  firstName    String        
+  firstName    String
   lastName     String
   password     String
   email        String        @unique
@@ -24,7 +29,7 @@ model User {
   createdTasks Task[]        @relation("TaskCreator")
   subtasks     SubTask[]
   comments     Comment[]
-  taskLikes    TaskLike[]
+  taskLikes    Like[]
   transactions Transaction[]
 }
 
@@ -74,7 +79,7 @@ model Task {
   files        TaskFile[]
   boardId      Int
   parentBoard  Board      @relation(name: "BoardToTasks", fields: [boardId], references: [id], onDelete: Cascade)
-  taskLikes    TaskLike[]
+  taskLikes    Like[]     @relation("TaskLikes")
   createdBy    User       @relation("TaskCreator", fields: [createdById], references: [id])
   createdById  Int
 }
@@ -87,12 +92,14 @@ model TaskFile {
   fileId Int
 }
 
-model TaskLike {
-  id     Int  @id @default(autoincrement())
-  task   Task @relation(fields: [taskId], references: [id])
-  taskId Int
-  user   User @relation(fields: [userId], references: [id])
-  userId Int
+model Like {
+  id        Int      @id @default(autoincrement())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
+  Task      Task?    @relation("TaskLikes" , fields: [likeId], references: [id], map: "Task")
+  Comment   Comment? @relation("CommentLikes", fields: [likeId], references: [id], map: "Comment")
+  likeId    Int
+  likeTyp   LikableType
 }
 
 model SubTask {
@@ -110,14 +117,15 @@ model SubTask {
 }
 
 model Comment {
-  id        Int      @id @default(autoincrement())
-  content   String
-  task      Task     @relation(fields: [taskId], references: [id])
-  taskId    Int
-  author    User     @relation(fields: [authorId], references: [id])
-  authorId  Int
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id           Int      @id @default(autoincrement())
+  content      String
+  task         Task     @relation(fields: [taskId], references: [id])
+  taskId       Int
+  author       User     @relation(fields: [authorId], references: [id])
+  authorId     Int
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  commentLikes Like[]   @relation("CommentLikes")
 }
 
 model Transaction {
