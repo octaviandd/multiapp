@@ -5,24 +5,12 @@ import prisma from "../../prisma/prisma-client";
 const getLikes = async (taskId: string) => {
   try {
     const likes = await prisma.like.findMany({
-      where: { taskId: Number(taskId) },
+      where: { likeId: Number(taskId) },
     });
 
     return likes;
   } catch (error: any) {
     throw new Error("Likes not found: " + error.message);
-  }
-};
-
-const getLike = async (likeId: string) => {
-  try {
-    const like = await prisma.like.findUnique({
-      where: { id: Number(likeId) },
-    });
-
-    return like;
-  } catch (error: any) {
-    throw new Error("like not found: " + error.message);
   }
 };
 
@@ -52,7 +40,6 @@ const deleteLike = async (likeId: string) => {
 
 export default {
   getLikes,
-  getLike,
   createLike,
   deleteLike,
 };

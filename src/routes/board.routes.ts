@@ -5,6 +5,7 @@ import { withAuth } from "../middleware/auth.middleware";
 import BoardController from "../controllers/board.controller";
 import TaskController from "../controllers/task.controller";
 import CommentController from "../controllers/comment.controller";
+import LikesController from "../controllers/likes.controller";
 
 const router = express.Router();
 
@@ -45,5 +46,10 @@ router.delete(
   "/:id/tasks/:taskId/comments/:commentId",
   CommentController.deleteComment
 );
+
+// Likes Routes (nested under tasks)
+router.get("/:id/tasks/:taskId/likes", LikesController.getLikes);
+router.post("/tasks/:taskId/likes", LikesController.createLike);
+router.delete("/:id/tasks/:taskId/likes/:likeId", LikesController.deleteLike);
 
 export default router;
