@@ -27,6 +27,7 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
   );
   const [currentDate, setDate] = useState<Date | undefined>(undefined);
   const { store, setStore } = useContext(StoreContext);
+  const markCompleteRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     let isMounted = true;
@@ -67,6 +68,8 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
       isMounted = false;
     };
   }, [selectedItem]);
+
+  useEffect(() => {}, [currentTask]);
 
   useEffect(() => {
     if (currentTask && currentDate) {
@@ -121,19 +124,21 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
   };
 
   const completeTask = async () => {
-    fetch(
-      `/api/boards/tasks/${String(selectedItem).replace("T", "")}/complete`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+    fetch(`/api/boards/tasks/${String(selectedItem).replace("T", "")}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        data: {
+          completed: !currentTask?.completed,
         },
-        credentials: "include",
-      }
-    )
+      }),
+      credentials: "include",
+    })
       .then((res) => res.json())
       .then((data) => {
-        console.log(data);
+        setCurrentTask(data);
       })
       .catch((error) => {
         console.error("Error completing task:", error);
@@ -160,6 +165,11 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
       .catch((error) => {
         console.error("Error liking task:", error);
       });
+  };
+
+  const closeSidePanel = () => {
+    setIsOpen(false);
+    setStore((prev) => ({ ...prev, currentBoardItem: null }));
   };
 
   const addSubtask = async () => {
@@ -220,9 +230,19 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
       }`}
     >
       <div className="flex items-center px-2 py-2 border-b border-neutral-600 w-full h-[65px] z-[50] bg-[#1E1F21]">
-        <button className="flex items-center p-2 gap-x-1 border border-neutral-600 rounded-md hover:bg-[#2A2B2D] transition-background duration-300 ease-in-out">
+        <button
+          ref={markCompleteRef}
+          className={`${
+            currentTask?.completed
+              ? "bg-[#1D3733] border-[#1D3733] hover:bg-[#21433D]"
+              : "border-neutral-600 bg-[#1E1F21] hover:bg-[#2A2B2D]"
+          } flex items-center p-2 gap-x-1 border  rounded-md  transition-background duration-300 ease-in-out`}
+          onClick={() => completeTask()}
+        >
           <Check color="white" width={16} height={16} />
-          <p className="text-white small">Mark complete</p>
+          <p className="text-white small">
+            {currentTask?.completed ? "Completed" : "Mark complete"}
+          </p>
         </button>
         <div className="ml-auto flex items-center gap-x-3">
           <button
@@ -245,7 +265,7 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
             {currentTask?.title}
           </h2>
           <button
-            onClick={() => setIsOpen(false)}
+            onClick={() => closeSidePanel()}
             className="text-white hover:text-white"
           >
             <svg

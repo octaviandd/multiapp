@@ -25,6 +25,7 @@ const getTask = async (taskId: string) => {
       include: {
         createdBy: true,
         comments: true,
+        taskLikes: true,
       },
     });
 

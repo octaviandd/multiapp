@@ -6,6 +6,10 @@ const getComments = async (taskId: string) => {
   try {
     const comments = await prisma.comment.findMany({
       where: { taskId: Number(taskId) },
+      include: {
+        author: true,
+        commentLikes: true,
+      },
     });
 
     return comments;
