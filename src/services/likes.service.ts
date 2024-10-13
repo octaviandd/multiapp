@@ -26,10 +26,10 @@ const createTaskLike = async (likeData: any) => {
   }
 };
 
-const deleteTaskLike = async (taskId: string) => {
+const deleteTaskLike = async (likeId: string) => {
   try {
-    const like = await prisma.taskLike.findUnique({
-      where: { id: Number(taskId) },
+    const like = await prisma.taskLike.delete({
+      where: { id: Number(likeId) },
     });
 
     return true;
@@ -64,7 +64,7 @@ const createCommentLike = async (likeData: any) => {
 
 const deleteCommentLike = async (commentId: string) => {
   try {
-    const like = await prisma.commentLike.findUnique({
+    const like = await prisma.commentLike.delete({
       where: { id: Number(commentId) },
     });
 

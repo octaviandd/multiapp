@@ -3,7 +3,7 @@
 import { UniqueIdentifier } from "@dnd-kit/core";
 import { Check, Folder, PlusCircle, ThumbsUp, Trash } from "lucide-react";
 import React, { useContext, useEffect, useRef, useState } from "react";
-import { Task } from "../drag-and-drop/tasks/Board";
+import { Task, User } from "../drag-and-drop/tasks/Board";
 import { Editor } from "react-draft-wysiwyg";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import { EditorState, ContentState } from "draft-js";
@@ -175,7 +175,12 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
   };
 
   const dislikeTask = async () => {
-    fetch(`/api/boards/tasks/${String(selectedItem).replace("T", "")}/likes`, {
+    console.log(currentTask?.taskLikes);
+    const likeId = currentTask?.taskLikes?.find(
+      (like) => like.userId === (store.user as User).id
+    )?.id;
+
+    fetch(`/api/boards/likes/delete-like/${likeId}`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
@@ -189,7 +194,7 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
             return {
               ...prev,
               taskLikes: prev.taskLikes?.filter(
-                (like) => like.userId !== store.user.id
+                (like) => like.userId !== (store.user as User).id
               ),
             };
           }
@@ -276,7 +281,7 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
                 ? "bg-[#689AF3] border-[#689AF3] hover:bg-[#729ee9]"
                 : "border-neutral-600 bg-[#1E1F21] hover:bg-[#2A2B2D]"
             } border cursor-pointer rounded-md border-neutral-600 p-2 transition-background duration-300 ease-in-out`}
-            onClick={() => likeTask()}
+            onClick={() => dislikeTask()}
           >
             <ThumbsUp color="white" width={16} height={16} />
           </button>

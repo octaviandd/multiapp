@@ -85,7 +85,7 @@ export type Task = {
 
 export type Like = {
   id: UniqueIdentifier;
-  createdAt: Date;
+  userId: UniqueIdentifier;
   createdBy: User;
 };
 

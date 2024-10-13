@@ -36,8 +36,8 @@ const createTaskLike = async (req: Request, res: Response) => {
 
 const deleteTaskLike = async (req: Request, res: Response) => {
   try {
-    const { id } = req.params;
-    const like = await LikesService.deleteTaskLike(id);
+    const { likeId } = req.params;
+    const like = await LikesService.deleteTaskLike(likeId);
 
     return res.status(200).json(like);
   } catch (error: any) {

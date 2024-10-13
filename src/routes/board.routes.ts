@@ -50,10 +50,7 @@ router.delete(
 // Likes Routes (nested under tasks)
 router.get("/:id/tasks/:taskId/likes", LikesController.getTaskLikes);
 router.post("/tasks/:taskId/likes", LikesController.createTaskLike);
-router.delete(
-  "/:id/tasks/:taskId/likes/:likeId",
-  LikesController.deleteTaskLike
-);
+router.delete("/likes/delete-like/:likeId", LikesController.deleteTaskLike);
 router.get(
   "/:id/tasks/:taskId/comments/:commentId/likes",
   LikesController.getCommentLikes
