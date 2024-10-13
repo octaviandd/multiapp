@@ -48,8 +48,23 @@ router.delete(
 );
 
 // Likes Routes (nested under tasks)
-router.get("/:id/tasks/:taskId/likes", LikesController.getLikes);
-router.post("/tasks/:taskId/likes", LikesController.createLike);
-router.delete("/:id/tasks/:taskId/likes/:likeId", LikesController.deleteLike);
+router.get("/:id/tasks/:taskId/likes", LikesController.getTaskLikes);
+router.post("/tasks/:taskId/likes", LikesController.createTaskLike);
+router.delete(
+  "/:id/tasks/:taskId/likes/:likeId",
+  LikesController.deleteTaskLike
+);
+router.get(
+  "/:id/tasks/:taskId/comments/:commentId/likes",
+  LikesController.getCommentLikes
+);
+router.post(
+  "/tasks/:taskId/comments/:commentId/likes",
+  LikesController.createCommentLike
+);
+router.delete(
+  "/:id/tasks/:taskId/comments/:commentId/likes/:likeId",
+  LikesController.deleteCommentLike
+);
 
 export default router;

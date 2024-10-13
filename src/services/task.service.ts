@@ -29,8 +29,6 @@ const getTask = async (taskId: string) => {
       },
     });
 
-    console.log("Task found:", task);
-
     return task;
   } catch (error: any) {
     throw new Error("Task not found: " + error.message);

@@ -2,10 +2,10 @@
 
 import prisma from "../../prisma/prisma-client";
 
-const getLikes = async (taskId: string) => {
+const getTaskLikes = async (taskId: string) => {
   try {
-    const likes = await prisma.like.findMany({
-      where: { likeId: Number(taskId) },
+    const likes = await prisma.taskLike.findMany({
+      where: { taskId: Number(taskId) },
     });
 
     return likes;
@@ -14,10 +14,9 @@ const getLikes = async (taskId: string) => {
   }
 };
 
-const createLike = async (likeData: any) => {
-  console.log(likeData);
+const createTaskLike = async (likeData: any) => {
   try {
-    const like = await prisma.like.create({
+    const like = await prisma.taskLike.create({
       data: likeData,
     });
 
@@ -27,10 +26,46 @@ const createLike = async (likeData: any) => {
   }
 };
 
-const deleteLike = async (likeId: string) => {
+const deleteTaskLike = async (taskId: string) => {
   try {
-    const like = await prisma.like.findUnique({
-      where: { id: Number(likeId) },
+    const like = await prisma.taskLike.findUnique({
+      where: { id: Number(taskId) },
+    });
+
+    return true;
+  } catch (error: any) {
+    throw new Error("Failed to delete like: " + error.message);
+  }
+};
+
+const getCommentLikes = async (commentId: string) => {
+  try {
+    const likes = await prisma.commentLike.findMany({
+      where: { commentId: Number(commentId) },
+    });
+
+    return likes;
+  } catch (error: any) {
+    throw new Error("Likes not found: " + error.message);
+  }
+};
+
+const createCommentLike = async (likeData: any) => {
+  try {
+    const like = await prisma.commentLike.create({
+      data: likeData,
+    });
+
+    return like;
+  } catch (error: any) {
+    throw new Error("Failed to create like: " + error.message);
+  }
+};
+
+const deleteCommentLike = async (commentId: string) => {
+  try {
+    const like = await prisma.commentLike.findUnique({
+      where: { id: Number(commentId) },
     });
 
     return true;
@@ -40,7 +75,10 @@ const deleteLike = async (likeId: string) => {
 };
 
 export default {
-  getLikes,
-  createLike,
-  deleteLike,
+  getTaskLikes,
+  createTaskLike,
+  deleteTaskLike,
+  getCommentLikes,
+  createCommentLike,
+  deleteCommentLike,
 };

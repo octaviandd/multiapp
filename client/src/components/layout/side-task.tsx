@@ -155,11 +155,6 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({
-        data: {
-          likeType: "Task",
-        },
-      }),
       credentials: "include",
     })
       .then((res) => res.json())

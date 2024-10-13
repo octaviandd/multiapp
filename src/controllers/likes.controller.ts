@@ -3,10 +3,10 @@
 import LikesService from "../services/likes.service";
 import { Request, Response } from "express";
 
-const getLikes = async (req: Request, res: Response) => {
+const getTaskLikes = async (req: Request, res: Response) => {
   try {
     const { taskId } = req.params;
-    const likes = await LikesService.getLikes(taskId);
+    const likes = await LikesService.getTaskLikes(taskId);
 
     return res.status(200).json(likes);
   } catch (error: any) {
@@ -16,17 +16,15 @@ const getLikes = async (req: Request, res: Response) => {
   }
 };
 
-const createLike = async (req: Request, res: Response) => {
+const createTaskLike = async (req: Request, res: Response) => {
   try {
     const { taskId } = req.params;
-    const { data } = req.body;
     const currentUserId = String(req.session.userId);
     const likeData = {
-      ...data,
       userId: Number(currentUserId),
       taskId: Number(taskId),
     };
-    const comment = await LikesService.createLike(likeData);
+    const comment = await LikesService.createTaskLike(likeData);
 
     return res.status(201).json(comment);
   } catch (error: any) {
@@ -36,10 +34,56 @@ const createLike = async (req: Request, res: Response) => {
   }
 };
 
-const deleteLike = async (req: Request, res: Response) => {
+const deleteTaskLike = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const like = await LikesService.deleteLike(id);
+    const like = await LikesService.deleteTaskLike(id);
+
+    return res.status(200).json(like);
+  } catch (error: any) {
+    return res
+      .status(500)
+      .json({ message: "Internal server error: " + error.message });
+  }
+};
+
+const getCommentLikes = async (req: Request, res: Response) => {
+  try {
+    const { commentId } = req.params;
+    const likes = await LikesService.getCommentLikes(commentId);
+
+    return res.status(200).json(likes);
+  } catch (error: any) {
+    return res
+      .status(500)
+      .json({ message: "Internal server error: " + error.message });
+  }
+};
+
+const createCommentLike = async (req: Request, res: Response) => {
+  try {
+    const { commentId } = req.params;
+    const { data } = req.body;
+    const currentUserId = String(req.session.userId);
+    const likeData = {
+      ...data,
+      userId: Number(currentUserId),
+      commentId: Number(commentId),
+    };
+    const comment = await LikesService.createCommentLike(likeData);
+
+    return res.status(201).json(comment);
+  } catch (error: any) {
+    return res
+      .status(500)
+      .json({ message: "Internal server error: " + error.message });
+  }
+};
+
+const deleteCommentLike = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const like = await LikesService.deleteCommentLike(id);
 
     return res.status(200).json(like);
   } catch (error: any) {
@@ -50,7 +94,10 @@ const deleteLike = async (req: Request, res: Response) => {
 };
 
 export default {
-  getLikes,
-  createLike,
-  deleteLike,
+  getTaskLikes,
+  createTaskLike,
+  deleteTaskLike,
+  getCommentLikes,
+  createCommentLike,
+  deleteCommentLike,
 };

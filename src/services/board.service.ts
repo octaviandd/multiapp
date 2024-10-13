@@ -48,7 +48,6 @@ const createBoard = async (
 };
 
 const deleteBoard = async (boardId: string) => {
-  console.log({ boardId });
   try {
     await prisma.task.deleteMany({
       where: { boardId: Number(boardId) },

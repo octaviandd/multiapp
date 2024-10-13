@@ -29,7 +29,8 @@ model User {
   createdTasks Task[]        @relation("TaskCreator")
   subtasks     SubTask[]
   comments     Comment[]
-  taskLikes    Like[]
+  taskLikes    TaskLike[]
+  commentLikes CommentLike[]
   transactions Transaction[]
 }
 
@@ -79,7 +80,7 @@ model Task {
   files        TaskFile[]
   boardId      Int
   parentBoard  Board      @relation(name: "BoardToTasks", fields: [boardId], references: [id], onDelete: Cascade)
-  taskLikes    Like[]     @relation("TaskLikes")
+  taskLikes    TaskLike[]
   createdBy    User       @relation("TaskCreator", fields: [createdById], references: [id])
   createdById  Int
 }
@@ -92,14 +93,24 @@ model TaskFile {
   fileId Int
 }
 
-model Like {
+model TaskLike {
   id        Int      @id @default(autoincrement())
-  user      User?     @relation(fields: [userId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
   userId    Int
-  Task      Task?    @relation("TaskLikes" , fields: [likeId], references: [id], map: "Task")
-  Comment   Comment? @relation("CommentLikes", fields: [likeId], references: [id], map: "Comment")
-  likeId    Int
-  likeType   LikableType
+  task      Task     @relation(fields: [taskId], references: [id])
+  taskId    Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model CommentLike {
+  id        Int      @id @default(autoincrement())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
+  comment   Comment  @relation(fields: [commentId], references: [id])
+  commentId Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model SubTask {
@@ -117,15 +128,15 @@ model SubTask {
 }
 
 model Comment {
-  id           Int      @id @default(autoincrement())
+  id           Int           @id @default(autoincrement())
   content      String
-  task         Task     @relation(fields: [taskId], references: [id])
+  task         Task          @relation(fields: [taskId], references: [id])
   taskId       Int
-  author       User     @relation(fields: [authorId], references: [id])
+  author       User          @relation(fields: [authorId], references: [id])
   authorId     Int
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-  commentLikes Like[]   @relation("CommentLikes")
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  commentLikes CommentLike[]
 }
 
 model Transaction {
