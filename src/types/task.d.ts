@@ -1,18 +1,24 @@
 /** @format */
 
+import { Board } from "./board";
 import { User } from "./user";
 
 type Task = {
   id: Number;
+  temporaryId: string;
   title: string;
+  body: string;
+  asignee: User;
+  dueDate: Date;
+  createdAt: Date;
+  updatedAt: Date;
+  displayOrder: number;
+  completed: boolean;
+  comments: Comment[];
+  files: File[];
+  parentBoard: Board;
   recentlyAdded?: boolean;
-  body?: string;
-  files?: string[];
-  comments?: Comment[];
-  dueDate?: Date;
-  asignee?: string;
-  completed?: boolean;
-  createdBy?: User;
+  createdBy: User;
 };
 
 export type { Task };

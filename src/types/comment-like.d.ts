@@ -3,7 +3,7 @@
 import { Task } from "./task";
 import { User } from "./user";
 
-export type TaskLike = {
+export type CommentLike = {
   id: number;
   user: User;
   task: Task;
