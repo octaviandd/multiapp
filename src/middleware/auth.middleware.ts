@@ -14,7 +14,7 @@ export const withAuth = async (
   res: Response,
   next: () => void
 ) => {
-  if (req.session.userId) {
+  if (req.session.user) {
     next();
   } else {
     return res.status(401).json({ message: "Unauthorized" });
@@ -22,9 +22,11 @@ export const withAuth = async (
 };
 
 export const checkAuth = (req: Request, res: Response) => {
-  if (!req.session.userId) {
+  if (!req.session.user) {
     return res.status(401).json({ authenticated: false });
   } else {
-    return res.status(200).json({ authenticated: true });
+    return res
+      .status(200)
+      .json({ authenticated: true, user: req.session.user });
   }
 };

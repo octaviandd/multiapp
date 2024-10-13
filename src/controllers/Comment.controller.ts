@@ -33,7 +33,7 @@ const createComment = async (req: Request, res: Response) => {
   try {
     const { taskId } = req.params;
     const { data } = req.body;
-    const currentUserId = String(req.session.userId);
+    const currentUserId = String(req.session.user.id);
     const commendData = {
       ...data,
       authorId: Number(currentUserId),

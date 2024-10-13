@@ -5,7 +5,7 @@ import userService from "../services/user.service";
 
 const getUserFromSession = async (req: Request, res: Response) => {
   try {
-    const userId = req.session.userId;
+    const userId = req.session.user.id;
 
     if (!userId) {
       return res.status(401).json({ message: "User is not logged in" });

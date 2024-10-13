@@ -3,6 +3,13 @@
 import express from "express";
 import prisma from "../../prisma/prisma-client";
 import bcrypt from "bcrypt";
+import session from "express-session";
+
+declare module "express-session" {
+  interface Session {
+    user?: any;
+  }
+}
 
 const router = express.Router();
 
@@ -45,6 +52,12 @@ router.post("/login", async (req, res) => {
       where: {
         email,
       },
+      include: {
+        tasks: true,
+        taskLikes: true,
+        comments: true,
+        commentLikes: true,
+      },
     });
 
     if (!user) {
@@ -57,7 +70,7 @@ router.post("/login", async (req, res) => {
       return res.status(400).json({ message: "Invalid password" });
     }
 
-    req.session.userId = user.id;
+    req.session.user = user;
     res.json(user);
   } catch (error) {
     res.status(500).json({ error: (error as any).message });
@@ -70,8 +83,10 @@ router.post("/logout", (req, res) => {
 });
 
 router.get("/check-auth", (req, res) => {
-  if (req.session.userId) {
-    return res.status(200).json({ authenticated: true });
+  if (req.session.user) {
+    return res
+      .status(200)
+      .json({ authenticated: true, user: req.session.user });
   } else {
     return res.status(401).json({ authenticated: false });
   }

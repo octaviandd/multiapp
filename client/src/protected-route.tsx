@@ -1,7 +1,8 @@
 /** @format */
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Navigate } from "react-router-dom";
+import { StoreContext } from "@/store";
 
 interface Props {
   children: React.ReactNode; // Typing for children prop
@@ -10,21 +11,26 @@ interface Props {
 export default function ProtectedRoute({
   children,
 }: Props): JSX.Element | null {
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null); // `null` for initial state
-  const [loading, setLoading] = useState<boolean>(true); // Track loading state
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const { store, setStore } = useContext(StoreContext);
 
   useEffect(() => {
-    setLoading(true); // Start loading
+    setLoading(true);
     fetch("/api/auth/check-auth", {
       headers: {
         "Content-Type": "application/json",
       },
-      credentials: "include", // Ensure credentials like cookies are included
+      credentials: "include",
     })
       .then((res) => res.json())
       .then((data) => {
-        setIsAuthenticated(data.authenticated); // Update auth state
-        setLoading(false); // Stop loading
+        console.log(data);
+        setIsAuthenticated(data.authenticated);
+        setLoading(false);
+        if (data.authenticated) {
+          setStore({ ...store, user: data.user });
+        }
       })
       .catch((error) => {
         console.error("Error fetching auth status:", error);

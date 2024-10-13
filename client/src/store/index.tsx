@@ -1,4 +1,5 @@
 /** @format */
+import { User } from "@/components/drag-and-drop/tasks/Board";
 import { UniqueIdentifier } from "@dnd-kit/core";
 import React, { createContext, useState, ReactNode } from "react";
 
@@ -7,6 +8,7 @@ interface StoreState {
   currentBoardItem: UniqueIdentifier | null;
   removedItem: UniqueIdentifier | null;
   completedItem: UniqueIdentifier | null;
+  user: User | null;
 }
 
 interface StoreContextType {
@@ -21,6 +23,7 @@ export const StoreContext = createContext<StoreContextType>({
     currentBoardItem: null,
     removedItem: null,
     completedItem: null,
+    user: null,
   },
   setStore: () => {},
 });
@@ -31,6 +34,7 @@ export const StoreProvider = ({ children }: { children: ReactNode }) => {
     currentBoardItem: null,
     removedItem: null,
     completedItem: null,
+    user: null,
   });
 
   return (

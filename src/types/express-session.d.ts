@@ -1,9 +1,10 @@
 /** @format */
 
 import session from "express-session";
+import { User } from "./user";
 
 declare module "express-session" {
-  export interface SessionData {
-    user: { [key: string]: any };
+  interface Session {
+    user: User;
   }
 }
