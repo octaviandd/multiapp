@@ -179,29 +179,6 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
     setStore((prev) => ({ ...prev, currentBoardItem: null }));
   };
 
-  const addSubtask = async () => {
-    fetch(
-      `/api/boards/tasks/${String(selectedItem).replace("T", "")}/subtasks`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify({
-          title: "Subtask",
-        }),
-      }
-    )
-      .then((res) => res.json())
-      .then((data) => {
-        console.log(data);
-      })
-      .catch((error) => {
-        console.error("Error adding subtask:", error);
-      });
-  };
-
   const addComment = async (data: any) => {
     fetch(
       `/api/boards/tasks/${String(selectedItem).replace("T", "")}/comments`,
@@ -368,26 +345,6 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
                 }}
               />
             )}
-          </div>
-
-          <div className="py-3 border-b border-[#424242] px-4">
-            <p className="extra-small pb-3 text-white border-b border-[#424242]">
-              Subtasks
-            </p>
-            <ul className="mt-2 space-y-2">
-              <li className="h-[34px] p-3 flex items-center whitespace-nowrap relative border border-[#656567]">
-                <span className="mr-2">
-                  <Folder color="white" width={12} height={12} />
-                </span>
-                <p className="extra-small text-white !mt-0">Subtask</p>
-              </li>
-            </ul>
-            <div className="inline-flex gap-x-2 items-center px-3 py-1 border cursor-pointer rounded-md transition-all duration-100 ease-in-out hover:bg-[#333334]">
-              <span>
-                <PlusCircle color="white" width={12} height={12} />
-              </span>
-              <p className="extra-small text-white">Add subtask</p>
-            </div>
           </div>
 
           <div className="border-b border-neutral-600 pb-4 px-4">

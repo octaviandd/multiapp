@@ -7,7 +7,6 @@ type Task = {
   title: string;
   recentlyAdded?: boolean;
   body?: string;
-  subtasks?: Task[];
   files?: string[];
   comments?: Comment[];
   dueDate?: Date;

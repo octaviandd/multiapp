@@ -27,7 +27,6 @@ model User {
   notes        Note[]
   tasks        Task[]        @relation("TaskAssignee")
   createdTasks Task[]        @relation("TaskCreator")
-  subtasks     SubTask[]
   comments     Comment[]
   taskLikes    TaskLike[]
   commentLikes CommentLike[]
@@ -75,7 +74,6 @@ model Task {
   updatedAt    DateTime   @updatedAt
   displayOrder Int
   completed    Boolean    @default(false)
-  subtasks     SubTask[]
   comments     Comment[]
   files        TaskFile[]
   boardId      Int
@@ -111,20 +109,6 @@ model CommentLike {
   commentId Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-}
-
-model SubTask {
-  id           Int      @id @default(autoincrement())
-  title        String
-  body         String?
-  task         Task     @relation(fields: [taskId], references: [id])
-  taskId       Int
-  assignee     User     @relation(fields: [assigneeId], references: [id])
-  assigneeId   Int
-  dueDate      DateTime
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-  displayOrder Int
 }
 
 model Comment {
