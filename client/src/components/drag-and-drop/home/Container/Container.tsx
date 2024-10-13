@@ -18,7 +18,6 @@ export interface Props {
   scrollable?: boolean;
   shadow?: boolean;
   placeholder?: boolean;
-  unstyled?: boolean;
   onClick?(): void;
   onRemove?(): void;
 }
@@ -40,7 +39,6 @@ export const Container = forwardRef<HTMLDivElement, Props>(
       style,
       scrollable,
       shadow,
-      unstyled,
       ...props
     }: Props,
     ref
@@ -59,7 +57,6 @@ export const Container = forwardRef<HTMLDivElement, Props>(
         }
         className={cn(
           styles.Container,
-          unstyled && styles.unstyled,
           horizontal && styles.horizontal,
           hover && styles.hover,
           placeholder && styles.placeholder,

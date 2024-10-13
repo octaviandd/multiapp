@@ -23,7 +23,7 @@ const createLike = async (req: Request, res: Response) => {
     const currentUserId = String(req.session.userId);
     const likeData = {
       ...data,
-      authorId: Number(currentUserId),
+      userId: Number(currentUserId),
       taskId: Number(taskId),
     };
     const comment = await LikesService.createLike(likeData);

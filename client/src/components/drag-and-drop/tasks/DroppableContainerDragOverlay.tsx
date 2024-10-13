@@ -46,7 +46,6 @@ function renderContainerDragOverlay({
       }}
       id={boardId}
       shadow
-      unstyled={false}
     >
       {board.tasks.map((item, index) => (
         <Item

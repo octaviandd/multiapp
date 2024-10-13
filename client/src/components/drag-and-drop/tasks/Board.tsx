@@ -8,7 +8,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { createPortal, unstable_batchedUpdates } from "react-dom";
+import { createPortal, render, unstable_batchedUpdates } from "react-dom";
 import {
   CancelDrop,
   closestCenter,
@@ -81,6 +81,13 @@ export type Task = {
   asignee?: string;
   completed?: boolean;
   createdBy?: User;
+  taskLikes?: Like[];
+};
+
+export type Like = {
+  id: UniqueIdentifier;
+  createdAt: Date;
+  createdBy: User;
 };
 
 export type Board = {
@@ -114,6 +121,12 @@ interface Props {
   vertical?: boolean;
 }
 
+const measuring = {
+  droppable: {
+    strategy: MeasuringStrategy.Always,
+  },
+};
+
 const PLACEHOLDER_ID = "placeholder";
 const empty: UniqueIdentifier[] = [];
 
@@ -127,7 +140,6 @@ export default function MultipleContainers({
   wrapperStyle = () => ({}),
   modifiers,
   strategy = verticalListSortingStrategy,
-  vertical = false,
   scrollable,
 }: Props) {
   const [boards, setBoards] = useState<Board[]>([]);
@@ -145,11 +157,11 @@ export default function MultipleContainers({
     ? boards.some((board) => board.id === activeId)
     : false;
 
-  const measuring = {
-    droppable: {
-      strategy: MeasuringStrategy.Always,
-    },
-  };
+  useEffect(() => {
+    requestAnimationFrame(() => {
+      recentlyMovedToNewBoard.current = false;
+    });
+  }, [boards]);
 
   useEffect(() => {
     if (store.removedItem) {
@@ -171,6 +183,27 @@ export default function MultipleContainers({
       });
     }
   }, [store.removedItem]);
+
+  useEffect(() => {
+    if (store.completedItem) {
+      setBoards((boards) => {
+        return boards.map((board) => {
+          return {
+            ...board,
+            tasks: board.tasks.map((task) => {
+              if (task.id === "T" + store.completedItem) {
+                return {
+                  ...task,
+                  completed: !task.completed,
+                };
+              }
+              return task;
+            }),
+          };
+        });
+      });
+    }
+  }, [store.completedItem]);
 
   useEffect(() => {
     fetch("/api/boards", {
@@ -207,12 +240,6 @@ export default function MultipleContainers({
     const board = findBoard(id);
     return !board ? -1 : board.tasks.findIndex((item) => item.id === id);
   };
-
-  useEffect(() => {
-    requestAnimationFrame(() => {
-      recentlyMovedToNewBoard.current = false;
-    });
-  }, [boards]);
 
   /**
    * Custom collision detection strategy optimized for multiple containers
@@ -285,42 +312,8 @@ export default function MultipleContainers({
     [activeId, boards]
   );
 
-  const onDragCancel = () => {
-    if (clonedItems) {
-      setBoards(clonedItems);
-    }
-
-    setActiveId(null);
-    setClonedItems(null);
-  };
-
-  function sortableItemDragOverlay(id: UniqueIdentifier) {
-    return renderSortableItemDragOverlay({
-      id,
-      findBoard,
-      handleRemoveRow,
-      getIndex,
-      getItemStyles,
-      wrapperStyle,
-      handle: false,
-    });
-  }
-
-  function containerDragOverlay(boardId: UniqueIdentifier) {
-    return renderContainerDragOverlay({
-      boardId,
-      findBoard,
-      handleRemoveRow,
-      getIndex,
-      getItemStyles,
-      wrapperStyle,
-      handle,
-    });
-  }
-
-  function handleRemove(boardId: UniqueIdentifier) {
+  const handleRemove = (boardId: UniqueIdentifier) =>
     setBoards((boards) => boards.filter((board) => board.id !== boardId));
-  }
 
   async function removeBoard(boardId: UniqueIdentifier) {
     await fetch(`/api/boards/delete-board/${boardId}`, {
@@ -606,10 +599,6 @@ export default function MultipleContainers({
     const overId = over?.id;
     const activeId = active.id;
 
-    // const isDraggingContainers = boards.some(
-    //   (board) => board.id === overId || board.id === activeId
-    // );
-
     const onBoardLevel = () => {
       return boards.some((board) => board.id === activeId);
     };
@@ -739,6 +728,37 @@ export default function MultipleContainers({
     setActiveId(null);
   }
 
+  const onDragCancel = () => {
+    if (clonedItems) {
+      setBoards(clonedItems);
+    }
+
+    setActiveId(null);
+    setClonedItems(null);
+  };
+
+  const sortableItemDragOverlay = (id: UniqueIdentifier) =>
+    renderSortableItemDragOverlay({
+      id,
+      findBoard,
+      handleRemoveRow,
+      getIndex,
+      getItemStyles,
+      wrapperStyle,
+      handle: false,
+    });
+
+  const containerDragOverlay = (boardId: UniqueIdentifier) =>
+    renderContainerDragOverlay({
+      boardId,
+      findBoard,
+      handleRemoveRow,
+      getIndex,
+      getItemStyles,
+      wrapperStyle,
+      handle,
+    });
+
   return (
     <DndContext
       sensors={sensors}
@@ -761,15 +781,14 @@ export default function MultipleContainers({
               <DroppableContainer
                 key={board.id}
                 id={board.id}
-                label={`${board.title}`}
+                label={board.title}
                 columns={columns}
-                items={board?.tasks.map((item) => item.id)}
+                items={board.tasks.map((item) => item.id)}
                 scrollable={scrollable}
                 style={containerStyle}
                 recentlyAdded={board.recentlyAdded}
                 removeBoard={() => removeBoard(board.id)}
                 createTask={() => handleAddRow(board.id)}
-                unstyled={false}
                 onChangeBoardTitle={(title: string) =>
                   saveBoard(board.id, title, board.recentlyAdded)
                 }
@@ -781,11 +800,9 @@ export default function MultipleContainers({
                     return (
                       <SortableItemBoard
                         disabled={isSortingBoard}
-                        recentlyAdded={value.recentlyAdded}
-                        key={value.id}
-                        id={value.id}
-                        value={value.title}
+                        item={value}
                         index={index}
+                        key={value.id}
                         handle={handle}
                         style={getItemStyles}
                         saveTask={(title, taskId) =>

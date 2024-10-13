@@ -6,6 +6,7 @@ interface StoreState {
   displaySidebar: boolean;
   currentBoardItem: UniqueIdentifier | null;
   removedItem: UniqueIdentifier | null;
+  completedItem: UniqueIdentifier | null;
 }
 
 interface StoreContextType {
@@ -19,6 +20,7 @@ export const StoreContext = createContext<StoreContextType>({
     displaySidebar: false,
     currentBoardItem: null,
     removedItem: null,
+    completedItem: null,
   },
   setStore: () => {},
 });
@@ -28,6 +30,7 @@ export const StoreProvider = ({ children }: { children: ReactNode }) => {
     displaySidebar: false,
     currentBoardItem: null,
     removedItem: null,
+    completedItem: null,
   });
 
   return (

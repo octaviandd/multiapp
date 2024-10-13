@@ -23,6 +23,7 @@ export interface Props {
   handleProps?: any;
   height?: number;
   index?: number;
+  completed?: boolean;
   fadeIn?: boolean;
   transform?: Transform | null;
   listeners?: DraggableSyntheticListeners;
@@ -51,6 +52,7 @@ export const Item = React.memo(
         handleProps,
         height,
         index,
+        completed,
         id,
         listeners,
         recentlyAdded,
@@ -124,6 +126,7 @@ export const Item = React.memo(
             fadeIn && styles.fadeIn,
             sorting && styles.sorting,
             dragOverlay && styles.dragOverlay,
+            completed && styles.completed,
             store.currentBoardItem === id && styles.active
           )}
           style={listItemStyles}

@@ -5,11 +5,11 @@ import React, { useEffect, useState } from "react";
 import { UniqueIdentifier } from "@dnd-kit/core";
 import { useSortable } from "@dnd-kit/sortable";
 import { Item } from "./BoardItem/index";
+import { Task } from "./Board";
 
 interface SortableItemProps {
   containerId: UniqueIdentifier;
-  id: UniqueIdentifier;
-  value: string;
+  item: Task;
   index: number;
   handle: boolean;
   disabled?: boolean;
@@ -17,7 +17,6 @@ interface SortableItemProps {
   getIndex(id: UniqueIdentifier): number;
   removeTemporaryTask?(): void;
   saveTask?(title: string, taskId: UniqueIdentifier): void;
-  recentlyAdded: boolean | undefined;
   wrapperStyle({ index }: { index: number }): React.CSSProperties;
 }
 
@@ -35,15 +34,13 @@ function useMountStatus() {
 
 export const SortableItemBoard = ({
   disabled,
-  id,
+  item,
   index,
-  value,
   handle,
   removeTemporaryTask,
   saveTask,
   style,
   containerId,
-  recentlyAdded,
   getIndex,
   wrapperStyle,
 }: SortableItemProps) => {
@@ -58,7 +55,7 @@ export const SortableItemBoard = ({
     transform,
     transition,
   } = useSortable({
-    id,
+    id: item.id,
   });
   const mounted = useMountStatus();
   const mountedWhileDragging = isDragging && !mounted;
@@ -66,9 +63,10 @@ export const SortableItemBoard = ({
   return (
     <Item
       ref={disabled ? undefined : setNodeRef}
-      value={value}
-      recentlyAdded={recentlyAdded}
-      id={id}
+      value={item.title}
+      recentlyAdded={item.recentlyAdded}
+      id={item.id}
+      completed={item.completed}
       dragging={isDragging}
       sorting={isSorting}
       handle={handle}
@@ -77,7 +75,7 @@ export const SortableItemBoard = ({
       wrapperStyle={wrapperStyle({ index })}
       style={style({
         index,
-        value: value,
+        value: item.title,
         isDragging,
         isSorting,
         overIndex: over ? getIndex(over.id) : overIndex,

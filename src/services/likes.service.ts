@@ -15,6 +15,7 @@ const getLikes = async (taskId: string) => {
 };
 
 const createLike = async (likeData: any) => {
+  console.log(likeData);
   try {
     const like = await prisma.like.create({
       data: likeData,

@@ -29,7 +29,6 @@ export interface Props {
   id: UniqueIdentifier;
   shadow?: boolean;
   placeholder?: boolean;
-  unstyled?: boolean;
   onClick?(): void;
   onRemove?(): void;
   onChangeBoardTitle?(title: string): void;
@@ -59,7 +58,6 @@ export const BoardContainer = forwardRef<HTMLDivElement, Props>(
       scrollable,
       shadow,
       recentlyAdded,
-      unstyled,
       ...props
     }: Props,
     ref
@@ -106,7 +104,6 @@ export const BoardContainer = forwardRef<HTMLDivElement, Props>(
         style={style}
         className={cn(
           styles.Container,
-          unstyled && styles.unstyled,
           horizontal && styles.horizontal,
           hover && styles.hover,
           placeholder && styles.placeholder,

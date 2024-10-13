@@ -139,6 +139,10 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
       .then((res) => res.json())
       .then((data) => {
         setCurrentTask(data);
+        setStore((prev) => ({
+          ...prev,
+          completedItem: currentTask?.id as UniqueIdentifier,
+        }));
       })
       .catch((error) => {
         console.error("Error completing task:", error);
@@ -146,21 +150,29 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
   };
 
   const likeTask = async () => {
-    fetch(`/api/boards/tasks/${String(selectedItem).replace("T", "")}`, {
+    fetch(`/api/boards/tasks/${String(selectedItem).replace("T", "")}/likes`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
         data: {
-          like: true,
+          likeType: "Task",
         },
       }),
       credentials: "include",
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log(data);
+        setCurrentTask((prev) => {
+          if (prev) {
+            return {
+              ...prev,
+              taskLikes: [...(prev.taskLikes as any), data],
+            };
+          }
+          return prev;
+        });
       })
       .catch((error) => {
         console.error("Error liking task:", error);
@@ -210,8 +222,17 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
       }
     )
       .then((res) => res.json())
-      .then((data) => {
-        console.log(data);
+      .then((data: Comment) => {
+        setCurrentTask((prev) => {
+          if (prev) {
+            return {
+              ...prev,
+              comments: [...(prev.comments as any), data],
+            };
+          }
+          return prev;
+        });
+        setCommentEditorState(defaultCommentEditorState);
       })
       .catch((error) => {
         console.error("Error adding comment:", error);
@@ -245,8 +266,17 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
           </p>
         </button>
         <div className="ml-auto flex items-center gap-x-3">
+          {currentTask?.taskLikes && currentTask.taskLikes.length > 0 && (
+            <div className="flex items-center gap-x-1">
+              <p className="text-white small">{currentTask.taskLikes.length}</p>
+            </div>
+          )}
           <button
-            className="border rounded-md border-neutral-600 p-2 hover:bg-[#2A2B2D] transition-background duration-300 ease-in-out"
+            className={`${
+              currentTask?.taskLikes && currentTask.taskLikes.length > 0
+                ? "bg-[#689AF3] border-[#689AF3] hover:bg-[#729ee9]"
+                : "border-neutral-600 bg-[#1E1F21] hover:bg-[#2A2B2D]"
+            } border cursor-pointer rounded-md border-neutral-600 p-2 transition-background duration-300 ease-in-out`}
             onClick={() => likeTask()}
           >
             <ThumbsUp color="white" width={16} height={16} />
@@ -396,7 +426,7 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
             </div>
             {currentTask?.comments &&
               currentTask?.comments.map((comment) => (
-                <div className="flex items-center my-2">
+                <div className="flex items-center my-2" key={comment.id}>
                   <div className="mx-2">
                     <div>
                       <img
@@ -421,7 +451,7 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
                           </p>
                         </div>
                       </div>
-                      <div className="ml-auto">
+                      <div className="ml-auto cursor-pointer">
                         <ThumbsUp width={14} height={14} />
                       </div>
                     </div>
