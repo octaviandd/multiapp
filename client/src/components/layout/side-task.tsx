@@ -1,7 +1,7 @@
 /** @format */
 
 import { UniqueIdentifier } from "@dnd-kit/core";
-import { Check, Folder, PlusCircle, ThumbsUp, Trash } from "lucide-react";
+import { Check, Folder, ThumbsUp, Trash } from "lucide-react";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { Task, User } from "../drag-and-drop/tasks/Board";
 import { Editor } from "react-draft-wysiwyg";
@@ -69,7 +69,10 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
     };
   }, [selectedItem]);
 
-  useEffect(() => {}, [currentTask]);
+  useEffect(() => {
+    console.log(currentTask?.taskLikes);
+    console.log(store.user?.taskLikes);
+  }, [currentTask]);
 
   useEffect(() => {
     if (currentTask && currentDate) {
@@ -92,7 +95,7 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log(data);
+        // console.log(data);
       })
       .catch((error) => {
         console.error("Error updating task:", error);
@@ -175,7 +178,6 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
   };
 
   const dislikeTask = async () => {
-    console.log(currentTask?.taskLikes);
     const likeId = currentTask?.taskLikes?.find(
       (like) => like.userId === (store.user as User).id
     )?.id;
@@ -281,7 +283,13 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
                 ? "bg-[#689AF3] border-[#689AF3] hover:bg-[#729ee9]"
                 : "border-neutral-600 bg-[#1E1F21] hover:bg-[#2A2B2D]"
             } border cursor-pointer rounded-md border-neutral-600 p-2 transition-background duration-300 ease-in-out`}
-            onClick={() => dislikeTask()}
+            onClick={() =>
+              store?.user?.taskLikes.some(
+                (like) => like.taskId == (currentTask as Task).id
+              )
+                ? dislikeTask()
+                : likeTask()
+            }
           >
             <ThumbsUp color="white" width={16} height={16} />
           </button>
@@ -327,10 +335,9 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
                   alt="Assignee Avatar"
                   className="w-8 h-8 rounded-full"
                 />
-                {currentTask && currentTask.createdBy && (
+                {currentTask && currentTask.author && (
                   <span className="ml-2 text-sm text-white">
-                    {currentTask.createdBy.firstName}{" "}
-                    {currentTask.createdBy.lastName}
+                    {currentTask.author.firstName} {currentTask.author.lastName}
                   </span>
                 )}
               </div>

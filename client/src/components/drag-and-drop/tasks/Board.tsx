@@ -58,6 +58,7 @@ export type User = {
   id: UniqueIdentifier;
   firstName: string;
   lastName: string;
+  taskLikes: Like[];
   email: string;
   role: string;
 };
@@ -66,7 +67,7 @@ export type Comment = {
   id: UniqueIdentifier;
   content: string;
   createdAt: Date;
-  createdBy: User;
+  author: User;
 };
 
 export type Task = {
@@ -79,14 +80,14 @@ export type Task = {
   dueDate?: Date;
   asignee?: string;
   completed?: boolean;
-  createdBy?: User;
+  author?: User;
   taskLikes?: Like[];
 };
 
 export type Like = {
   id: UniqueIdentifier;
   userId: UniqueIdentifier;
-  createdBy: User;
+  taskId: UniqueIdentifier;
 };
 
 export type Board = {

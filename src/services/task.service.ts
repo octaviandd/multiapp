@@ -23,7 +23,7 @@ const getTask = async (taskId: string) => {
     const task = await prisma.task.findUnique({
       where: { id: Number(taskId) },
       include: {
-        createdBy: true,
+        author: true,
         comments: true,
         taskLikes: true,
       },
@@ -78,7 +78,7 @@ const createTask = async (data: any) => {
     const task = await prisma.task.create({
       data,
       include: {
-        createdBy: true,
+        author: true,
         comments: true,
       },
     });
