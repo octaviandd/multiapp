@@ -3,12 +3,12 @@
 import { Task } from "./task";
 
 export type Board = {
-  id: number;
-  temporaryId: string;
+  id: string | number;
+  temporaryId?: string;
   title: string;
   displayOrder: number;
   tasks: Task[];
   recentlyAdded?: boolean;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
 };

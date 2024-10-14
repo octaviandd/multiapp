@@ -3,10 +3,10 @@
 import { Task } from "./task";
 import { User } from "./user";
 
-export type CommentLike = {
+export type Comment = {
   id: number;
   user: User;
   task: Task;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
 };

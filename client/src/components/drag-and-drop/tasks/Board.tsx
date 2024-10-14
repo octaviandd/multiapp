@@ -8,7 +8,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { createPortal, render, unstable_batchedUpdates } from "react-dom";
+import { createPortal, unstable_batchedUpdates } from "react-dom";
 import {
   CancelDrop,
   closestCenter,
@@ -74,7 +74,7 @@ export type Task = {
   title: string;
   recentlyAdded?: boolean;
   body?: string;
-  files?: string[];
+  files?: File[];
   comments?: Comment[];
   dueDate?: Date;
   asignee?: string;
@@ -184,24 +184,22 @@ export default function MultipleContainers({
   }, [store.removedItem]);
 
   useEffect(() => {
-    if (store.completedItem) {
-      setBoards((boards) => {
-        return boards.map((board) => {
-          return {
-            ...board,
-            tasks: board.tasks.map((task) => {
-              if (task.id === "T" + store.completedItem) {
-                return {
-                  ...task,
-                  completed: !task.completed,
-                };
-              }
-              return task;
-            }),
-          };
-        });
+    setBoards((boards) => {
+      return boards.map((board) => {
+        return {
+          ...board,
+          tasks: board.tasks.map((task) => {
+            if (task.id === "T" + store.completedItem?.id) {
+              return {
+                ...task,
+                completed: store.completedItem?.completed,
+              };
+            }
+            return task;
+          }),
+        };
       });
-    }
+    });
   }, [store.completedItem]);
 
   useEffect(() => {

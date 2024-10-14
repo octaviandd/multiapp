@@ -1,5 +1,5 @@
 /** @format */
-import { User } from "@/components/drag-and-drop/tasks/Board";
+import { Task, User } from "@/components/drag-and-drop/tasks/Board";
 import { UniqueIdentifier } from "@dnd-kit/core";
 import React, { createContext, useState, ReactNode } from "react";
 
@@ -7,7 +7,7 @@ interface StoreState {
   displaySidebar: boolean;
   currentBoardItem: UniqueIdentifier | null;
   removedItem: UniqueIdentifier | null;
-  completedItem: UniqueIdentifier | null;
+  completedItem: Task | null;
   user: User | null;
 }
 

@@ -141,7 +141,7 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
         setCurrentTask(data);
         setStore((prev) => ({
           ...prev,
-          completedItem: currentTask?.id as UniqueIdentifier,
+          completedItem: data,
         }));
       })
       .catch((error) => {
