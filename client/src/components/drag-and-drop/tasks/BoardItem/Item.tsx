@@ -160,7 +160,7 @@ export const Item = React.memo(
                 placeholder="Write a new task"
               ></input>
             </div>
-            <div className="flex justify-between items-center mt-7">
+            {!recentlyAdded && <div className="flex justify-between items-center mt-7">
               <CalendarClock
                 width={14}
                 height={14}
@@ -171,7 +171,7 @@ export const Item = React.memo(
                 width={14}
                 height={14}
               />
-            </div>
+            </div>}
             <span className={styles.Actions}>
               {handle ? <Handle {...handleProps} {...listeners} /> : null}
             </span>
