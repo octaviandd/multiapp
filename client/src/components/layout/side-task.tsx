@@ -418,6 +418,17 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
             <div className="border-b py-4 mb-3 border-neutral-500">
               <p className="text-[14px] leading-6 font-medium">Comments</p>
             </div>
+            {currentTask && <div className="flex items-center my-2">
+              <div className="mx-2 flex justify-between items-center w-full">
+                <img
+                  src="https://via.placeholder.com/32"
+                  alt="User Avatar"
+                />
+                <div className="ml-2 w-full">
+                  <p className="font-medium">{currentTask.author?.firstName + ' ' + currentTask.author?.lastName} <p className="extra-small font-medium inline-block"> created this task · {dayjs(currentTask.createdAt).format("D MMM")}</p></p>
+                </div>
+              </div>
+            </div>}
             {currentTask?.comments &&
               currentTask?.comments.map((comment) => (
                 <div className="flex items-center my-2" key={comment.id}>
@@ -433,14 +444,12 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
                     <div className="flex justify-between">
                       <div className="flex items-center gap-x-2">
                         <div>
-                          <p className="small font-medium">Octavian David</p>
+                          <p className="small font-medium">{comment.author.firstName + ' ' + comment.author.lastName}</p>
                         </div>
                         <div>
                           <p className="extra-small">
                             <span className="text-neutral-500">
-                              {dayjs(comment.createdAt).format(
-                                "dddd [at] HH:mm"
-                              )}
+                              {dayjs(comment.createdAt).format("dddd [at] HH:mm")}
                             </span>
                           </p>
                         </div>

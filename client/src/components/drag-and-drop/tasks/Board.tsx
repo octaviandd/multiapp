@@ -82,6 +82,7 @@ export type Task = {
   completed?: boolean;
   author?: User;
   taskLikes?: Like[];
+  createdAt?: Date;
 };
 
 export type Like = {

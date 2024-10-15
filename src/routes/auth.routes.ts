@@ -36,7 +36,7 @@ router.post("/register", async (req, res) => {
           role: "",
         },
       });
-      req.session.userId = newUser.id;
+      req.session.user = newUser;
       res.status(201).json(newUser);
     }
   } catch (error) {

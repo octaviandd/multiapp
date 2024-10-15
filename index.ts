@@ -37,7 +37,7 @@ app.use("/home", homeRoutes);
 app.use("/transactions", transactionRoutes);
 app.use("/notes", notesRoutes);
 
-const port = 8000 || process.env.PORT;
+const port = process.env.PORT || 8000;
 
 async function main() {}
 

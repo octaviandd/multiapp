@@ -24,7 +24,11 @@ const getTask = async (taskId: string) => {
       where: { id: Number(taskId) },
       include: {
         author: true,
-        comments: true,
+        comments: {
+          include: {
+            author: true,
+          }
+        },
         taskLikes: true,
       },
     });
