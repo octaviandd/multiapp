@@ -73,7 +73,7 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
           </Button>
         </div>
         {icon}
-        <p className="mt-6 text-center text-sm font-medium text-white/80 max-w-[80px]">
+        <p className="mt-6 text-center text-sm font-medium text-white/80 max-w-[80px] overflow-hidden text-ellipsis">
           {file.path}
         </p>
       </div>
@@ -438,7 +438,7 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
 
           <div className="border-b border-neutral-600 pb-4 px-4">
             <p className="extra-small pb-3 text-white">Attachments</p>
-            <section className="container p-6">
+            <section className="p-6">
               <div
                 {...getRootProps({ className: "dropzone" })}
                 className={cn(
@@ -449,31 +449,10 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
                 <input {...getInputProps()} />
                 <Plus className="h-6 w-6" color="white"/>
               </div>
-              <aside className="my-12">
-                <div className="grid gap-6 grid-cols-4 grid-rows-auto">{files}</div>
-              </aside>
+              {files.length > 0 && <aside className="my-12">
+                <div className="grid gap-6 grid-cols-3 grid-rows-auto">{files}</div>
+              </aside>}
             </section>
-            <div className="mt-2">
-              <div className="flex items-center space-x-2">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5 text-white"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.586-6.586a4 4 0 00-5.656-5.656L7.757 9.172a6 6 0 008.485 8.485l6.586-6.586"
-                  />
-                </svg>
-                <a href="#" className="text-sm text-blue-600 hover:underline">
-                  attachment.pdf
-                </a>
-              </div>
-            </div>
           </div>
 
           <div className="bg-[#252628] px-4 text-white pb-4 !mt-0">
