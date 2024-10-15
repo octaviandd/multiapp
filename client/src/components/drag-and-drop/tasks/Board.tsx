@@ -770,7 +770,7 @@ export default function MultipleContainers({
       onDragCancel={onDragCancel}
       modifiers={modifiers}
     >
-      <div className="inline-grid p-5 h-full overflow-y-hidden overflow-x-scroll w-full grid-flow-col">
+      <div className="inline-grid p-5 h-full overflow-y-hidden overflow-x-scroll w-full grid-flow-col bg-[#282a2c]">
         <SortableContext
           items={[...boards.map((board) => board.id), PLACEHOLDER_ID]}
           strategy={horizontalListSortingStrategy}
