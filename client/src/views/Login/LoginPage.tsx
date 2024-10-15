@@ -95,14 +95,6 @@ export function LoginForm() {
                     <FormDescription>
                       {formState.errors.password?.message}
                     </FormDescription>
-                    <FormDescription>
-                      <Link
-                        to="#"
-                        className="ml-auto inline-block text-sm underline"
-                      >
-                        Forgot your password?
-                      </Link>
-                    </FormDescription>
                   </FormItem>
                 )}
               />
@@ -110,9 +102,6 @@ export function LoginForm() {
                 <div className="grid gap-2"></div>
                 <Button type="submit" className="w-full">
                   Login
-                </Button>
-                <Button variant="outline" className="w-full">
-                  Login with Google
                 </Button>
               </div>
             </form>

@@ -39,17 +39,20 @@ const formSchema = z.object({
     message: "Password must be at least 8 characters.",
   }),
 });
+const randomFirstNames = ['Tom', 'John', 'Emma', 'Olivia', 'Liam', 'Noah', 'Sophia', 'Ava', 'James', 'Mia'];
+const randomLastNames = ['Smith', 'Johnson', 'Williams', 'Brown', 'Jones', 'Garcia', 'Miller', 'Davis', 'Rodriguez', 'Martinez'];
+const randomEmail = ['@gmail.com', '@yahoo.com', '@hotmail.com', '@outlook.com', '@icloud.com', '@protonmail.com', '@aol.com', '@zoho.com', '@yandex.com', '@mail.com'];
 
 export function RegisterForm() {
   const navigate = useNavigate();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      first_name: "",
-      last_name: "",
-      email: "",
-      password: "",
-      confirm_password: "",
+      first_name: randomFirstNames[Math.floor(Math.random() * randomFirstNames.length)],
+      last_name: randomLastNames[Math.floor(Math.random() * randomLastNames.length)],
+      email: randomFirstNames[Math.floor(Math.random() * randomFirstNames.length)] + randomLastNames[Math.floor(Math.random() * randomLastNames.length)] + randomEmail[Math.floor(Math.random() * randomEmail.length)],
+      password: "password",
+      confirm_password: "password",
     },
   });
   const onSubmit = (values: z.infer<typeof formSchema>) => {
@@ -130,7 +133,7 @@ export function RegisterForm() {
                 control={form.control}
                 name="password"
                 render={({ field, formState }) => (
-                  <FormItem className="grid gap-2">
+                  <FormItem className="grid gap-2 relative">
                     <FormLabel>Password</FormLabel>
                     <FormControl>
                       <Input {...field} />
@@ -155,23 +158,12 @@ export function RegisterForm() {
                     <FormDescription>
                       {formState.errors.confirm_password?.message}
                     </FormDescription>
-                    <FormDescription>
-                      <Link
-                        to="#"
-                        className="ml-auto inline-block text-sm underline"
-                      >
-                        Forgot your password?
-                      </Link>
-                    </FormDescription>
                   </FormItem>
                 )}
               />
               <div className="grid gap-4 mt-4">
                 <Button type="submit" className="w-full">
                   Register
-                </Button>
-                <Button variant="outline" className="w-full">
-                  Register with Google
                 </Button>
               </div>
             </form>
