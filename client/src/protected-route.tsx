@@ -25,7 +25,6 @@ export default function ProtectedRoute({
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log(data);
         setIsAuthenticated(data.authenticated);
         setLoading(false);
         if (data.authenticated) {

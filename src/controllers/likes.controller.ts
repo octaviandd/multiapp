@@ -21,7 +21,7 @@ const createTaskLike = async (req: Request, res: Response) => {
     const { taskId } = req.params;
     const currentUserId = String(req.session.user.id);
     const likeData = {
-      userId: Number(currentUserId),
+      authorId: Number(currentUserId),
       taskId: Number(taskId),
     };
     const comment = await LikesService.createTaskLike(likeData);
@@ -66,8 +66,7 @@ const createCommentLike = async (req: Request, res: Response) => {
     const { data } = req.body;
     const currentUserId = String(req.session.user.id);
     const likeData = {
-      ...data,
-      userId: Number(currentUserId),
+      authorId: Number(currentUserId),
       commentId: Number(commentId),
     };
     const comment = await LikesService.createCommentLike(likeData);

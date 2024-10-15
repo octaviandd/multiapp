@@ -19,6 +19,7 @@ interface DatePickerProps {
 
 export function DatePicker({ date, setDate }: DatePickerProps) {
   const onHandleDate = (date: any) => {
+    console.log(date)
     setDate(date);
   };
 

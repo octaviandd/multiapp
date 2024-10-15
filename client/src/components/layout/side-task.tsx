@@ -25,7 +25,7 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
   const [commentState, setCommentEditorState] = useState(
     defaultCommentEditorState
   );
-  const [currentDate, setDate] = useState<Date | undefined>(undefined);
+  const [currentDate, setDate] = useState<Date | undefined>(currentTask?.dueDate || undefined);
   const { store, setStore } = useContext(StoreContext);
   const markCompleteRef = useRef<HTMLButtonElement>(null);
 
@@ -70,11 +70,7 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
   }, [selectedItem]);
 
   useEffect(() => {
-    console.log(currentTask?.taskLikes);
-    console.log(store.user?.taskLikes);
-  }, [currentTask]);
-
-  useEffect(() => {
+    console.log(currentTask, currentDate);
     if (currentTask && currentDate) {
       updateTask({
         dueDate: dayjs(currentDate).toISOString(),
@@ -345,7 +341,7 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
             <div className="flex items-center justify-between mt-3">
               <p className="extra-small text-white">Due date:</p>
               <DatePicker
-                date={currentTask?.dueDate}
+                date={currentDate}
                 setDate={(date) => setDate(date)}
               ></DatePicker>
             </div>
