@@ -1,17 +1,13 @@
-import prisma from "../../prisma/prisma-client";
+/** @format */
 
-import { createInterface } from "readline/promises";
+import prisma from "../../prisma/prisma-client";
 
 import {
   S3Client,
   PutObjectCommand,
   CreateBucketCommand,
   DeleteObjectCommand,
-  DeleteBucketCommand,
-  paginateListObjectsV2,
-  GetObjectCommand,
 } from "@aws-sdk/client-s3";
-
 
 const uploadFile = async (file: any) => {
   const s3Client = new S3Client({});
@@ -31,7 +27,7 @@ const uploadFile = async (file: any) => {
       Body: file.buffer,
     })
   );
-}
+};
 
 const deleteFile = async (fileName: string) => {
   const s3Client = new S3Client({});
@@ -44,9 +40,9 @@ const deleteFile = async (fileName: string) => {
       Key: fileName,
     })
   );
-}
+};
 
 export default {
   uploadFile,
   deleteFile,
-}
+};

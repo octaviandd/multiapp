@@ -24,10 +24,7 @@ router.post("/:id/move-board", BoardController.moveBoard);
 router.get("/:boardId/tasks", TaskController.getTasks);
 router.get("/tasks/:taskId", TaskController.getTask);
 router.post("/:boardId/tasks", TaskController.createTask);
-router.post(
-  "/:boardId/tasks/move-task/:taskId",
-  TaskController.updateTaskBoard
-);
+router.post("/:boardId/tasks/move-task/:taskId", TaskController.updateTask);
 router.post("/tasks/:taskId", TaskController.updateTask);
 router.delete("/tasks/delete-task/:taskId", TaskController.deleteTask);
 
@@ -38,10 +35,6 @@ router.get(
   CommentController.getComment
 );
 router.post("/tasks/:taskId/comments", CommentController.createComment);
-router.put(
-  "/:id/tasks/:taskId/comments/:commentId",
-  CommentController.updateComment
-);
 router.delete(
   "/:id/tasks/:taskId/comments/:commentId",
   CommentController.deleteComment

@@ -49,7 +49,7 @@ const deleteTask = async (req: Request, res: Response) => {
     const { taskId } = req.params;
     const task = await TaskService.deleteTask(taskId);
 
-    return res.status(200).json(task);
+    return res.status(200);
   } catch (error: any) {
     return res.status(500).json({
       message: "Internal server error: " + error.message,
@@ -71,25 +71,10 @@ const updateTask = async (req: Request, res: Response) => {
   }
 };
 
-const updateTaskBoard = async (req: Request, res: Response) => {
-  try {
-    const { taskId } = req.params;
-    const { data } = req.body;
-    const task = await TaskService.updateTaskBoard(taskId, data);
-
-    return res.status(200).json(task);
-  } catch (error: any) {
-    return res.status(500).json({
-      message: "Internal server error: " + error.message,
-    });
-  }
-};
-
 export default {
   getTasks,
   getTask,
   createTask,
   deleteTask,
   updateTask,
-  updateTaskBoard,
 };

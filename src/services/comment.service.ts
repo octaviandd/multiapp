@@ -54,23 +54,9 @@ const deleteComment = async (commentId: string) => {
   }
 };
 
-const updateComment = async (commentId: string, content: string) => {
-  try {
-    const comment = await prisma.comment.findUnique({
-      where: { id: Number(commentId) },
-      // data: { content },
-    });
-
-    return comment;
-  } catch (error: any) {
-    throw new Error("Failed to update comment: " + error.message);
-  }
-};
-
 export default {
   getComments,
   getComment,
   createComment,
   deleteComment,
-  updateComment,
 };

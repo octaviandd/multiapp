@@ -32,7 +32,9 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
   const [commentState, setCommentEditorState] = useState(
     defaultCommentEditorState
   );
-  const [currentDate, setDate] = useState<Date | undefined>(currentTask?.dueDate || undefined);
+  const [currentDate, setDate] = useState<Date | undefined>(
+    currentTask?.dueDate || undefined
+  );
   const { store, setStore } = useContext(StoreContext);
   const markCompleteRef = useRef<HTMLButtonElement>(null);
   const [isSelected, setIsSelected] = useState(false);
@@ -40,6 +42,10 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
   const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
     maxFiles: 10,
   });
+
+  useEffect(() => {
+    console.log(store.user);
+  }, [currentTask]);
 
   const files = acceptedFiles.map((file: FileWithPath) => {
     let icon;
@@ -121,7 +127,6 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
   }, [selectedItem]);
 
   useEffect(() => {
-    console.log(currentTask, currentDate);
     if (currentTask && currentDate) {
       updateTask({
         dueDate: dayjs(currentDate).toISOString(),
@@ -213,7 +218,7 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
           if (prev) {
             return {
               ...prev,
-              taskLikes: [...(prev.taskLikes as any), data],
+              taskLikes: [...(prev?.taskLikes ?? []), data],
             };
           }
           return prev;
@@ -226,7 +231,7 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
 
   const dislikeTask = async () => {
     const likeId = currentTask?.taskLikes?.find(
-      (like) => like.userId === (store.user as User).id
+      (like) => like.authorId === (store.user as User).id
     )?.id;
 
     fetch(`/api/boards/likes/delete-like/${likeId}`, {
@@ -243,7 +248,7 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
             return {
               ...prev,
               taskLikes: prev.taskLikes?.filter(
-                (like) => like.userId !== (store.user as User).id
+                (like) => like.authorId !== (store.user as User).id
               ),
             };
           }
@@ -332,7 +337,7 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
             } border cursor-pointer rounded-md border-neutral-600 p-2 transition-background duration-300 ease-in-out`}
             onClick={() =>
               store?.user?.taskLikes.some(
-                (like) => like.taskId == (currentTask as Task).id
+                (like) => like.authorId == (currentTask as Task).id
               )
                 ? dislikeTask()
                 : likeTask()
@@ -444,11 +449,15 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
                 )}
               >
                 <input {...getInputProps()} />
-                <Plus className="h-6 w-6" color="white"/>
+                <Plus className="h-6 w-6" color="white" />
               </div>
-              {files.length > 0 && <aside className="my-12">
-                <div className="grid gap-6 grid-cols-3 grid-rows-auto">{files}</div>
-              </aside>}
+              {files.length > 0 && (
+                <aside className="my-12">
+                  <div className="grid gap-6 grid-cols-3 grid-rows-auto">
+                    {files}
+                  </div>
+                </aside>
+              )}
             </section>
           </div>
 
@@ -456,17 +465,25 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
             <div className="border-b py-4 mb-3 border-neutral-500">
               <p className="text-[14px] leading-6 font-medium">Comments</p>
             </div>
-            {currentTask && <div className="flex items-center my-2">
-              <div className="mx-2 flex justify-between items-center w-full">
-                <img
-                  src="https://via.placeholder.com/32"
-                  alt="User Avatar"
-                />
-                <div className="ml-2 w-full">
-                  <p className="font-medium">{currentTask.author?.firstName + ' ' + currentTask.author?.lastName} <p className="extra-small font-medium inline-block"> created this task · {dayjs(currentTask.createdAt).format("D MMM")}</p></p>
+            {currentTask && (
+              <div className="flex items-center my-2">
+                <div className="mx-2 flex justify-between items-center w-full">
+                  <img src="https://via.placeholder.com/32" alt="User Avatar" />
+                  <div className="ml-2 w-full">
+                    <p className="font-medium">
+                      {currentTask.author?.firstName +
+                        " " +
+                        currentTask.author?.lastName}{" "}
+                      <p className="extra-small font-medium inline-block">
+                        {" "}
+                        created this task ·{" "}
+                        {dayjs(currentTask.createdAt).format("D MMM")}
+                      </p>
+                    </p>
+                  </div>
                 </div>
               </div>
-            </div>}
+            )}
             {currentTask?.comments &&
               currentTask?.comments.map((comment) => (
                 <div className="flex items-center my-2" key={comment.id}>
@@ -480,12 +497,18 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
                     <div className="flex justify-between">
                       <div className="flex items-center gap-x-2">
                         <div>
-                          <p className="small font-medium">{comment.author.firstName + ' ' + comment.author.lastName}</p>
+                          <p className="small font-medium">
+                            {comment.author.firstName +
+                              " " +
+                              comment.author.lastName}
+                          </p>
                         </div>
                         <div>
                           <p className="extra-small">
                             <span className="text-neutral-500">
-                              {dayjs(comment.createdAt).format("dddd [at] HH:mm")}
+                              {dayjs(comment.createdAt).format(
+                                "dddd [at] HH:mm"
+                              )}
                             </span>
                           </p>
                         </div>

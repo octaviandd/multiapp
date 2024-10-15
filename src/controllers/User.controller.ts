@@ -3,18 +3,51 @@
 import { Request, Response } from "express";
 import userService from "../services/user.service";
 
-const getUserFromSession = async (req: Request, res: Response) => {
+const registerUser = async (req: Request, res: Response) => {
   try {
-    const userId = req.session.user.id;
+    const { email, password, first_name, last_name } = req.body;
+    const user = await userService.createUser({
+      email,
+      password,
+      first_name,
+      last_name,
+    });
 
-    if (!userId) {
-      return res.status(401).json({ message: "User is not logged in" });
-    }
+    req.session.user = user;
+  } catch (error) {
+    res.status(500).json({ error: (error as any).message });
+  }
+};
 
-    const user = await userService.getUserById(Number(userId));
+const loginUser = async (req: Request, res: Response) => {
+  try {
+    const { email, password } = req.body;
+    const user = await userService.loginUser({ email, password });
+
+    req.session.user = user;
     res.status(200).json(user);
   } catch (error) {
     res.status(500).json({ error: (error as any).message });
+  }
+};
+
+const logoutUser = async (req: Request, res: Response) => {
+  try {
+    req.session.destroy(() => {
+      res.status(200).json({ message: "User logged out" });
+    });
+  } catch (error) {
+    res.status(500).json({ error: (error as any).message });
+  }
+};
+
+const getUserFromSession = async (req: Request, res: Response) => {
+  if (req.session.user) {
+    return res
+      .status(200)
+      .json({ authenticated: true, user: req.session.user });
+  } else {
+    return res.status(401).json({ authenticated: false });
   }
 };
 
@@ -33,4 +66,10 @@ const getUser = async (req: Request, res: Response) => {
   }
 };
 
-export default { getUserFromSession, getUser };
+export default {
+  getUserFromSession,
+  getUser,
+  registerUser,
+  loginUser,
+  logoutUser,
+};

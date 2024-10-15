@@ -62,24 +62,9 @@ const deleteComment = async (req: Request, res: Response) => {
   }
 };
 
-const updateComment = async (req: Request, res: Response) => {
-  try {
-    const { id } = req.params;
-    const { content } = req.body;
-    const comment = await CommentService.updateComment(id, content);
-
-    return res.status(200).json(comment);
-  } catch (error: any) {
-    return res
-      .status(500)
-      .json({ message: "Internal server error: " + error.message });
-  }
-};
-
 export default {
   getComments,
   getComment,
   createComment,
   deleteComment,
-  updateComment,
 };

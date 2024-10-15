@@ -24,9 +24,10 @@ const createTaskLike = async (req: Request, res: Response) => {
       authorId: Number(currentUserId),
       taskId: Number(taskId),
     };
-    const comment = await LikesService.createTaskLike(likeData);
 
-    return res.status(201).json(comment);
+    const like = await LikesService.createTaskLike(likeData);
+
+    return res.status(201).json(like);
   } catch (error: any) {
     return res
       .status(500)
@@ -39,7 +40,7 @@ const deleteTaskLike = async (req: Request, res: Response) => {
     const { likeId } = req.params;
     const like = await LikesService.deleteTaskLike(likeId);
 
-    return res.status(200).json(like);
+    return res.status(200);
   } catch (error: any) {
     return res
       .status(500)
@@ -63,7 +64,6 @@ const getCommentLikes = async (req: Request, res: Response) => {
 const createCommentLike = async (req: Request, res: Response) => {
   try {
     const { commentId } = req.params;
-    const { data } = req.body;
     const currentUserId = String(req.session.user.id);
     const likeData = {
       authorId: Number(currentUserId),
@@ -84,7 +84,7 @@ const deleteCommentLike = async (req: Request, res: Response) => {
     const { id } = req.params;
     const like = await LikesService.deleteCommentLike(id);
 
-    return res.status(200).json(like);
+    return res.status(200);
   } catch (error: any) {
     return res
       .status(500)

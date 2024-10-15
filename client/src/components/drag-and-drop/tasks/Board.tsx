@@ -86,9 +86,11 @@ export type Task = {
 };
 
 export type Like = {
-  id: UniqueIdentifier;
-  userId: UniqueIdentifier;
-  taskId: UniqueIdentifier;
+  id: string | number;
+  authorId: string | number;
+  taskId: string | number;
+  createdAt: Date;
+  updatedAt: Date;
 };
 
 export type Board = {

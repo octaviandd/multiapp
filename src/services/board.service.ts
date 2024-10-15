@@ -8,6 +8,7 @@ const getBoards = async () => {
       include: { tasks: true },
       orderBy: { displayOrder: "asc" },
     });
+
     return boards;
   } catch (error: any) {
     throw new Error("Boards not found: " + error.message);

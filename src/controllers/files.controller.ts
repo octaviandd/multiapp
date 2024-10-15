@@ -1,10 +1,11 @@
+/** @format */
+
 import FilesService from "../services/files.service";
 import { Request, Response } from "express";
 
-
 const uploadFile = async (req: Request, res: Response) => {
   try {
-    const file = req.file;
+    const { file } = req.body;
     if (!file) {
       return res.status(400).json({ message: "No file uploaded" });
     }
@@ -17,7 +18,7 @@ const uploadFile = async (req: Request, res: Response) => {
       .status(500)
       .json({ message: "Internal server error: " + error.message });
   }
-}
+};
 
 const deleteFile = async (req: Request, res: Response) => {
   try {
@@ -30,9 +31,9 @@ const deleteFile = async (req: Request, res: Response) => {
       .status(500)
       .json({ message: "Internal server error: " + error.message });
   }
-}
+};
 
 export default {
   uploadFile,
   deleteFile,
-}
+};

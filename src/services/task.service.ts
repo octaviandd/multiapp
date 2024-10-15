@@ -8,13 +8,9 @@ const getTasks = async (boardId: string) => {
       where: { boardId: Number(boardId) },
     });
 
-    if (tasks.length == 0) {
-      throw new Error("No tasks found on this board");
-    }
     return tasks;
   } catch (error) {
-    console.log("Error fetching tasks:", error);
-    throw new Error("Failed to fetch tasks");
+    throw new Error("Tasks not found: " + error.message);
   }
 };
 
@@ -27,7 +23,7 @@ const getTask = async (taskId: string) => {
         comments: {
           include: {
             author: true,
-          }
+          },
         },
         taskLikes: true,
       },
@@ -49,19 +45,6 @@ const updateTask = async (taskId: string, data: any) => {
     return task;
   } catch (error: any) {
     throw new Error("Failed to update task: " + error.message);
-  }
-};
-
-const updateTaskBoard = async (taskId: string, data: any) => {
-  try {
-    const task = await prisma.task.update({
-      where: { id: Number(taskId) },
-      data,
-    });
-
-    return task;
-  } catch (error: any) {
-    throw new Error("Failed to update task board: " + error.message);
   }
 };
 
@@ -99,5 +82,4 @@ export default {
   deleteTask,
   createTask,
   getTasks,
-  updateTaskBoard,
 };
