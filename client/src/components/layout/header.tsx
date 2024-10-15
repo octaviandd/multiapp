@@ -100,16 +100,6 @@ export default function Header({ displaySidebar, setDisplaySidebar }: Props) {
                   </DropdownMenuShortcut>
                 </DropdownMenuItem>
                 <DropdownMenuItem>
-                  <CreditCard
-                    color="black"
-                    className="mr-2 h-4 w-4 text-black"
-                  />
-                  <span className="text-black">Note</span>
-                  <DropdownMenuShortcut className="text-black">
-                    ⌘B
-                  </DropdownMenuShortcut>
-                </DropdownMenuItem>
-                <DropdownMenuItem>
                   <Settings color="black" className="mr-2 h-4 w-4" />
                   <span className="text-black">Transaction</span>
                   <DropdownMenuShortcut className="text-black">

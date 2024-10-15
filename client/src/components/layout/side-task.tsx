@@ -340,9 +340,6 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
           >
             <ThumbsUp color="white" width={16} height={16} />
           </button>
-          <button className="bg-[#1E1F21] hover:bg-[#2A2B2D] border cursor-pointer rounded-md border-neutral-600 p-2 transition-background duration-300 ease-in-out`">
-            <Folder color="white" width={16} height={16} />
-          </button>
           <button
             className="border rounded-md border-neutral-600 p-2 hover:bg-[#db4b66] transition-background duration-300 ease-in-out"
             onClick={removeTask}

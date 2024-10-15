@@ -9,7 +9,6 @@ import userRoutes from "./src/routes/user.routes";
 import authRoutes from "./src/routes/auth.routes";
 import boardRoutes from "./src/routes/board.routes";
 import transactionRoutes from "./src/routes/transaction.routes";
-import notesRoutes from "./src/routes/note.routes";
 import homeRoutes from "./src/routes/home.routes";
 import filesRoutes from "./src/routes/files.routes";
 import { withAuth } from "./src/middleware/auth.middleware";
@@ -36,7 +35,6 @@ app.use("/auth", authRoutes);
 app.use("/boards", boardRoutes);
 app.use("/home", homeRoutes);
 app.use("/transactions", transactionRoutes);
-app.use("/notes", notesRoutes);
 app.use("/files", filesRoutes);
 
 const port = process.env.PORT || 8000;

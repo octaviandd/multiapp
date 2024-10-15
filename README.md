@@ -1,7 +1,6 @@
 # Proof of concept:
 
   ## Backend:
-  ### getNotes()
   ### getTasks(pagination)
   ### getLatestTasks()
   ### getLatestTransactions()
@@ -26,7 +25,6 @@
   ### User:
     * name
     * email
-    * notes
     * tasks
     * transactions
     

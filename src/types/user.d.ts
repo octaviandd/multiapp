@@ -1,6 +1,6 @@
 /** @format */
 
-import { CommentLike, Note, Transaction } from "@prisma/client";
+import { CommentLike, Transaction } from "@prisma/client";
 import { Task } from "./task";
 import { TaskLike } from "./task-like";
 
@@ -12,7 +12,6 @@ export type User = {
   role: string;
   createdAt: Date;
   updatedAt: Date;
-  notes: Note[];
   tasks: Task[];
   comments: Comment[];
   taskLikes: TaskLike[];

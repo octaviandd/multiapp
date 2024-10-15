@@ -6,7 +6,7 @@ const getUserById = async (userId: number) => {
   try {
     const user = await prisma.user.findUnique({
       where: { id: userId },
-      include: { tasks: true, notes: true },
+      include: { tasks: true},
     });
 
     return user;

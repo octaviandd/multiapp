@@ -2,7 +2,7 @@
 
 import React from "react";
 import { Link } from "react-router-dom";
-import { Landmark, ListTodo, Home, Notebook } from "lucide-react";
+import { Landmark, ListTodo, Home } from "lucide-react";
 
 type Props = {
   displaySidebar: boolean;
@@ -31,12 +31,6 @@ export default function Sidebar({ displaySidebar }: Props) {
           <Link to="/tasks/list" className="flex items-center gap-x-2">
             <ListTodo width={16} height={16} />
             <span>Tasks Manager</span>
-          </Link>
-        </li>
-        <li className="text-white py-1 px-4 hover:bg-[#3D3E40] rounded-lg cursor-pointer whitespace-nowrap">
-          <Link to="/notes" className="flex items-center gap-x-2 w-full">
-            <Notebook width={16} height={16} />
-            <span>Notes</span>
           </Link>
         </li>
         <li className="text-white  w-full py-1 px-4 hover:bg-[#3D3E40] rounded-lg cursor-pointer whitespace-nowrap">
