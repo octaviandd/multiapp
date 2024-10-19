@@ -16,7 +16,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@v2
         with:
           aws-access-key-id: ${{ secrets.EC2AWS }}
           aws-secret-access-key: ${{ secrets.EC2AWSSECRET }}
@@ -26,7 +26,7 @@ jobs:
         run: zip -r multiapp.zip . -x '.git/*'
 
       - name: Upload to S3
-        run: aws s3 cp multiapp.zip s3://your-s3-bucket/multiapp.zip
+        run: aws s3 cp multiapp.zip s3://multiapp-files/multiapp.zip
 
       - name: Deploy to CodeDeploy
         run: |
@@ -34,5 +34,5 @@ jobs:
             --application-name multiapp \
             --deployment-group-name MyDeploymentGroup \
             --deployment-config-name CodeDeployDefault.AllAtOnce \
-            --s3-location bucket=your-s3-bucket,bundleType=zip,key=multiapp.zip \
+            --s3-location bucket=multiapp-files,bundleType=zip,key=multiapp.zip \
             --region eu-west-2
