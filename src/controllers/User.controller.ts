@@ -2,6 +2,13 @@
 
 import { Request, Response } from "express";
 import userService from "../services/user.service";
+import { User } from "../types/user";
+
+declare module "express-session" {
+  interface Session {
+    user: User;
+  }
+}
 
 const registerUser = async (req: Request, res: Response) => {
   try {
@@ -24,7 +31,11 @@ const loginUser = async (req: Request, res: Response) => {
     const { email, password } = req.body;
     const user = await userService.loginUser({ email, password });
 
-    req.session.user = user;
+    if (!user) {
+      return res.status(401).json({ message: "Invalid email or password" });
+    }
+
+    req.session.user = user as any;
     res.status(200).json(user);
   } catch (error) {
     res.status(500).json({ error: (error as any).message });

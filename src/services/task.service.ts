@@ -9,7 +9,7 @@ const getTasks = async (boardId: string) => {
     });
 
     return tasks;
-  } catch (error) {
+  } catch (error: any) {
     throw new Error("Tasks not found: " + error.message);
   }
 };

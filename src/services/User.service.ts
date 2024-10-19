@@ -3,7 +3,17 @@
 import prisma from "../../prisma/prisma-client";
 import bcrypt from "bcrypt";
 
-const createUser = async ({ email, password, first_name, last_name }) => {
+const createUser = async ({
+  email,
+  password,
+  first_name,
+  last_name,
+}: {
+  email: string;
+  password: string;
+  first_name: string;
+  last_name: string;
+}) => {
   try {
     const user = await prisma.user.findUnique({
       where: {
@@ -31,7 +41,13 @@ const createUser = async ({ email, password, first_name, last_name }) => {
   }
 };
 
-const loginUser = async ({ email, password }) => {
+const loginUser = async ({
+  email,
+  password,
+}: {
+  email: string;
+  password: string;
+}) => {
   try {
     const user = await prisma.user.findUnique({
       where: {
