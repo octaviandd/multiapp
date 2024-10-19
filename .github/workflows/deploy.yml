@@ -1,0 +1,38 @@
+# @format
+
+name: Deploy to EC2 via CodeDeploy
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.EC2AWS }}
+          aws-secret-access-key: ${{ secrets.EC2AWSSECRET }}
+          aws-region: eu-west-2
+
+      - name: Zip files for deployment
+        run: zip -r multiapp.zip . -x '.git/*'
+
+      - name: Upload to S3
+        run: aws s3 cp multiapp.zip s3://your-s3-bucket/multiapp.zip
+
+      - name: Deploy to CodeDeploy
+        run: |
+          aws deploy create-deployment \
+            --application-name multiapp \
+            --deployment-group-name MyDeploymentGroup \
+            --deployment-config-name CodeDeployDefault.AllAtOnce \
+            --s3-location bucket=your-s3-bucket,bundleType=zip,key=multiapp.zip \
+            --region eu-west-2
