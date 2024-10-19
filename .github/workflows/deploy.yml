@@ -31,8 +31,8 @@ jobs:
       - name: Deploy to CodeDeploy
         run: |
           aws deploy create-deployment \
-            --application-name multiapp \
-            --deployment-group-name MyDeploymentGroup \
+            --application-name MultiAppDev \
+            --deployment-group-name MultiApp \
             --deployment-config-name CodeDeployDefault.AllAtOnce \
             --s3-location bucket=multiapp-files,bundleType=zip,key=multiapp.zip \
             --region eu-west-2
