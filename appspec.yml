@@ -11,7 +11,6 @@ hooks:
   BeforeInstall:
     - location: scripts/stop_server.sh
       timeout: 300
-      overwrite: true
       runas: ec2-user
   AfterInstall:
     - location: scripts/install_dependencies.sh
