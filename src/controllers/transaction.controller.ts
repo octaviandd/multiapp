@@ -29,57 +29,57 @@ const getTransaction = async (req: Request, res: Response) => {
   }
 };
 
-const createTransaction = async (req: Request, res: Response) => {
-  try {
-    const { content, taskId } = req.body;
-    const currentUserId = String(req.session.user.id);
-    const transaction = await TransactionController.createTransaction(
-      content,
-      taskId,
-      currentUserId
-    );
+// const createTransaction = async (req: Request, res: Response) => {
+//   try {
+//     const { content, taskId } = req.body;
+//     const currentUserId = String(req.session.user.id);
+//     const transaction = await TransactionController.createTransaction(
+//       content,
+//       taskId,
+//       currentUserId
+//     );
 
-    return res.status(201).json(transaction);
-  } catch (error: any) {
-    return res
-      .status(500)
-      .json({ message: "Internal server error: " + error.message });
-  }
-};
+//     return res.status(201).json(transaction);
+//   } catch (error: any) {
+//     return res
+//       .status(500)
+//       .json({ message: "Internal server error: " + error.message });
+//   }
+// };
 
-const deleteTransaction = async (req: Request, res: Response) => {
-  try {
-    const { id } = req.params;
-    const transaction = await TransactionController.deleteTransaction(id);
+// const deleteTransaction = async (req: Request, res: Response) => {
+//   try {
+//     const { id } = req.params;
+//     const transaction = await TransactionController.deleteTransaction(id);
 
-    return res.status(200).json(transaction);
-  } catch (error: any) {
-    return res
-      .status(500)
-      .json({ message: "Internal server error: " + error.message });
-  }
-};
+//     return res.status(200).json(transaction);
+//   } catch (error: any) {
+//     return res
+//       .status(500)
+//       .json({ message: "Internal server error: " + error.message });
+//   }
+// };
 
-const updateTransaction = async (req: Request, res: Response) => {
-  try {
-    const { id, content } = req.body;
-    const transaction = await TransactionController.updateTransaction(
-      id,
-      content
-    );
+// const updateTransaction = async (req: Request, res: Response) => {
+//   try {
+//     const { id, content } = req.body;
+//     const transaction = await TransactionController.updateTransaction(
+//       id,
+//       content
+//     );
 
-    return res.status(200).json(transaction);
-  } catch (error: any) {
-    return res
-      .status(500)
-      .json({ message: "Internal server error: " + error.message });
-  }
-};
+//     return res.status(200).json(transaction);
+//   } catch (error: any) {
+//     return res
+//       .status(500)
+//       .json({ message: "Internal server error: " + error.message });
+//   }
+// };
 
 export default {
   getTransactions,
   getTransaction,
-  createTransaction,
-  deleteTransaction,
-  updateTransaction,
+  // createTransaction,
+  // deleteTransaction,
+  // updateTransaction,
 };

@@ -1,7 +1,7 @@
 /** @format */
 import { Request, Response } from "express";
 import { Session } from "express-session";
-import prisma from "../../prisma/prisma-client";
+import prisma from "../prisma/prisma-client";
 
 declare module "express-session" {
   interface Session {

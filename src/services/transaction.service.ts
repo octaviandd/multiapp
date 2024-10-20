@@ -1,6 +1,6 @@
 /** @format */
 
-import prisma from "../../prisma/prisma-client";
+import prisma from "../prisma/prisma-client";
 import { Transaction } from "../types/transaction";
 
 const getTransactions = async () => {
@@ -11,7 +11,7 @@ const getTransactions = async () => {
   } catch (error: any) {
     throw new Error("Transactions not found: " + error.message);
   }
-}
+};
 
 const getTransaction = async (id: string) => {
   try {
@@ -38,17 +38,17 @@ const getTransaction = async (id: string) => {
 //   }
 // };
 
-const deleteTransaction = async (id: string) => {
-  try {
-    const transaction = await prisma.transaction.findUnique({
-      where: { id: Number(id) },
-    });
+// const deleteTransaction = async (id: string) => {
+//   try {
+//     const transaction = await prisma.transaction.findUnique({
+//       where: { id: Number(id) },
+//     });
 
-    return true;
-  } catch (error: any) {
-    throw new Error("Transaction not found: " + error.message);
-  }
-};
+//     return true;
+//   } catch (error: any) {
+//     throw new Error("Transaction not found: " + error.message);
+//   }
+// };
 
 // const createTransaction = async (data: Partial<Transaction>) => {
 //   try {
@@ -66,6 +66,6 @@ export default {
   getTransactions,
   getTransaction,
   // updateTransaction,
-  deleteTransaction,
+  // deleteTransaction,
   // createTransaction,
 };

@@ -1,6 +1,6 @@
 /** @format */
 
-import prisma from "../../prisma/prisma-client";
+import prisma from "../prisma/prisma-client";
 
 const getComments = async (taskId: string) => {
   try {
