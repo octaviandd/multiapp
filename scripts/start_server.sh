@@ -1,5 +1,6 @@
 #!/bin/bash
 
+echo "Current directory:  $(pdw)" 
 # Start the Node.js backend using PM2
 cd /home/ec2-user/multiapp
 
