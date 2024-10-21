@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo "Current directory:  $(pdw)" 
+echo "Current directory:  $(pwd)" 
 # Make scripts executable
 chmod +x /home/ec2-user/multiapp/scripts/*.sh
 

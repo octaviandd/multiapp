@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo "Current directory:  $(pdw)" 
+echo "Current directory:  $(pwd)" 
 rm -rf /home/ec2-user/multiapp/*
 
 # Stop Node.js backend and React frontend
