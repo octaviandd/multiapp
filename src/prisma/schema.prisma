@@ -29,7 +29,6 @@ model User {
   comments     Comment[]
   taskLikes    TaskLike[]
   commentLikes CommentLike[]
-  transactions Transaction[]
 }
 
 model Board {
@@ -110,14 +109,4 @@ model Comment {
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
   commentLikes CommentLike[]
-}
-
-model Transaction {
-  id          Int      @id @default(autoincrement())
-  amount      Float
-  description String
-  author      User     @relation(fields: [authorId], references: [id])
-  authorId    Int
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
 }
