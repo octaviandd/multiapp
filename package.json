@@ -9,7 +9,7 @@
     "dev": "nodemon -q index.ts",
     "clean": "rm -rf dist",
     "build:prod": "npm run clean && npm run build && npm run copy-prisma",
-    "copy-prisma": "mkdir -p dist/src/prisma/migrations && cp src/prisma/schema.prisma dist/src/prisma/schema.prisma && cp -r src/prisma/migrations/* dist/src/prisma/migrations/ && dist/src/prisma && npx prisma generate"
+    "copy-prisma": "mkdir -p dist/src/prisma/migrations && cp src/prisma/schema.prisma dist/src/prisma/schema.prisma && cp -r src/prisma/migrations/* dist/src/prisma/migrations/ && cd dist/src/prisma && npx prisma generate"
   },
   "author": "",
   "license": "ISC",
