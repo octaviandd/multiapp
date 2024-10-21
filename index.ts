@@ -34,11 +34,11 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use("/users", userRoutes);
-app.use("/auth", authRoutes);
-app.use("/boards", boardRoutes);
-app.use("/home", homeRoutes);
-app.use("/files", filesRoutes);
+app.use("api/users", userRoutes);
+app.use("api/auth", authRoutes);
+app.use("api//boards", boardRoutes);
+app.use("api/home", homeRoutes);
+app.use("api/files", filesRoutes);
 
 const port = process.env.PORT || 8000;
 
@@ -54,7 +54,7 @@ main()
     process.exit(1);
   });
 
-app.get("/", withAuth, (req: Request, res: Response) => {
+app.get("/api", withAuth, (req: Request, res: Response) => {
   res.send("Hello World");
 });
 
