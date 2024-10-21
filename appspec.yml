@@ -9,18 +9,18 @@ files:
 
 hooks:
   BeforeInstall:
-    - location: /home/ec2-user/scripts/stop_server.sh
+    - location: scripts/stop_server.sh
       timeout: 300
       runas: ec2-user
   AfterInstall:
-    - location: /home/ec2-user/scripts/install_dependencies.sh
+    - location: scripts/install_dependencies.sh
       timeout: 300
       runas: ec2-user
   ApplicationStart:
-    - location: /home/ec2-user/scripts/start_server.sh
+    - location: scripts/start_server.sh
       timeout: 300
       runas: ec2-user
   ValidateService:
-    - location: /home/ec2-user/scripts/validate_server.sh
+    - location: scripts/validate_server.sh
       timeout: 300
       runas: ec2-user
