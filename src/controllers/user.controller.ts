@@ -21,6 +21,7 @@ const registerUser = async (req: Request, res: Response) => {
     });
 
     req.session.user = user;
+    res.status(201).json(user);
   } catch (error) {
     res.status(500).json({ error: (error as any).message });
   }

@@ -21,6 +21,7 @@ export default function ProtectedRoute({
       headers: {
         "Content-Type": "application/json",
       },
+      method: "GET",
       credentials: "include",
     })
       .then((res) => res.json())

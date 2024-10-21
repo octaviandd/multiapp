@@ -39,24 +39,61 @@ const formSchema = z.object({
     message: "Password must be at least 8 characters.",
   }),
 });
-const randomFirstNames = ['Tom', 'John', 'Emma', 'Olivia', 'Liam', 'Noah', 'Sophia', 'Ava', 'James', 'Mia'];
-const randomLastNames = ['Smith', 'Johnson', 'Williams', 'Brown', 'Jones', 'Garcia', 'Miller', 'Davis', 'Rodriguez', 'Martinez'];
-const randomEmail = ['@gmail.com', '@yahoo.com', '@hotmail.com', '@outlook.com', '@icloud.com', '@protonmail.com', '@aol.com', '@zoho.com', '@yandex.com', '@mail.com'];
+const randomFirstNames = [
+  "Tom",
+  "John",
+  "Emma",
+  "Olivia",
+  "Liam",
+  "Noah",
+  "Sophia",
+  "Ava",
+  "James",
+  "Mia",
+];
+const randomLastNames = [
+  "Smith",
+  "Johnson",
+  "Williams",
+  "Brown",
+  "Jones",
+  "Garcia",
+  "Miller",
+  "Davis",
+  "Rodriguez",
+  "Martinez",
+];
+const randomEmail = [
+  "@gmail.com",
+  "@yahoo.com",
+  "@hotmail.com",
+  "@outlook.com",
+  "@icloud.com",
+  "@protonmail.com",
+  "@aol.com",
+  "@zoho.com",
+  "@yandex.com",
+  "@mail.com",
+];
 
 export function RegisterForm() {
   const navigate = useNavigate();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      first_name: randomFirstNames[Math.floor(Math.random() * randomFirstNames.length)],
-      last_name: randomLastNames[Math.floor(Math.random() * randomLastNames.length)],
-      email: randomFirstNames[Math.floor(Math.random() * randomFirstNames.length)] + randomLastNames[Math.floor(Math.random() * randomLastNames.length)] + randomEmail[Math.floor(Math.random() * randomEmail.length)],
+      first_name:
+        randomFirstNames[Math.floor(Math.random() * randomFirstNames.length)],
+      last_name:
+        randomLastNames[Math.floor(Math.random() * randomLastNames.length)],
+      email:
+        randomFirstNames[Math.floor(Math.random() * randomFirstNames.length)] +
+        randomLastNames[Math.floor(Math.random() * randomLastNames.length)] +
+        randomEmail[Math.floor(Math.random() * randomEmail.length)],
       password: "password",
       confirm_password: "password",
     },
   });
   const onSubmit = (values: z.infer<typeof formSchema>) => {
-    console.log(values);
     fetch("/api/auth/register", {
       method: "POST",
       headers: {
