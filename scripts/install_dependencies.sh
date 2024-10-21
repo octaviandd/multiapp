@@ -12,3 +12,4 @@ npm install
 # Navigate to React client folder and install dependencies
 cd /home/ec2-user/multiapp/client
 npm install
+npm run prod
