@@ -1,9 +1,6 @@
 #!/bin/bash
 
 echo "Current directory:  $(pwd)" 
-# Make scripts executable
-chmod +x /home/ec2-user/multiapp/scripts/*.sh
-
 # Ensure the correct ownership of files
 sudo chown -R ec2-user:ec2-user /home/ec2-user/multiapp
 
