@@ -1,5 +1,6 @@
 #!/bin/bash
 
+chmod +x /home/ec2-user/multiapp/scripts/*.sh
 sudo chown -R ec2-user:ec2-user /home/ec2-user/multiapp
 find /home/ec2-user/multiapp -type d -exec chmod 755 {} \;
 find /home/ec2-user/multiapp -type f -exec chmod 644 {} \;
