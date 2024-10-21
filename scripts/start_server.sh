@@ -11,5 +11,6 @@ pm2 start dist/index.js --name my-node-backend
 # Serve the React app (assuming it’s already built)
 cd /home/ec2-user/multiapp/client
 
-# Serve React using a static server like serve, nginx, or continue using React’s development server (for simplicity here):
-# pm2 serve build 3000 --name my-react-client
+npm run build
+
+Serve React using a static server like serve, nginx, or continue using React’s development server (for simplicity here):
