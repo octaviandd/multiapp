@@ -1,8 +1,8 @@
 /** @format */
 
-import { CommentLike, Transaction } from "@prisma/client";
 import { Task } from "./task";
 import { TaskLike } from "./task-like";
+import { CommentLike } from "./comment-like";
 
 export type User = {
   id: number;
@@ -16,5 +16,4 @@ export type User = {
   comments?: Comment[];
   taskLikes?: TaskLike[];
   commentLikes?: CommentLike[];
-  transactions?: Transaction[];
 };
