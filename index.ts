@@ -34,11 +34,11 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use("api/users", userRoutes);
-app.use("api/auth", authRoutes);
-app.use("api//boards", boardRoutes);
-app.use("api/home", homeRoutes);
-app.use("api/files", filesRoutes);
+app.use("/api/users", userRoutes);
+app.use("/api/auth", authRoutes);
+app.use("/api//boards", boardRoutes);
+app.use("/api/home", homeRoutes);
+app.use("/api/files", filesRoutes);
 
 const port = process.env.PORT || 8000;
 
