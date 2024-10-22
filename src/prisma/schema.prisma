@@ -5,11 +5,6 @@ generator client {
   provider = "prisma-client-js"
 }
 
-datasource db {
-  provider = "mysql"
-  url      = "mysql://admin:password@database-2.cn6eawg6ukbv.eu-west-2.rds.amazonaws.com:3306/multiapp"
-}
-
 enum LikableType {
   Task
   Comment
