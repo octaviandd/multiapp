@@ -9,7 +9,7 @@ import { Button } from "@/components/layout/button";
 import { Input } from "@/components/layout/input";
 import { DataTableViewOptions } from "./data-table-view-options";
 
-import { priorities, categories } from "./data";
+import { categories } from "./data";
 import { DataTableFacetedFilter } from "./data-table-faceted-filter";
 
 interface DataTableToolbarProps<TData> {

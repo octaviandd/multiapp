@@ -3,9 +3,7 @@
 import React from "react";
 import MultipleContainers from "../../components/drag-and-drop/tasks/Board";
 
-type Props = {};
-
-export default function Board({}: Props) {
+export default function Board() {
   return (
     <MultipleContainers
       scrollable={true}

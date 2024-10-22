@@ -17,7 +17,7 @@ export default function Sidebar({ displaySidebar }: Props) {
       }`}
     >
       <ul
-        className={`mb-3 list-none ml-0 px-4 transition-all ease-in-out duration-[50] ${
+        className={`mb-3 list-none ml-0 px-4 transition-all ease-in-out ${
           displaySidebar ? "opacity-100" : "opacity-0"
         }`}
       >

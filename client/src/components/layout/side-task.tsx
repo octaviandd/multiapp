@@ -1,7 +1,7 @@
 /** @format */
 
 import { UniqueIdentifier } from "@dnd-kit/core";
-import { Check, CheckIcon, Folder, Plus, ThumbsUp, Trash } from "lucide-react";
+import { Check, CheckIcon, Plus, ThumbsUp, Trash } from "lucide-react";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { Task, User } from "../drag-and-drop/tasks/Board";
 import { Editor } from "react-draft-wysiwyg";
@@ -50,7 +50,7 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
   const files = acceptedFiles.map((file: FileWithPath) => {
     let icon;
     if (file.type.includes("image")) {
-      icon = <img src={imgIcon} alt="Image Icon" width={80} height={80} />;
+      icon = <img src={imgIcon} alt="File Icon" width={80} height={80} />;
     } else if (file.type.includes("pdf")) {
       icon = <img src={pdfIcon} alt="PDF Icon" width={80} height={80} />;
     } else {
@@ -337,7 +337,7 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
             } border cursor-pointer rounded-md border-neutral-600 p-2 transition-background duration-300 ease-in-out`}
             onClick={() =>
               store?.user?.taskLikes.some(
-                (like) => like.authorId == (currentTask as Task).id
+                (like) => like.authorId === (currentTask as Task).id
               )
                 ? dislikeTask()
                 : likeTask()

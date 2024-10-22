@@ -8,9 +8,6 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Errors from "./views/Error/ErrorPage";
 import Home from "./views/Home/Home";
 import Tasks from "./views/Tasks/TasksNavigvation";
-import FinanceManager from "./views/Finance/Manager";
-import FinanceManagerReview from "./views/Finance/ManagerReview";
-import FinanceManagerTransactions from "./views/Finance/ManagerTransactions";
 import List from "./views/Tasks/List";
 import Board from "./views/Tasks/Board";
 import Files from "./views/Tasks/Files";
@@ -52,20 +49,6 @@ const router = createBrowserRouter([
           {
             path: "/tasks/files",
             element: <Files />,
-          },
-        ],
-      },
-      {
-        path: "/finance",
-        element: <FinanceManager />,
-        children: [
-          {
-            path: "/finance/review",
-            element: <FinanceManagerReview />,
-          },
-          {
-            path: "/finance/transactions",
-            element: <FinanceManagerTransactions />,
           },
         ],
       },

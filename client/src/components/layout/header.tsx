@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import Searchbar from "./searchbar";
 import { Avatar, AvatarFallback, AvatarImage } from "./avatar";
 import { Button } from "./button";
-import { CreditCard, Github, LogOut, Plus, Settings, User } from "lucide-react";
+import { Github, LogOut, Plus, Settings, User } from "lucide-react";
 
 import {
   DropdownMenu,
@@ -49,6 +49,10 @@ export default function Header({ displaySidebar, setDisplaySidebar }: Props) {
         setLoading(false);
       });
   };
+
+  if(loading) {
+    return <div>Loading...</div>
+  }
 
   return (
     <header className="flex items-center justify-between bg-[#2e2e30] w-full px-6 py-3 border-b border-[#424244]">

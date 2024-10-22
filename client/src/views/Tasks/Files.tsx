@@ -9,9 +9,7 @@ import imgIcon from "@/assets/img.png";
 import { Button } from "@/components/layout/button";
 import { CheckIcon, DotsHorizontalIcon } from "@radix-ui/react-icons";
 
-type Props = {};
-
-export default function Files({}: Props) {
+export default function Files() {
   const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
     maxFiles: 10,
   });
@@ -20,7 +18,7 @@ export default function Files({}: Props) {
   const files = acceptedFiles.map((file: FileWithPath) => {
     let icon;
     if (file.type.includes("image")) {
-      icon = <img src={imgIcon} alt="Image Icon" width={80} height={80} />;
+      icon = <img src={imgIcon} alt="Icon" width={80} height={80} />;
     } else if (file.type.includes("pdf")) {
       icon = <img src={pdfIcon} alt="PDF Icon" width={80} height={80} />;
     } else {

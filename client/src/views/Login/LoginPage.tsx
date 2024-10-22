@@ -47,7 +47,7 @@ export function LoginForm() {
       },
       body: JSON.stringify(values),
     }).then((res) => {
-      if (res.status == 200) {
+      if (res.status === 200) {
         navigate("/");
       } else {
         console.log("Login failed");

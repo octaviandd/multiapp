@@ -4,9 +4,7 @@ import React from "react";
 import { BoardSortable } from "../../components/drag-and-drop/home/BoardSortable";
 import styles from "./home.module.scss";
 
-type Props = {};
-
-export default function Home({}: Props) {
+export default function Home() {
   return (
     <div className={styles.Home}>
       <div className="p-6">

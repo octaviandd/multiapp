@@ -101,7 +101,7 @@ export function RegisterForm() {
       },
       body: JSON.stringify(values),
     }).then((res) => {
-      if (res.status == 201) {
+      if (res.status === 201) {
         navigate("/");
       } else {
         console.log(res);

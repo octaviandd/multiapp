@@ -24,7 +24,6 @@ import {
 } from "@dnd-kit/core";
 import {
   arrayMove,
-  useSortable,
   SortableContext,
   sortableKeyboardCoordinates,
   SortingStrategy,

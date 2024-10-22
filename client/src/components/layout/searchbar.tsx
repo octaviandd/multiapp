@@ -2,7 +2,6 @@
 // @ts-nocheck
 import React, { useState } from "react";
 import {
-  Command,
   CommandDialog,
   CommandEmpty,
   CommandGroup,
@@ -13,9 +12,7 @@ import {
 } from "@/components/layout/command";
 import { Input } from "@/components/layout/input";
 
-type Props = {};
-
-export default function Searchbar({}: Props) {
+export default function Searchbar() {
   const [open, setOpen] = useState(false);
 
   const onOpenChange = () => setOpen(!open);

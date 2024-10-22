@@ -276,7 +276,7 @@ export default function MultipleContainers({
           : rectIntersection(args);
       let overId = getFirstCollision(intersections, "id");
 
-      if (overId != null && overId != undefined) {
+      if (overId !== null && overId !== undefined) {
         if (hasArrayObjectWithIndex(overId)) {
           //err
           const containerItems = findBoard(overId)?.tasks;
@@ -623,7 +623,7 @@ export default function MultipleContainers({
         const overItems = overContainer.tasks;
         const overIndex = overItems.findIndex((item) => item.id === overId);
         const activeIndex = activeItems.findIndex(
-          (item) => item.id == activeId
+          (item) => item.id === activeId
         );
 
         let newIndex: number;
@@ -839,7 +839,7 @@ export default function MultipleContainers({
       {createPortal(
         <DragOverlay adjustScale={adjustScale} dropAnimation={dropAnimation}>
           {activeId
-            ? boards.find((board) => board.id == activeId)
+            ? boards.find((board) => board.id === activeId)
               ? containerDragOverlay(activeId)
               : sortableItemDragOverlay(activeId)
             : null}

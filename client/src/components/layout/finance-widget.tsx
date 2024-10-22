@@ -11,8 +11,6 @@ import {
   SelectValue,
 } from "@/components/layout/select";
 
-type Props = {};
-
 export const FinanceWidget = forwardRef<HTMLButtonElement, ActionProps>(
   (props, ref) => {
     return (

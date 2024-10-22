@@ -1,6 +1,6 @@
 /** @format */
 
-import React, { useContext, useEffect } from "react";
+import React, { useContext } from "react";
 import { Link, Outlet } from "react-router-dom";
 import {
   Avatar,
@@ -10,9 +10,7 @@ import {
 import { StoreContext } from "@/store/index";
 import SideTask from "@/components/layout/side-task";
 
-type Props = {};
-
-export default function Tasks({}: Props) {
+export default function Tasks() {
   const { store } = useContext(StoreContext);
 
   return (

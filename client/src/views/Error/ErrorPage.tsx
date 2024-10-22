@@ -3,9 +3,7 @@
 import React from "react";
 import { useRouteError } from "react-router-dom";
 
-type Props = {};
-
-export default function ({}: Props) {
+export default function ErrorPage() {
   const error: any = useRouteError();
   console.error(error);
   return (
