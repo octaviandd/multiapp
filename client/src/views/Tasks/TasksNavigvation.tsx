@@ -29,19 +29,6 @@ export default function Tasks() {
             <span className="text-[20px] mr-2 font-semibold text-white">
               My tasks
             </span>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={3}
-              className="w-3 h-3 stroke-[#9CA3AF]"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="m19.5 8.25-7.5 7.5-7.5-7.5"
-              />
-            </svg>
           </div>
           <div className="flex gap-x-4">
             <Link to="board" className="text-[16px] font-medium text-white">

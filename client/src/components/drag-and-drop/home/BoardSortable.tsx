@@ -12,9 +12,8 @@ import { GridContainer } from "./Grid/GridContainer";
 import { Sortable, Props as SortableProps } from "./Sortable";
 
 import { TasksWidget } from "../../layout/tasks-widget";
-import { FinanceWidget } from "../../layout/finance-widget";
 
-const items = [TasksWidget, FinanceWidget];
+const items = [TasksWidget];
 
 const createRange = () => {
   return items.map((Component, index) => {
@@ -24,7 +23,7 @@ const createRange = () => {
 
 const props: Partial<SortableProps> = {
   adjustScale: true,
-  Container: (props: any) => <GridContainer {...props} columns={2} />,
+  Container: (props: any) => <GridContainer {...props} columns={1} />,
   strategy: rectSortingStrategy,
   items: createRange(),
   handle: true,

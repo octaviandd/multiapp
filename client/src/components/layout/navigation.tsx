@@ -28,7 +28,7 @@ export default function Sidebar({ displaySidebar }: Props) {
           </Link>
         </li>
         <li className="text-white w-full py-1 px-4 hover:bg-[#3D3E40] rounded-lg cursor-pointer whitespace-nowrap">
-          <Link to="/tasks/list" className="flex items-center gap-x-2">
+          <Link to="/tasks/board" className="flex items-center gap-x-2">
             <ListTodo width={16} height={16} />
             <span>Tasks Manager</span>
           </Link>
