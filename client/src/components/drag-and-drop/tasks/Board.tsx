@@ -607,9 +607,10 @@ export default function MultipleContainers({
     };
 
     // If it outside the boards or we are on moving boards.
-    if (overId == null || onBoardLevel()) {
+    if (overId === null || onBoardLevel()) {
       return;
     }
+
 
     // Working with items inside Boards; overId and activeId become board items ids.
     const overContainer = findBoardByItemId(overId) || findBoard(overId);
@@ -696,7 +697,7 @@ export default function MultipleContainers({
       return;
     }
 
-    if (overId == null) {
+    if (overId === null) {
       setActiveId(null);
       return;
     }
@@ -743,7 +744,7 @@ export default function MultipleContainers({
   const sortableItemDragOverlay = (id: UniqueIdentifier) =>
     renderSortableItemDragOverlay({
       id,
-      findBoard,
+      findBoardByItemId,
       handleRemoveRow,
       getIndex,
       getItemStyles,
@@ -841,7 +842,7 @@ export default function MultipleContainers({
       {createPortal(
         <DragOverlay adjustScale={adjustScale} dropAnimation={dropAnimation}>
           {activeId
-            ? boards.find((board) => board.id === activeId)
+            ? boards.find((board) => board.id == activeId)
               ? containerDragOverlay(activeId)
               : sortableItemDragOverlay(activeId)
             : null}

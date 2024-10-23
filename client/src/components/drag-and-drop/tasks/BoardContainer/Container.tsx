@@ -117,7 +117,7 @@ export const BoardContainer = forwardRef<HTMLDivElement, Props>(
         {!placeholder ? (
           <div className="flex items-center justify-between mb-4 cursor-pointer">
             <input
-              className="large bg-transparent px-2 py-1 focus:outline-2 text-[20px] leading-5 font-medium"
+              className="large bg-transparent max-w-[250px] px-2 py-1 focus:outline-2 text-[20px] leading-5 font-medium"
               defaultValue={label}
               onBlur={onBlurTask}
               ref={inputRef}
