@@ -4,6 +4,7 @@ import React, {useContext} from "react";
 import { BoardSortable } from "../../components/drag-and-drop/home/BoardSortable";
 import styles from "./home.module.scss";
 import { StoreContext } from "@/store";
+import dayjs from "dayjs";
 
 export default function Home() {
   const { store } = useContext(StoreContext);
@@ -17,7 +18,7 @@ export default function Home() {
         <div className="flex w-full justify-center flex-col">
           <div>
             <p className="text-[16px] text-center text-white">
-              Saturday, March 30
+              Saturday, {dayjs().format('DD MMMM') }
             </p>
             <p className="text-[32px] text-center text-white">
               Good evening, {store?.user?.firstName}

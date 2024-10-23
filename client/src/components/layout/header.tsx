@@ -92,13 +92,6 @@ export default function Header({ displaySidebar, setDisplaySidebar }: Props) {
                     ⇧⌘P
                   </DropdownMenuShortcut>
                 </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <Settings color="black" className="mr-2 h-4 w-4" />
-                  <span className="text-black">Transaction</span>
-                  <DropdownMenuShortcut className="text-black">
-                    ⌘S
-                  </DropdownMenuShortcut>
-                </DropdownMenuItem>
               </DropdownMenuGroup>
             </DropdownMenuContent>
           </DropdownMenu>

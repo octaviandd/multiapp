@@ -44,9 +44,6 @@ export default function Tasks() {
             </svg>
           </div>
           <div className="flex gap-x-4">
-            <Link to="list" className="text-[16px] font-medium text-white">
-              List
-            </Link>
             <Link to="board" className="text-[16px] font-medium text-white">
               Board
             </Link>

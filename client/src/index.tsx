@@ -8,7 +8,6 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Errors from "./views/Error/ErrorPage";
 import Home from "./views/Home/Home";
 import Tasks from "./views/Tasks/TasksNavigvation";
-import List from "./views/Tasks/List";
 import Board from "./views/Tasks/Board";
 import Files from "./views/Tasks/Files";
 import { LoginForm } from "./views/Login/LoginPage";
@@ -38,10 +37,6 @@ const router = createBrowserRouter([
         path: "/tasks",
         element: <Tasks />,
         children: [
-          {
-            path: "/tasks/list",
-            element: <List />,
-          },
           {
             path: "/tasks/board",
             element: <Board />,
