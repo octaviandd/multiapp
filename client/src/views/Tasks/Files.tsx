@@ -1,7 +1,7 @@
 /** @format */
 
 import { cn } from "@/utils/helpers/utils";
-import React from "react";
+import React, {useCallback} from "react";
 import { useDropzone, FileWithPath } from "react-dropzone";
 import docIcon from "@/assets/doc.png";
 import pdfIcon from "@/assets/pdf.png";
@@ -10,8 +10,32 @@ import { Button } from "@/components/layout/button";
 import { CheckIcon, DotsHorizontalIcon } from "@radix-ui/react-icons";
 
 export default function Files() {
+  const onDrop = useCallback((acceptedFiles : any) => {
+    const formData = new FormData();
+
+    acceptedFiles.forEach((file: any) => {
+      formData.append("files", file);
+    });
+
+    fetch("/api/files/upload", {
+      method: "POST",
+      body: formData,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((error) => {
+        console.error("Error uploading files:", error);
+      });
+  }, [])
+
   const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
     maxFiles: 10,
+    onDrop
   });
   const [isSelected, setIsSelected] = React.useState(false);
 

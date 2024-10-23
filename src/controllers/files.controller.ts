@@ -3,14 +3,18 @@
 import FilesService from "../services/files.service";
 import { Request, Response } from "express";
 
+declare global {
+  namespace Express {
+    export interface Request {
+      files?: Array<{ filename: string, filePath: string }>; // or whatever type you need for the files
+    }
+  }
+}
+
 const uploadFile = async (req: Request, res: Response) => {
   try {
-    const { file } = req.body;
-    if (!file) {
-      return res.status(400).json({ message: "No file uploaded" });
-    }
-
-    await FilesService.uploadFile(file);
+    const files = req.files;
+    await FilesService.uploadFile(files);
 
     return res.status(201).json({ message: "File uploaded" });
   } catch (error: any) {

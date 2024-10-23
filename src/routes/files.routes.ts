@@ -9,8 +9,8 @@ const router = express.Router();
 router.use(withAuth);
 
 // Files Routes
-router.post("/files/upload", FilesController.uploadFile);
-router.delete("files/delete/:fileName", FilesController.deleteFile);
+router.post("/upload", FilesController.uploadFile);
+router.delete("/delete/:fileName", FilesController.deleteFile);
 
 
 export default router;
