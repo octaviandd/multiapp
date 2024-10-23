@@ -24,11 +24,9 @@ type Props = {
 };
 
 export default function Header({ displaySidebar, setDisplaySidebar }: Props) {
-  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   const logOut = () => {
-    setLoading(true);
     fetch("/api/auth/logout", {
       method: "POST",
       headers: {
@@ -38,21 +36,12 @@ export default function Header({ displaySidebar, setDisplaySidebar }: Props) {
     })
       .then((res) => res.json())
       .then((data) => {
-        setLoading(false);
         navigate("/login");
       })
       .catch((error) => {
         console.error("Error logging out:", error);
-        setLoading(false);
       })
-      .finally(() => {
-        setLoading(false);
-      });
   };
-
-  if(loading) {
-    return <div>Loading...</div>
-  }
 
   return (
     <header className="flex items-center justify-between bg-[#2e2e30] w-full px-6 py-3 border-b border-[#424244]">
@@ -171,7 +160,7 @@ export default function Header({ displaySidebar, setDisplaySidebar }: Props) {
               <span className="text-black">GitHub</span>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="cursor-pointer" onClick={() => logOut}>
+            <DropdownMenuItem className="cursor-pointer" onClick={() => logOut()}>
               <LogOut color="black" className="mr-2 h-4 w-4" />
               <span className="text-black">Log out</span>
               <DropdownMenuShortcut className="text-black">

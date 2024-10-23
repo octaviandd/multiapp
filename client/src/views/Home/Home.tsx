@@ -1,10 +1,13 @@
 /** @format */
 
-import React from "react";
+import React, {useContext} from "react";
 import { BoardSortable } from "../../components/drag-and-drop/home/BoardSortable";
 import styles from "./home.module.scss";
+import { StoreContext } from "@/store";
 
 export default function Home() {
+  const { store } = useContext(StoreContext);
+
   return (
     <div className={styles.Home}>
       <div className="p-6">
@@ -17,31 +20,12 @@ export default function Home() {
               Saturday, March 30
             </p>
             <p className="text-[32px] text-center text-white">
-              Good evening, Octavian
+              Good evening, {store?.user?.firstName}
             </p>
           </div>
           <div className="flex justify-center mt-4">
             <div className="flex justify-center bg-[#252628] rounded-full px-6 py-3">
-              <div className="border-r border-neutral-600 pr-6 flex items-center">
-                <span className="text-neutral-400 text-[12px] mr-2">
-                  My week
-                </span>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={3}
-                  stroke="white"
-                  className="w-3 h-3"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="m19.5 8.25-7.5 7.5-7.5-7.5"
-                  />
-                </svg>
-              </div>
-              <div className="pl-8 pr-1 flex items-center">
+              <div className="px-1 flex items-center">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
@@ -58,7 +42,7 @@ export default function Home() {
                 </svg>
 
                 <span className="text-neutral-400 text-[12px] ml-2">
-                  1 task completed
+                  {store?.user?.tasks.filter(task => task.completed).length ?? '0' } task completed
                 </span>
               </div>
             </div>

@@ -33,12 +33,6 @@ export default function Sidebar({ displaySidebar }: Props) {
             <span>Tasks Manager</span>
           </Link>
         </li>
-        <li className="text-white  w-full py-1 px-4 hover:bg-[#3D3E40] rounded-lg cursor-pointer whitespace-nowrap">
-          <Link to="/finance" className="flex items-center gap-x-2">
-            <Landmark width={16} height={16} />
-            <span>Finance Manager</span>
-          </Link>
-        </li>
       </ul>
     </div>
   );

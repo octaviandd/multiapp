@@ -36,7 +36,7 @@ app.use((req, res, next) => {
 
 app.use("/api/users", userRoutes);
 app.use("/api/auth", authRoutes);
-app.use("/api//boards", boardRoutes);
+app.use("/api/boards", boardRoutes);
 app.use("/api/home", homeRoutes);
 app.use("/api/files", filesRoutes);
 

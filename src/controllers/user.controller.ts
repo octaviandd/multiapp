@@ -20,7 +20,7 @@ const registerUser = async (req: Request, res: Response) => {
       last_name,
     });
 
-    req.session.user = user;
+    req.session.user = user as any;
     res.status(201).json(user);
   } catch (error) {
     res.status(500).json({ error: (error as any).message });

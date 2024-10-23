@@ -59,6 +59,7 @@ export type User = {
   firstName: string;
   lastName: string;
   taskLikes: Like[];
+  tasks: Task[];
   email: string;
   role: string;
 };
@@ -207,7 +208,7 @@ export default function MultipleContainers({
   }, [store.completedItem]);
 
   useEffect(() => {
-    fetch("/api/boards", {
+    fetch("/api/boards/get-boards", {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -361,7 +362,7 @@ export default function MultipleContainers({
   }
 
   const updateBoardTitle = (boardId: UniqueIdentifier, title: string) => {
-    fetch(`/api/boards/${boardId}`, {
+    fetch(`/api/boards/update-board/${boardId}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -387,7 +388,7 @@ export default function MultipleContainers({
     if (!newBoard) {
       updateBoardTitle(boardId, title);
     } else {
-      await fetch(`/api/boards`, {
+      await fetch(`/api/boards/create-board`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -434,6 +435,7 @@ export default function MultipleContainers({
     if (!newTask) {
       updateTaskTitle(String(taskId).replace("T", ""), title);
     } else {
+      console.log(boardId)
       await fetch(`/api/boards/${boardId}/tasks`, {
         method: "POST",
         headers: {
@@ -483,7 +485,7 @@ export default function MultipleContainers({
     newIndex: number,
     replacedBoardIndex: number
   ) {
-    await fetch(`/api/boards/${movingBoardId}/move-board`, {
+    await fetch(`/api/boards/move-board/${movingBoardId}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

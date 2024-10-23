@@ -33,7 +33,14 @@ const createUser = async ({
           password: hashedPassword,
           role: "",
         },
+        include: {
+          tasks: true,
+          taskLikes: true,
+          comments: true,
+          commentLikes: true,
+        }
       });
+
       return newUser;
     }
   } catch (error: any) {
