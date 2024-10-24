@@ -12,17 +12,13 @@ import { CheckIcon, DotsHorizontalIcon } from "@radix-ui/react-icons";
 export default function Files() {
   const onDrop = useCallback((acceptedFiles : any) => {
     const formData = new FormData();
-
-    acceptedFiles.forEach((file: any) => {
-      formData.append("files", file);
+    acceptedFiles.forEach((file: any, index: number) => {
+      formData.append("file_" + index, file);
     });
 
     fetch("/api/files/upload", {
       method: "POST",
       body: formData,
-      headers: {
-        "Content-Type": "application/json",
-      },
     })
       .then((res) => res.json())
       .then((data) => {

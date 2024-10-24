@@ -10,6 +10,7 @@ import authRoutes from "./src/routes/auth.routes";
 import boardRoutes from "./src/routes/board.routes";
 import homeRoutes from "./src/routes/home.routes";
 import filesRoutes from "./src/routes/files.routes";
+import bodyParser from "body-parser";
 import { withAuth } from "./src/middleware/auth.middleware";
 
 dotenv.config();
@@ -26,19 +27,15 @@ app.use(
     cookie: { secure: false },
   })
 );
-app.use(express.json());
+
+app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 app.use(cors());
 
-app.use((req, res, next) => {
-  console.log(`${req.method} ${req.url}`);
-  next();
-});
-
-app.use("/api/users", userRoutes);
-app.use("/api/auth", authRoutes);
-app.use("/api/boards", boardRoutes);
-app.use("/api/home", homeRoutes);
-app.use("/api/files", filesRoutes);
+app.use("/api/users", bodyParser.json(), userRoutes);
+app.use("/api/auth", bodyParser.json(), authRoutes);
+app.use("/api/boards", bodyParser.json(), boardRoutes);
+app.use("/api/home", bodyParser.json(), homeRoutes);
+app.use("/api/files",  filesRoutes);
 
 const port = process.env.PORT || 8000;
 
