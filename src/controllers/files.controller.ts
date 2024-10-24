@@ -41,6 +41,7 @@ const deleteFile = async (req: Request, res: Response) => {
     const { fileId } = req.params;
     await FilesService.deleteFile(Number(fileId));
 
+
     return res.status(200).json({ message: "File deleted" });
   } catch (error: any) {
     return res

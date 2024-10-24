@@ -8,12 +8,13 @@ import pdfIcon from "@/assets/pdf.png";
 import imgIcon from "@/assets/img.png";
 import { Button } from "@/components/layout/button";
 import { CheckIcon, DotsHorizontalIcon } from "@radix-ui/react-icons";
+import { set } from "react-hook-form";
 
 export default function Files() {
   const onDrop = useCallback((acceptedFiles : any) => {
     const formData = new FormData();
     acceptedFiles.forEach((file: any, index: number) => {
-      formData.append("file_" + index, file);
+      formData.append(file.name + index, file);
     });
 
     fetch("/api/files/upload", {
@@ -55,7 +56,7 @@ export default function Files() {
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log(data);
+        setCurrentFiles(currentFiles.filter((file: any) => file.id !== fileId));
       })
       .catch((error) => {
         console.error("Error deleting file:", error);
@@ -118,14 +119,15 @@ export default function Files() {
       <aside className="my-12">
         <div className="grid gap-6 grid-cols-4 grid-rows-auto">{files}</div>
       </aside>
-      {currentFiles.length > 0 && <div>
+      <h2 className="text-white mb-2 border-neutral-500">Current files</h2>
+      {currentFiles.length > 0 && <div className="overflow-scroll">
         {currentFiles.map((file: any) => (
           <div key={file.id} className="flex items-center justify-between bg-neutral-700 p-4 rounded-lg mb-4">
             <div className="flex items-center">
-              <img src={docIcon} alt="Document Icon" width={80} height={80} />
+              <img src={docIcon} alt="Document Icon" width={50} height={50} />
               <p className="ml-4 text-white/80">{file.title}</p>
             </div>
-            <Button onClick={() => deleteFile(file.id)}>Delete</Button>
+            <Button className="hover:bg-red-500 transition-bg duration-300 ease-in-out" onClick={() => deleteFile(file.id)}>Delete</Button>
           </div>)
         )}
       </div>}
