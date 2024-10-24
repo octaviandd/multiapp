@@ -9,6 +9,7 @@ interface StoreState {
   removedItem: UniqueIdentifier | null;
   completedItem: Task | null;
   user: User | null;
+  filePickerModalIsOpen: boolean;
 }
 
 interface StoreContextType {
@@ -24,6 +25,7 @@ export const StoreContext = createContext<StoreContextType>({
     removedItem: null,
     completedItem: null,
     user: null,
+    filePickerModalIsOpen: false
   },
   setStore: () => {},
 });
@@ -35,6 +37,7 @@ export const StoreProvider = ({ children }: { children: ReactNode }) => {
     removedItem: null,
     completedItem: null,
     user: null,
+    filePickerModalIsOpen: false
   });
 
   return (

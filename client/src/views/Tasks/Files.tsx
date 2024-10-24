@@ -68,11 +68,11 @@ export default function Files() {
   const files = acceptedFiles.map((file: FileWithPath) => {
     let icon;
     if (file.type.includes("image")) {
-      icon = <img src={imgIcon} alt="Icon" width={80} height={80} />;
+      icon = <img src={imgIcon} alt="Icon" width={40} height={40} />;
     } else if (file.type.includes("pdf")) {
-      icon = <img src={pdfIcon} alt="PDF Icon" width={80} height={80} />;
+      icon = <img src={pdfIcon} alt="PDF Icon" width={40} height={40} />;
     } else {
-      icon = <img src={docIcon} alt="Document Icon" width={80} height={80} />;
+      icon = <img src={docIcon} alt="Document Icon" width={40} height={40} />;
     }
 
     return (
@@ -105,7 +105,7 @@ export default function Files() {
   });
 
   return (
-    <section className="container p-6 overflow-y-scroll h-full pb-[150px]">
+    <section className="w-full px-24 p-6 overflow-y-scroll h-full pb-[200px]">
       <div
         {...getRootProps({ className: "dropzone" })}
         className={cn(
@@ -122,7 +122,7 @@ export default function Files() {
         {files.length > 0 &&
         <>
           <h3 className="mb-2 pb-2 border-b text-white border-neutral-500">Uploaded files</h3>
-        <div className="grid gap-6 grid-cols-4 grid-rows-auto">
+        <div className="grid gap-6 grid-cols-6 grid-rows-auto">
           {files}
           </div>
         </>}
