@@ -3,6 +3,16 @@
 import FilesService from "../services/files.service";
 import { Request, Response } from "express";
 
+const getFiles = async (req: Request, res: Response) => {
+  try {
+    const files = await FilesService.getFiles();
+
+    res.status(200).json(files);
+  } catch (error: any) {
+    res.status(500).json({ message: "Internal server error: " + error.message });
+  }
+}
+
 const uploadFile = async (req: Request, res: Response) => {
   try {
     const fileUrls = (req.files as any[]).map((file) => ({
@@ -42,4 +52,5 @@ const deleteFile = async (req: Request, res: Response) => {
 export default {
   uploadFile,
   deleteFile,
+  getFiles,
 };

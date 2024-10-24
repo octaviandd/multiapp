@@ -2,6 +2,16 @@
 
 import prisma from "../prisma/prisma-client";
 
+const getFiles = async () => {
+  try {
+    const files = await prisma.file.findMany();
+
+    return files;
+  } catch (err: any){
+    console.log("Error fetching files from database:", err);
+  }
+}
+
 const uploadFile = async (files: any) => {
   try {
     const newFiles = await prisma.file.createMany({
@@ -9,7 +19,15 @@ const uploadFile = async (files: any) => {
       skipDuplicates: true,
     });
 
-    return newFiles;
+    const insertedFiles = await prisma.file.findMany({
+      where: {
+        title: {
+          in: files.map((file: any) => file.title),
+        },
+      },
+    });
+
+    return insertedFiles;
   } catch (err: any){
     console.log("Error uploading files to database:", err);
   }
@@ -32,4 +50,5 @@ const deleteFile = async (fileId: number) => {
 export default {
   uploadFile,
   deleteFile,
+  getFiles
 };

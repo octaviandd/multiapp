@@ -36,6 +36,7 @@ const router = express.Router();
 router.use(withAuth);
 
 // Files Routes
+router.get("/", FilesController.getFiles);
 router.post("/upload", upload.any(), FilesController.uploadFile);
 router.delete("/delete/:fileName", FilesController.deleteFile);
 

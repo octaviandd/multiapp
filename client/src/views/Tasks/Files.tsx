@@ -1,7 +1,7 @@
 /** @format */
 
 import { cn } from "@/utils/helpers/utils";
-import React, {useCallback} from "react";
+import React, {useCallback, useState, useEffect} from "react";
 import { useDropzone, FileWithPath } from "react-dropzone";
 import docIcon from "@/assets/doc.png";
 import pdfIcon from "@/assets/pdf.png";
@@ -29,11 +29,38 @@ export default function Files() {
       });
   }, [])
 
+  const [currentFiles, setCurrentFiles] = useState([]);
   const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
     maxFiles: 10,
     onDrop
   });
-  const [isSelected, setIsSelected] = React.useState(false);
+  const [isSelected, setIsSelected] = useState(false);
+
+  useEffect(() => {
+    fetch("/api/files", {
+      method: "GET",
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        setCurrentFiles(data);
+      })
+      .catch((error) => {
+        console.error("Error fetching files:", error);
+      });
+  }, [])
+
+  const deleteFile = (fileId: number) => {
+    fetch(`/api/files/delete/${fileId}`, {
+      method: "DELETE",
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((error) => {
+        console.error("Error deleting file:", error);
+      });
+  }
 
   const files = acceptedFiles.map((file: FileWithPath) => {
     let icon;
@@ -91,6 +118,17 @@ export default function Files() {
       <aside className="my-12">
         <div className="grid gap-6 grid-cols-4 grid-rows-auto">{files}</div>
       </aside>
+      {currentFiles.length > 0 && <div>
+        {currentFiles.map((file: any) => (
+          <div key={file.id} className="flex items-center justify-between bg-neutral-700 p-4 rounded-lg mb-4">
+            <div className="flex items-center">
+              <img src={docIcon} alt="Document Icon" width={80} height={80} />
+              <p className="ml-4 text-white/80">{file.title}</p>
+            </div>
+            <Button onClick={() => deleteFile(file.id)}>Delete</Button>
+          </div>)
+        )}
+      </div>}
     </section>
   );
 }
