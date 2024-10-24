@@ -19,6 +19,8 @@ const uploadFile = async (files: any) => {
       skipDuplicates: true,
     });
 
+    if (newFiles.count == 0) return [];
+
     const insertedFiles = await prisma.file.findMany({
       where: {
         title: {

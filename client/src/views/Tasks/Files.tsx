@@ -8,7 +8,6 @@ import pdfIcon from "@/assets/pdf.png";
 import imgIcon from "@/assets/img.png";
 import { Button } from "@/components/layout/button";
 import { CheckIcon, DotsHorizontalIcon } from "@radix-ui/react-icons";
-import { set } from "react-hook-form";
 
 export default function Files() {
   const onDrop = useCallback((acceptedFiles : any) => {
@@ -23,14 +22,17 @@ export default function Files() {
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log(data);
+        console.log(data)
+        setCurrentFiles((prev) => {
+          return [...prev, ...data.files];
+        });
       })
       .catch((error) => {
         console.error("Error uploading files:", error);
       });
   }, [])
 
-  const [currentFiles, setCurrentFiles] = useState([]);
+  const [currentFiles, setCurrentFiles] = useState<File[]>([]);
   const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
     maxFiles: 10,
     onDrop
@@ -103,7 +105,7 @@ export default function Files() {
   });
 
   return (
-    <section className="container p-6">
+    <section className="container p-6 overflow-y-scroll h-full pb-[150px]">
       <div
         {...getRootProps({ className: "dropzone" })}
         className={cn(
@@ -117,14 +119,20 @@ export default function Files() {
         </p>
       </div>
       <aside className="my-12">
-        <div className="grid gap-6 grid-cols-4 grid-rows-auto">{files}</div>
+        {files.length > 0 &&
+        <>
+          <h3 className="mb-2 pb-2 border-b text-white border-neutral-500">Uploaded files</h3>
+        <div className="grid gap-6 grid-cols-4 grid-rows-auto">
+          {files}
+          </div>
+        </>}
       </aside>
-      <h2 className="text-white mb-2 border-neutral-500">Current files</h2>
       {currentFiles.length > 0 && <div className="overflow-scroll">
+        <h3 className="text-white mb-2 border-b pb-2 border-neutral-500">Current files</h3>
         {currentFiles.map((file: any) => (
           <div key={file.id} className="flex items-center justify-between bg-neutral-700 p-4 rounded-lg mb-4">
             <div className="flex items-center">
-              <img src={docIcon} alt="Document Icon" width={50} height={50} />
+              <img src={file.type.includes('image') ? imgIcon : file.type.includes('pdf') ? pdfIcon : docIcon} alt="Document Icon" width={50} height={50} />
               <p className="ml-4 text-white/80">{file.title}</p>
             </div>
             <Button className="hover:bg-red-500 transition-bg duration-300 ease-in-out" onClick={() => deleteFile(file.id)}>Delete</Button>

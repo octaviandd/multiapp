@@ -18,11 +18,13 @@ const uploadFile = async (req: Request, res: Response) => {
     const fileUrls = (req.files as any[]).map((file) => ({
       fieldName: file.fieldname,
       url: file.location,
+      type: file.mimetype,
     }));
 
     const newFiles = fileUrls.map((file: any) => ({
       title: file.fieldName,
       url: file.url,
+      type: file.type,
     }));
 
     const dbFiles = await FilesService.uploadFile(newFiles);
