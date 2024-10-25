@@ -1,7 +1,7 @@
 /** @format */
 
 import { UniqueIdentifier } from "@dnd-kit/core";
-import { Check, CheckIcon, Plus, ThumbsUp, Trash } from "lucide-react";
+import { Check, Plus, ThumbsUp, Trash } from "lucide-react";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { Task, User } from "../drag-and-drop/tasks/Board";
 import { Editor } from "react-draft-wysiwyg";
@@ -19,6 +19,9 @@ import { DotsHorizontalIcon } from "@radix-ui/react-icons";
 import { cn } from "@/utils/helpers/utils";
 import { createPortal } from "react-dom";
 import FilePickerModal from "./file-picker-modal";
+import TextEditor from "./text-editor";
+import TaskComment from "./task-comment";
+import TaskAttachments from "./task-attachments";
 interface SideTaskProps {
   selectedItem: UniqueIdentifier;
 }
@@ -39,10 +42,6 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
   );
   const { store, setStore } = useContext(StoreContext);
   const markCompleteRef = useRef<HTMLButtonElement>(null);
-  const [isSelected, setIsSelected] = useState(false);
-
-
-  
 
   useEffect(() => {
     let isMounted = true;
@@ -360,56 +359,38 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
 
           <div className="px-4">
             <p className="extra-small pb-3 text-white">Description</p>
-            {editorState && (
-              <Editor
-                editorState={editorState}
-                onEditorStateChange={setEditorState}
-                placeholder="What is this task about?"
-                onBlur={() =>
-                  updateTask({
-                    body: editorState.getCurrentContent().getPlainText(),
-                  })
-                }
-                toolbar={{
-                  options: ["inline", "list"],
-                  inline: {
-                    options: ["bold", "italic", "underline"],
-                  },
-                }}
-                wrapperStyle={{
-                  display: "flex",
-                  flexDirection: "column",
-                  border: "1px solid #424242",
-                }}
-                editorStyle={{
-                  order: 1,
-                  color: "white",
-                  padding: "5px 10px",
-                  minHeight: "200px",
-                }}
-                toolbarStyle={{
-                  border: "none",
-                  order: 2,
-                  backgroundColor: "#1E1F21",
-                }}
-              />
-            )}
+            <TextEditor
+              updateTask={updateTask}
+              editorState={editorState}
+              setEditorState={setEditorState}
+              placeholder="What is this task about?"
+              toolbarOptions={{
+                options: ["inline", "list"],
+                inline: {
+                  options: ["bold", "italic", "underline"],
+                },
+              }}
+              wrapperStyle={{
+                display: "flex",
+                flexDirection: "column",
+                border: "1px solid #424242",
+              }}
+              editorStyle={{
+                order: 1,
+                color: "white",
+                padding: "5px 10px",
+                minHeight: "200px",
+              }}
+              toolbarStyle={{
+                border: "none",
+                order: 2,
+                backgroundColor: "#1E1F21",
+              }}
+            >
+            </TextEditor>
           </div>
 
-          <div className="border-b border-neutral-600 pb-4 px-4">
-            <p className="extra-small pb-3 text-white">Attachments</p>
-            <section className="p-6">
-              <div
-                onClick={() => setStore((prev) => ({ ...prev, filePickerModalIsOpen: true }))}
-                className={cn(
-                  "group relative grid h-12 w-16 cursor-pointer place-items-center rounded-lg border-2 border-dashed border-muted-foreground/25 px-5 py-2.5 text-center transition hover:bg-muted/25",
-                  "ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-                )}
-              >
-                <Plus className="h-6 w-6" color="white" />
-              </div>
-            </section>
-          </div>
+          <TaskAttachments />
 
           <div className="bg-[#252628] px-4 text-white pb-4 !mt-0">
             <div className="border-b py-4 mb-3 border-neutral-500">
@@ -436,91 +417,54 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
             )}
             {currentTask?.comments &&
               currentTask?.comments.map((comment) => (
-                <div className="flex items-center my-2" key={comment.id}>
-                  <div className="mx-2">
-                    <img
-                      src="https://via.placeholder.com/32"
-                      alt="User Avatar"
-                    />
-                  </div>
-                  <div className="flex flex-col gap-y-1 w-full">
-                    <div className="flex justify-between">
-                      <div className="flex items-center gap-x-2">
-                        <div>
-                          <p className="small font-medium">
-                            {comment.author.firstName +
-                              " " +
-                              comment.author.lastName}
-                          </p>
-                        </div>
-                        <div>
-                          <p className="extra-small">
-                            <span className="text-neutral-500">
-                              {dayjs(comment.createdAt).format(
-                                "dddd [at] HH:mm"
-                              )}
-                            </span>
-                          </p>
-                        </div>
-                      </div>
-                      <div className="ml-auto cursor-pointer">
-                        <ThumbsUp width={14} height={14} />
-                      </div>
-                    </div>
-                    <div>
-                      <p className="extra-small text-white">
-                        {comment.content}
-                      </p>
-                    </div>
-                  </div>
-                </div>
+                <TaskComment key={comment.id} comment={comment}></TaskComment>
               ))}
           </div>
         </div>
       </div>
       <div className="border-t border-[#424242] h-auto">
-        {commentState && (
-          <Editor
-            editorState={commentState}
-            onEditorStateChange={setCommentEditorState}
-            toolbarCustomButtons={[
-              <button
-                onClick={() =>
-                  addComment({
-                    content: commentState.getCurrentContent().getPlainText(),
-                  })
-                }
-                className="ml-auto px-4 py-1 bg-[#4573D2] text-white rounded-sm"
-              >
-                <p className="small text-white">Comment</p>
-              </button>,
-            ]}
-            placeholder="Add a comment"
-            toolbar={{
-              options: ["inline", "list"],
-              inline: {
-                options: ["bold", "italic", "underline"],
-              },
-            }}
-            wrapperStyle={{
-              display: "flex",
-              flexDirection: "column",
-              border: "1px solid #424242",
-            }}
-            editorStyle={{
-              order: 1,
-              color: "white",
-              padding: "5px 10px",
-              minHeight: "100px",
-              fontSize: "14px",
-            }}
-            toolbarStyle={{
-              border: "none",
-              order: 2,
-              backgroundColor: "#1E1F21",
-            }}
-          />
-        )}
+        <TextEditor
+          updateTask={updateTask}
+          editorState={commentState}
+          setEditorState={setCommentEditorState}
+          toolbarCustomButtons={[
+            <button
+              onClick={() =>
+                addComment({
+                  content: commentState.getCurrentContent().getPlainText(),
+                })
+              }
+              className="ml-auto px-4 py-1 bg-[#4573D2] text-white rounded-sm"
+            >
+              <p className="small text-white">Comment</p>
+            </button>,
+          ]}
+          placeholder="Add a comment"
+          toolbarOptions={{
+            options: ["inline", "list"],
+            inline: {
+              options: ["bold", "italic", "underline"],
+            },
+          }}
+          wrapperStyle={{
+            display: "flex",
+            flexDirection: "column",
+            border: "1px solid #424242",
+          }}
+          editorStyle={{
+            order: 1,
+            color: "white",
+            padding: "5px 10px",
+            minHeight: "100px",
+            fontSize: "14px",
+          }}
+          toolbarStyle={{
+            border: "none",
+            order: 2,
+            backgroundColor: "#1E1F21",
+          }}
+        >
+        </TextEditor>
       </div>
       {store.filePickerModalIsOpen && createPortal(<FilePickerModal></FilePickerModal>, document.body)}
     </div>
