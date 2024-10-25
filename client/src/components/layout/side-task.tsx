@@ -1,10 +1,9 @@
 /** @format */
 
 import { UniqueIdentifier } from "@dnd-kit/core";
-import { Check, Plus, ThumbsUp, Trash } from "lucide-react";
+import { Check, ThumbsUp, Trash } from "lucide-react";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { Task, User } from "../drag-and-drop/tasks/Board";
-import { Editor } from "react-draft-wysiwyg";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import { EditorState, ContentState } from "draft-js";
 import { DatePicker } from "./date-picker";
@@ -14,9 +13,7 @@ import { useDropzone, FileWithPath } from "react-dropzone";
 import docIcon from "@/assets/doc.png";
 import pdfIcon from "@/assets/pdf.png";
 import imgIcon from "@/assets/img.png";
-import { Button } from "./button";
-import { DotsHorizontalIcon } from "@radix-ui/react-icons";
-import { cn } from "@/utils/helpers/utils";
+import { fetchWithOptions } from "@/utils/helpers/utils";
 import { createPortal } from "react-dom";
 import FilePickerModal from "./file-picker-modal";
 import TextEditor from "./text-editor";
@@ -43,45 +40,10 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
   const { store, setStore } = useContext(StoreContext);
   const markCompleteRef = useRef<HTMLButtonElement>(null);
 
-  useEffect(() => {
-    let isMounted = true;
-
-    setIsLoading(true);
-    if (selectedItem) {
-      fetch(`/api/boards/tasks/${String(selectedItem).replace("T", "")}`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          if (isMounted) {
-            setCurrentTask(data);
-            setEditorState(
-              EditorState.createWithContent(
-                ContentState.createFromText(data.body || "")
-              )
-            );
-            if (data.dueDate) {
-              setDate(new Date(data.dueDate));
-            } else {
-              setDate(undefined);
-            }
-            setIsLoading(false);
-            setIsOpen(true);
-          }
-        })
-        .catch((error) => {
-          console.error("Error fetching task:", error);
-        });
-    }
-
-    return () => {
-      isMounted = false;
-    };
-  }, [selectedItem]);
+  const closeSidePanel = () => {
+    setIsOpen(false);
+    setStore((prev) => ({ ...prev, currentBoardItem: null }));
+  };
 
   useEffect(() => {
     if (currentTask && currentDate) {
@@ -91,168 +53,106 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
     }
   }, [currentDate]);
 
+  useEffect(() => {
+    setIsLoading(true);
+    const promise = fetchWithOptions(`/api/boards/tasks/${String(selectedItem).replace("T", "")}`)
+    promise.then(({ data, error }) => {
+      if(error) return error;
+
+      setCurrentTask(data);
+      setEditorState(EditorState.createWithContent(ContentState.createFromText(data.body || "")));
+
+      data.dueDate ?  setDate(new Date(data.dueDate)) : setDate(undefined);
+      setIsLoading(false);
+      setIsOpen(true);
+    })
+  }, [selectedItem]);
+
   const updateTask = async (data: any) => {
-    fetch(`/api/boards/tasks/${String(selectedItem).replace("T", "")}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      credentials: "include",
-      body: JSON.stringify({
-        data,
-      }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        // console.log(data);
-      })
-      .catch((error) => {
-        console.error("Error updating task:", error);
+    const promise = fetchWithOptions(`/api/boards/tasks/${String(selectedItem).replace("T", "")}`, {method: 'POST', body: JSON.stringify({data})});
+    promise.then(({ data, error }) => {
+      if(error) return;
+    });
+  };
+
+  const removeTask = () => {
+    const promise = fetchWithOptions(`/api/boards/tasks/delete-task/${String(selectedItem).replace("T", "")}`, {method: 'DELETE'});
+    promise.then(({ data, error }) => {
+      if(error) return;
+
+      setStore((prev) => ({
+        ...prev,
+        currentBoardItem: null,
+        removedItem: currentTask?.id as UniqueIdentifier,
+      }));
+    });
+  }
+
+  const completeTask = () => {
+    const promise = fetchWithOptions(`/api/boards/tasks/${String(selectedItem).replace("T", "")}`, {method: 'POST', body: JSON.stringify({data: {completed: !currentTask?.completed}})});
+    promise.then(({ data, error }) => {
+      if(error) return;
+
+      setCurrentTask(data);
+      setStore((prev) => ({
+        ...prev,
+        completedItem: data,
+      }));
+    });
+  }
+
+  const likeTask = () => {
+    const promise = fetchWithOptions(`/api/boards/tasks/${String(selectedItem).replace("T", "")}/likes`, {method: 'POST'});
+    promise.then(({ data, error }) => {
+      if(error) return;
+
+      setCurrentTask((prev) => {
+        if (prev) {
+          return {
+            ...prev,
+            taskLikes: [...(prev?.taskLikes ?? []), data],
+          };
+        }
+        return prev;
       });
-  };
+    });
+  }
 
-  const removeTask = async () => {
-    fetch(
-      `/api/boards/tasks/delete-task/${String(selectedItem).replace("T", "")}`,
-      {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-      }
-    )
-      .then((res) => res.json())
-      .then((data) => {
-        setStore((prev) => ({
-          ...prev,
-          currentBoardItem: null,
-          removedItem: currentTask?.id as UniqueIdentifier,
-        }));
-      })
-      .catch((error) => {
-        console.error("Error deleting task:", error);
+  const dislikeTask = () => {
+    const likeId = currentTask?.taskLikes?.find((like) => like.authorId === (store.user as User).id)?.id;
+    const promise = fetchWithOptions(`/api/boards/likes/delete-like/${likeId}`, {method: 'DELETE'});
+    promise.then(({ data, error }) => {
+      if(error) return;
+
+      setCurrentTask((prev) => {
+        if (prev) {
+          return {
+            ...prev,
+            taskLikes: prev.taskLikes?.filter((like) => like.authorId !== (store.user as User).id),
+          };
+        }
+        return prev;
       });
-  };
+    });
+  }
 
-  const completeTask = async () => {
-    fetch(`/api/boards/tasks/${String(selectedItem).replace("T", "")}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        data: {
-          completed: !currentTask?.completed,
-        },
-      }),
-      credentials: "include",
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        setCurrentTask(data);
-        setStore((prev) => ({
-          ...prev,
-          completedItem: data,
-        }));
-      })
-      .catch((error) => {
-        console.error("Error completing task:", error);
+  const addComment = (data: any) => {
+    const promise = fetchWithOptions(`/api/boards/tasks/${String(selectedItem).replace("T", "")}/comments`, {method: 'POST', body: JSON.stringify({data})});
+    promise.then(({ data, error }) => {
+      if(error) return;
+
+      setCurrentTask((prev) => {
+        if (prev) {
+          return {
+            ...prev,
+            comments: [...(prev.comments ?? []), data],
+          };
+        }
+        return prev;
       });
-  };
-
-  const likeTask = async () => {
-    fetch(`/api/boards/tasks/${String(selectedItem).replace("T", "")}/likes`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      credentials: "include",
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        setCurrentTask((prev) => {
-          if (prev) {
-            return {
-              ...prev,
-              taskLikes: [...(prev?.taskLikes ?? []), data],
-            };
-          }
-          return prev;
-        });
-      })
-      .catch((error) => {
-        console.error("Error liking task:", error);
-      });
-  };
-
-  const dislikeTask = async () => {
-    const likeId = currentTask?.taskLikes?.find(
-      (like) => like.authorId === (store.user as User).id
-    )?.id;
-
-    fetch(`/api/boards/likes/delete-like/${likeId}`, {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      credentials: "include",
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        setCurrentTask((prev) => {
-          if (prev) {
-            return {
-              ...prev,
-              taskLikes: prev.taskLikes?.filter(
-                (like) => like.authorId !== (store.user as User).id
-              ),
-            };
-          }
-          return prev;
-        });
-      })
-      .catch((error) => {
-        console.error("Error disliking task:", error);
-      });
-  };
-
-  const closeSidePanel = () => {
-    setIsOpen(false);
-    setStore((prev) => ({ ...prev, currentBoardItem: null }));
-  };
-
-  const addComment = async (data: any) => {
-    fetch(
-      `/api/boards/tasks/${String(selectedItem).replace("T", "")}/comments`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify({
-          data,
-        }),
-      }
-    )
-      .then((res) => res.json())
-      .then((data: Comment) => {
-        setCurrentTask((prev) => {
-          if (prev) {
-            return {
-              ...prev,
-              comments: [...(prev.comments as any), data],
-            };
-          }
-          return prev;
-        });
-        setCommentEditorState(defaultCommentEditorState);
-      })
-      .catch((error) => {
-        console.error("Error adding comment:", error);
-      });
-  };
+      setCommentEditorState(defaultCommentEditorState);
+    });
+  }
 
   if (isLoading) {
     return <div>Loading..</div>;
