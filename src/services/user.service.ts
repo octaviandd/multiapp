@@ -38,7 +38,7 @@ const createUser = async ({
           taskLikes: true,
           comments: true,
           commentLikes: true,
-        }
+        },
       });
 
       return newUser;
@@ -110,4 +110,28 @@ const updateUser = async (userId: number, data: any) => {
   }
 };
 
-export default { getUserById, updateUser, loginUser, createUser };
+const getUserCompletedTasks = async (userId: number) => {
+  try {
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      include: {
+        tasks: {
+          where: { completed: true },
+          orderBy: { createdAt: "desc" },
+        },
+      },
+    });
+
+    return user?.tasks || [];
+  } catch (error: any) {
+    throw new Error("User not found: " + error.message);
+  }
+};
+
+export default {
+  getUserById,
+  updateUser,
+  loginUser,
+  createUser,
+  getUserCompletedTasks,
+};

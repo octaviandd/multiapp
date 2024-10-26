@@ -168,7 +168,7 @@ export default function MultipleContainers({
   }, [boards]);
 
   useEffect(() => {
-    if(!store.removedItem) return;
+    if (!store.removedItem) return;
     setBoards((boards) => {
       return boards.map((board) => {
         return {
@@ -188,12 +188,16 @@ export default function MultipleContainers({
   }, [store.removedItem]);
 
   useEffect(() => {
+    console.log("hit");
     setBoards((boards) => {
       return boards.map((board) => {
         return {
           ...board,
           tasks: board.tasks.map((task) => {
-            if (task.id === "T" + store.completedItem?.id) {
+            if (
+              task.id === "T" + store.completedItem?.id ||
+              task.id === store.completedItem?.id
+            ) {
               return {
                 ...task,
                 completed: store.completedItem?.completed,
@@ -434,7 +438,7 @@ export default function MultipleContainers({
     if (!newTask) {
       updateTaskTitle(String(taskId).replace("T", ""), title);
     } else {
-      console.log(boardId)
+      console.log(boardId);
       await fetch(`/api/boards/${boardId}/tasks`, {
         method: "POST",
         headers: {
@@ -609,7 +613,6 @@ export default function MultipleContainers({
     if (overId === null || onBoardLevel()) {
       return;
     }
-
 
     // Working with items inside Boards; overId and activeId become board items ids.
     const overContainer = findBoardByItemId(overId) || findBoard(overId);
@@ -834,7 +837,9 @@ export default function MultipleContainers({
             onClick={() => handleAddColumn(boards.length)}
             placeholder
           >
-            <span className="text-white">+ Add Board</span>
+            <span className="text-white bg-neutral-700 rounded-md px-2 py-1">
+              + Add Board
+            </span>
           </DroppableContainer>
         </SortableContext>
       </div>

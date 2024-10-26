@@ -7,15 +7,25 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export async function fetchWithOptions(url: RequestInfo | URL, options?: {method?: string, headers?: RequestInit['headers'], contentType?: string, body?: string}) {
+export async function fetchWithOptions(
+  url: RequestInfo | URL,
+  options?: {
+    method?: string;
+    headers?: RequestInit["headers"];
+    contentType?: string;
+    body?: string;
+  }
+) {
   const defaultOptions = {
-    method: options?.method ? options?.method : 'GET',
+    method: options?.method ? options?.method : "GET",
     headers: {
-      'Content-Type': options?.contentType ? options?.contentType : 'application/json',
-       credentials: 'include',
+      "Content-Type": options?.contentType
+        ? options?.contentType
+        : "application/json",
+      credentials: "include",
     },
     body: options?.body ? options?.body : undefined,
-  }
+  };
 
   let error: any = undefined;
   let data: any = undefined;
@@ -23,7 +33,6 @@ export async function fetchWithOptions(url: RequestInfo | URL, options?: {method
   try {
     const response = await fetch(url, defaultOptions);
     data = await response.json();
-    console.log(data)
   } catch (error) {
     error = error;
   }

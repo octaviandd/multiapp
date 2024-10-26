@@ -55,30 +55,42 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
 
   useEffect(() => {
     setIsLoading(true);
-    const promise = fetchWithOptions(`/api/boards/tasks/${String(selectedItem).replace("T", "")}`)
+    const promise = fetchWithOptions(
+      `/api/boards/tasks/${String(selectedItem).replace("T", "")}`
+    );
     promise.then(({ data, error }) => {
-      if(error) return error;
+      if (error) return error;
 
       setCurrentTask(data);
-      setEditorState(EditorState.createWithContent(ContentState.createFromText(data.body || "")));
+      setEditorState(
+        EditorState.createWithContent(
+          ContentState.createFromText(data.body || "")
+        )
+      );
 
-      data.dueDate ?  setDate(new Date(data.dueDate)) : setDate(undefined);
+      data.dueDate ? setDate(new Date(data.dueDate)) : setDate(undefined);
       setIsLoading(false);
       setIsOpen(true);
-    })
+    });
   }, [selectedItem]);
 
   const updateTask = async (data: any) => {
-    const promise = fetchWithOptions(`/api/boards/tasks/${String(selectedItem).replace("T", "")}`, {method: 'POST', body: JSON.stringify({data})});
+    const promise = fetchWithOptions(
+      `/api/boards/tasks/${String(selectedItem).replace("T", "")}`,
+      { method: "POST", body: JSON.stringify({ data }) }
+    );
     promise.then(({ data, error }) => {
-      if(error) return;
+      if (error) return;
     });
   };
 
   const removeTask = () => {
-    const promise = fetchWithOptions(`/api/boards/tasks/delete-task/${String(selectedItem).replace("T", "")}`, {method: 'DELETE'});
+    const promise = fetchWithOptions(
+      `/api/boards/tasks/delete-task/${String(selectedItem).replace("T", "")}`,
+      { method: "DELETE" }
+    );
     promise.then(({ data, error }) => {
-      if(error) return;
+      if (error) return;
 
       setStore((prev) => ({
         ...prev,
@@ -86,25 +98,41 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
         removedItem: currentTask?.id as UniqueIdentifier,
       }));
     });
-  }
+  };
 
   const completeTask = () => {
-    const promise = fetchWithOptions(`/api/boards/tasks/${String(selectedItem).replace("T", "")}`, {method: 'POST', body: JSON.stringify({data: {completed: !currentTask?.completed}})});
+    const promise = fetchWithOptions(
+      `/api/boards/tasks/${String(selectedItem).replace("T", "")}`,
+      {
+        method: "POST",
+        body: JSON.stringify({ data: { completed: !currentTask?.completed } }),
+      }
+    );
     promise.then(({ data, error }) => {
-      if(error) return;
+      if (error) return;
 
-      setCurrentTask(data);
+      setCurrentTask((prev) => {
+        if (!prev) return prev;
+        return {
+          ...prev,
+          completed: !prev.completed,
+        };
+      });
+
       setStore((prev) => ({
         ...prev,
         completedItem: data,
       }));
     });
-  }
+  };
 
   const likeTask = () => {
-    const promise = fetchWithOptions(`/api/boards/tasks/${String(selectedItem).replace("T", "")}/likes`, {method: 'POST'});
+    const promise = fetchWithOptions(
+      `/api/boards/tasks/${String(selectedItem).replace("T", "")}/likes`,
+      { method: "POST" }
+    );
     promise.then(({ data, error }) => {
-      if(error) return;
+      if (error) return;
 
       setCurrentTask((prev) => {
         if (prev) {
@@ -116,30 +144,40 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
         return prev;
       });
     });
-  }
+  };
 
   const dislikeTask = () => {
-    const likeId = currentTask?.taskLikes?.find((like) => like.authorId === (store.user as User).id)?.id;
-    const promise = fetchWithOptions(`/api/boards/likes/delete-like/${likeId}`, {method: 'DELETE'});
+    const likeId = currentTask?.taskLikes?.find(
+      (like) => like.authorId === (store.user as User).id
+    )?.id;
+    const promise = fetchWithOptions(
+      `/api/boards/likes/delete-like/${likeId}`,
+      { method: "DELETE" }
+    );
     promise.then(({ data, error }) => {
-      if(error) return;
+      if (error) return;
 
       setCurrentTask((prev) => {
         if (prev) {
           return {
             ...prev,
-            taskLikes: prev.taskLikes?.filter((like) => like.authorId !== (store.user as User).id),
+            taskLikes: prev.taskLikes?.filter(
+              (like) => like.authorId !== (store.user as User).id
+            ),
           };
         }
         return prev;
       });
     });
-  }
+  };
 
   const addComment = (data: any) => {
-    const promise = fetchWithOptions(`/api/boards/tasks/${String(selectedItem).replace("T", "")}/comments`, {method: 'POST', body: JSON.stringify({data})});
+    const promise = fetchWithOptions(
+      `/api/boards/tasks/${String(selectedItem).replace("T", "")}/comments`,
+      { method: "POST", body: JSON.stringify({ data }) }
+    );
     promise.then(({ data, error }) => {
-      if(error) return;
+      if (error) return;
 
       setCurrentTask((prev) => {
         if (prev) {
@@ -152,7 +190,7 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
       });
       setCommentEditorState(defaultCommentEditorState);
     });
-  }
+  };
 
   if (isLoading) {
     return <div>Loading..</div>;
@@ -286,8 +324,7 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
                 order: 2,
                 backgroundColor: "#1E1F21",
               }}
-            >
-            </TextEditor>
+            ></TextEditor>
           </div>
 
           <TaskAttachments />
@@ -363,10 +400,10 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
             order: 2,
             backgroundColor: "#1E1F21",
           }}
-        >
-        </TextEditor>
+        ></TextEditor>
       </div>
-      {store.filePickerModalIsOpen && createPortal(<FilePickerModal></FilePickerModal>, document.body)}
+      {store.filePickerModalIsOpen &&
+        createPortal(<FilePickerModal></FilePickerModal>, document.body)}
     </div>
   );
 };

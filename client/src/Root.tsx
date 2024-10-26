@@ -33,7 +33,7 @@ export default function Root({}: Props) {
           style={{
             width: store.displaySidebar ? "calc(100% - 240px)" : "100%",
           }}
-          className="transition-all ease-in-out duration-300"
+          className="transition-all ease-in-out duration-300 delay-100"
         >
           <Outlet />
         </div>

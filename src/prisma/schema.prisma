@@ -24,8 +24,7 @@ model User {
   role         String
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
-  tasks        Task[]        @relation("TaskAssignee")
-  createdTasks Task[]        @relation("TaskCreator")
+  tasks        Task[]        @relation("TaskCreator")
   comments     Comment[]
   taskLikes    TaskLike[]
   commentLikes CommentLike[]
@@ -56,8 +55,6 @@ model Task {
   temporaryId   String
   title         String
   body          String?
-  assignee      User?      @relation("TaskAssignee", fields: [assigneeId], references: [id])
-  assigneeId    Int?
   dueDate       DateTime?
   createdAt     DateTime   @default(now())
   updatedAt     DateTime   @updatedAt

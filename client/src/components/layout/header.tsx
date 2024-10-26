@@ -1,6 +1,5 @@
 /** @format */
 
-import React, { useState } from "react";
 import Searchbar from "./searchbar";
 import { Avatar, AvatarFallback, AvatarImage } from "./avatar";
 import { Button } from "./button";
@@ -17,6 +16,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/layout/dropdown-menu";
 import { useNavigate } from "react-router-dom";
+import { fetchWithOptions } from "@/utils/helpers/utils";
 
 type Props = {
   displaySidebar: boolean;
@@ -26,22 +26,14 @@ type Props = {
 export default function Header({ displaySidebar, setDisplaySidebar }: Props) {
   const navigate = useNavigate();
 
-  const logOut = () => {
-    fetch("/api/auth/logout", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      credentials: "include",
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        navigate("/login");
-      })
-      .catch((error) => {
-        console.error("Error logging out:", error);
-      })
-  };
+  function handleLogOut() {
+    const promise = fetchWithOptions("/api/auth/logout", { method: "POST" });
+    promise.then(({ data, error }) => {
+      if (!error) return;
+
+      navigate("/login");
+    });
+  }
 
   return (
     <header className="flex items-center justify-between bg-[#2e2e30] w-full px-6 py-3 border-b border-[#424244]">
@@ -153,7 +145,10 @@ export default function Header({ displaySidebar, setDisplaySidebar }: Props) {
               <span className="text-black">GitHub</span>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="cursor-pointer" onClick={() => logOut()}>
+            <DropdownMenuItem
+              className="cursor-pointer"
+              onClick={() => handleLogOut()}
+            >
               <LogOut color="black" className="mr-2 h-4 w-4" />
               <span className="text-black">Log out</span>
               <DropdownMenuShortcut className="text-black">

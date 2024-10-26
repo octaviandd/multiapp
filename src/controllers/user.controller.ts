@@ -3,6 +3,7 @@
 import { Request, Response } from "express";
 import userService from "../services/user.service";
 import { User } from "../types/user";
+import prisma from "../prisma/prisma-client";
 
 declare module "express-session" {
   interface Session {
@@ -55,6 +56,19 @@ const logoutUser = async (req: Request, res: Response) => {
 
 const getUserFromSession = async (req: Request, res: Response) => {
   if (req.session.user) {
+    const user = await prisma.user.findUnique({
+      where: {
+        id: req.session.user.id,
+      },
+      include: {
+        tasks: true,
+        taskLikes: true,
+        comments: true,
+        commentLikes: true,
+      },
+    });
+
+    req.session.user = user as any;
     return res
       .status(200)
       .json({ authenticated: true, user: req.session.user });
@@ -78,10 +92,22 @@ const getUser = async (req: Request, res: Response) => {
   }
 };
 
+const getUserCompletedTasks = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.session.user;
+    const user = await userService.getUserCompletedTasks(Number(id));
+
+    res.status(200).json(user);
+  } catch (error) {
+    res.status(500).json({ error: (error as any).message });
+  }
+};
+
 export default {
   getUserFromSession,
   getUser,
   registerUser,
   loginUser,
   logoutUser,
+  getUserCompletedTasks,
 };

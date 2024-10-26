@@ -18,6 +18,9 @@ const createTaskLike = async (likeData: any) => {
   try {
     const like = await prisma.taskLike.create({
       data: likeData,
+      include: {
+        author: true,
+      },
     });
 
     return like;

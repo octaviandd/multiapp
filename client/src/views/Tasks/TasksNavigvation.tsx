@@ -1,6 +1,6 @@
 /** @format */
 
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Link, Outlet } from "react-router-dom";
 import {
   Avatar,
@@ -9,9 +9,26 @@ import {
 } from "@/components/layout/avatar";
 import { StoreContext } from "@/store/index";
 import SideTask from "@/components/layout/side-task";
+import { fetchWithOptions } from "@/utils/helpers/utils";
+import dayjs from "dayjs";
 
 export default function Tasks() {
   const { store } = useContext(StoreContext);
+  const [lastTaskCompleted, setLastTaskCompleted] =
+    useState<string>("No tasks completed");
+
+  useEffect(() => {
+    const promise = fetchWithOptions("/api/auth/user-completed-tasks");
+    promise.then(({ data, error }) => {
+      if (error) return;
+
+      console.log(data);
+      setLastTaskCompleted(
+        "Last task completed on " +
+          dayjs(data[0].updatedAt).format("MMMM D, YYYY")
+      );
+    });
+  }, [store.completedItem]);
 
   return (
     <div className="flex flex-col w-full transition-all ease-in-out duration-300 h-full dark-scroll relative">
@@ -42,7 +59,7 @@ export default function Tasks() {
       </div>
       <div className="h-10 py-4 bg-[#1E1F21] border-b border-t border-[#424244] flex items-center justify-between px-4">
         <div>
-          <p className="muted extra-small">Last task completed on 31 Mar</p>
+          <p className="muted extra-small">{lastTaskCompleted}</p>
         </div>
       </div>
       <div className="w-full h-full bg-[#252628]">
