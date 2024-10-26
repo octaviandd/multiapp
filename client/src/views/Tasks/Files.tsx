@@ -1,7 +1,7 @@
 /** @format */
 
 import { cn } from "@/utils/helpers/utils";
-import React, {useCallback, useState, useEffect} from "react";
+import React, { useCallback, useState, useEffect } from "react";
 import { useDropzone, FileWithPath } from "react-dropzone";
 import docIcon from "@/assets/doc.png";
 import pdfIcon from "@/assets/pdf.png";
@@ -10,7 +10,7 @@ import { Button } from "@/components/layout/button";
 import { CheckIcon, DotsHorizontalIcon } from "@radix-ui/react-icons";
 
 export default function Files() {
-  const onDrop = useCallback((acceptedFiles : any) => {
+  const onDrop = useCallback((acceptedFiles: any) => {
     const formData = new FormData();
     acceptedFiles.forEach((file: any, index: number) => {
       formData.append(file.name + index, file);
@@ -22,7 +22,7 @@ export default function Files() {
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log(data)
+        console.log(data);
         setCurrentFiles((prev) => {
           return [...prev, ...data.files];
         });
@@ -30,12 +30,12 @@ export default function Files() {
       .catch((error) => {
         console.error("Error uploading files:", error);
       });
-  }, [])
+  }, []);
 
   const [currentFiles, setCurrentFiles] = useState<File[]>([]);
   const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
     maxFiles: 10,
-    onDrop
+    onDrop,
   });
   const [isSelected, setIsSelected] = useState(false);
 
@@ -50,7 +50,7 @@ export default function Files() {
       .catch((error) => {
         console.error("Error fetching files:", error);
       });
-  }, [])
+  }, []);
 
   const deleteFile = (fileId: number) => {
     fetch(`/api/files/delete/${fileId}`, {
@@ -63,7 +63,7 @@ export default function Files() {
       .catch((error) => {
         console.error("Error deleting file:", error);
       });
-  }
+  };
 
   const files = acceptedFiles.map((file: FileWithPath) => {
     let icon;
@@ -119,26 +119,50 @@ export default function Files() {
         </p>
       </div>
       <aside className="my-12">
-        {files.length > 0 &&
-        <>
-          <h3 className="mb-2 pb-2 border-b text-white border-neutral-500">Uploaded files</h3>
-        <div className="grid gap-6 grid-cols-6 grid-rows-auto">
-          {files}
-          </div>
-        </>}
-      </aside>
-      {currentFiles.length > 0 && <div className="overflow-scroll">
-        <h3 className="text-white mb-2 border-b pb-2 border-neutral-500">Current files</h3>
-        {currentFiles.map((file: any) => (
-          <div key={file.id} className="flex items-center justify-between bg-neutral-700 p-4 rounded-lg mb-4">
-            <div className="flex items-center">
-              <img src={file.type.includes('image') ? imgIcon : file.type.includes('pdf') ? pdfIcon : docIcon} alt="Document Icon" width={50} height={50} />
-              <p className="ml-4 text-white/80">{file.title}</p>
-            </div>
-            <Button className="hover:bg-red-500 transition-bg duration-300 ease-in-out" onClick={() => deleteFile(file.id)}>Delete</Button>
-          </div>)
+        {files.length > 0 && (
+          <>
+            <h3 className="mb-2 pb-2 border-b text-white border-neutral-500">
+              Uploaded files
+            </h3>
+            <div className="grid gap-6 grid-cols-6 grid-rows-auto">{files}</div>
+          </>
         )}
-      </div>}
+      </aside>
+      {currentFiles.length > 0 && (
+        <div>
+          <h3 className="text-white mb-2 border-b pb-2 border-neutral-500">
+            Current files
+          </h3>
+          {currentFiles.map((file: any) => (
+            <div
+              key={file.id}
+              className="flex items-center justify-between bg-neutral-700 p-4 rounded-lg mb-4"
+            >
+              <div className="flex items-center">
+                <img
+                  src={
+                    file.type.includes("image")
+                      ? imgIcon
+                      : file.type.includes("pdf")
+                      ? pdfIcon
+                      : docIcon
+                  }
+                  alt="Document Icon"
+                  width={50}
+                  height={50}
+                />
+                <p className="ml-4 text-white/80">{file.title}</p>
+              </div>
+              <Button
+                className="hover:bg-red-500 transition-bg duration-300 ease-in-out"
+                onClick={() => deleteFile(file.id)}
+              >
+                Delete
+              </Button>
+            </div>
+          ))}
+        </div>
+      )}
     </section>
   );
 }
