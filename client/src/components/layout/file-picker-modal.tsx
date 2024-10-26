@@ -23,19 +23,17 @@ export default function FilePickerModal({}: Props) {
       formData.append(file.name + index, file);
     });
 
-    fetch("/api/files/upload", {
+    const promise = fetchWithOptions("/api/files/upload", {
       method: "POST",
       body: formData,
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        setCurrentFiles((prev) => {
-          return [...prev, ...data.files];
-        });
-      })
-      .catch((error) => {
-        console.error("Error uploading files:", error);
+    });
+    promise.then(({ data, error }) => {
+      if (error) return;
+
+      setCurrentFiles((prev) => {
+        return [...prev, ...data.files];
       });
+    });
   }, []);
 
   const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
@@ -54,16 +52,31 @@ export default function FilePickerModal({}: Props) {
   };
 
   const searchFiles = (query: string) => {
-    fetch(`/api/files/search?q=${query}`, {
+    const promise = fetchWithOptions(`/api/files/search?q=${query}`, {
       method: "GET",
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        setCurrentFiles(data);
-      })
-      .catch((error) => {
-        console.error("Error fetching files:", error);
-      });
+    });
+    promise.then(({ data, error }) => {
+      if (error) return;
+
+      setCurrentFiles(data);
+    });
+  };
+
+  const addTaskFile = (file: any) => {
+    const promise = fetchWithOptions(
+      `/api/boards/tasks/add-task-file/${file.id}`,
+      {
+        method: "POST",
+        body: JSON.stringify({
+          taskId: String(store?.currentBoardItem).replace("T", ""),
+        }),
+      }
+    );
+    promise.then(({ data, error }) => {
+      if (error) return;
+
+      setStore((prev) => ({ ...prev, filePickerModalIsOpen: false }));
+    });
   };
 
   useEffect(() => {
@@ -71,7 +84,6 @@ export default function FilePickerModal({}: Props) {
     promise.then(({ data, error }) => {
       if (error) return;
 
-      console.log(data);
       setCurrentFiles(data);
     });
   }, []);
@@ -179,7 +191,10 @@ export default function FilePickerModal({}: Props) {
             </aside>
           </div>
         ) : (
-          <div className="flex flex-col">
+          <div
+            className="flex flex-col h-full pb-[65px]"
+            style={{ scrollbarWidth: "none" }}
+          >
             <div className="border-b border-neutral-300 py-2 pb-4 px-4">
               <Input
                 placeholder="Search files"
@@ -187,12 +202,20 @@ export default function FilePickerModal({}: Props) {
                 value={inputValue}
               />
             </div>
-            <div className="grid grid-cols-4 grid-rows-auto gap-4 p-4 my-2 overflow-y-scroll">
+            <div
+              className="grid grid-cols-5 grid-rows-auto gap-4 p-4 my-2 h-full overflow-y-scroll will-change-transform"
+              style={{
+                backfaceVisibility: "hidden",
+                WebkitBackfaceVisibility: "hidden",
+                transform: "translateZ(0)",
+              }}
+            >
               {currentFiles.length > 0 &&
                 currentFiles.map((file: any) => (
                   <div
                     key={file.id}
                     className="flex items-center flex-col justify-between bg-neutral-200 p-4 rounded-lg mb-4 cursor-pointer"
+                    onClick={() => addTaskFile(file)}
                   >
                     <div className="flex items-center gap-y-2 flex-col">
                       <img
@@ -203,6 +226,7 @@ export default function FilePickerModal({}: Props) {
                             ? pdfIcon
                             : docIcon
                         }
+                        className="object-cover h-[100px] w-[100px]"
                         alt="Document Icon"
                       />
                     </div>

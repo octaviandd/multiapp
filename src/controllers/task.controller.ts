@@ -71,10 +71,28 @@ const updateTask = async (req: Request, res: Response) => {
   }
 };
 
+const addTaskFile = async (req: Request, res: Response) => {
+  try {
+    const { fileId } = req.params;
+    const { taskId } = req.body;
+    const taskFile = await TaskService.addTaskFile(
+      Number(fileId),
+      Number(taskId)
+    );
+
+    return res.status(201).json(taskFile);
+  } catch (error: any) {
+    return res.status(500).json({
+      message: "Internal server error: " + error.message,
+    });
+  }
+};
+
 export default {
   getTasks,
   getTask,
   createTask,
   deleteTask,
   updateTask,
+  addTaskFile,
 };

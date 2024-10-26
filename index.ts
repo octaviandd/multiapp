@@ -24,18 +24,21 @@ app.use(
     secret: "your_secret_key",
     resave: false,
     saveUninitialized: false,
-    cookie: { secure: false },
+    cookie: {
+      secure: false,
+      maxAge: 1000 * 60 * 60 * 24,
+    },
   })
 );
 
-app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
+app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }));
 app.use(cors());
 
 app.use("/api/users", bodyParser.json(), userRoutes);
 app.use("/api/auth", bodyParser.json(), authRoutes);
 app.use("/api/boards", bodyParser.json(), boardRoutes);
 app.use("/api/home", bodyParser.json(), homeRoutes);
-app.use("/api/files",  filesRoutes);
+app.use("/api/files", filesRoutes);
 
 const port = process.env.PORT || 8000;
 

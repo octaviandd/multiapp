@@ -42,7 +42,11 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
 
   const closeSidePanel = () => {
     setIsOpen(false);
-    setStore((prev) => ({ ...prev, currentBoardItem: null }));
+    setStore((prev) => ({
+      ...prev,
+      currentBoardItem: null,
+      filePickerModalIsOpen: false,
+    }));
   };
 
   useEffect(() => {
@@ -199,7 +203,7 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
   return (
     <div
       id="taskSidebar"
-      className={`absolute border-[#424244] border-l right-0 top-0 h-full w-full sm:w-2/5 md:w-1/3 lg:w-1/3 bg-[#1E1F21] shadow-lg transform transition-transform duration-300 ease-in-out overflow-hidden ${
+      className={`absolute border-[#424244] border-l right-0 top-0 h-full w-full min-w-[380px] sm:w-2/5 md:w-1/3 lg:w-1/3 bg-[#1E1F21] shadow-lg transform transition-transform duration-300 ease-in-out overflow-hidden ${
         isOpen ? "translate-x-0" : "translate-x-full"
       }`}
     >
@@ -327,7 +331,7 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
             ></TextEditor>
           </div>
 
-          <TaskAttachments />
+          <TaskAttachments taskFiles={currentTask?.taskFiles} />
 
           <div className="bg-[#252628] px-4 text-white pb-4 !mt-0">
             <div className="border-b py-4 mb-3 border-neutral-500">

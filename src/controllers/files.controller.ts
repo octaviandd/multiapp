@@ -68,9 +68,25 @@ const searchFiles = async (req: Request, res: Response) => {
   }
 };
 
+const addTaskFile = async (req: Request, res: Response) => {
+  console.log(req.body);
+  try {
+    const { fileId } = req.params;
+    const { taskId } = req.body;
+    const file = await FilesService.addTaskFile(Number(fileId), taskId);
+
+    res.status(200).json(file);
+  } catch (error: any) {
+    res
+      .status(500)
+      .json({ message: "Internal server error: " + error.message });
+  }
+};
+
 export default {
   uploadFile,
   deleteFile,
   getFiles,
   searchFiles,
+  addTaskFile,
 };

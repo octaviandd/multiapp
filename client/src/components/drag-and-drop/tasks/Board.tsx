@@ -71,12 +71,19 @@ export type Comment = {
   author: User;
 };
 
+export type TaskFile = {
+  file: File;
+  fileId: number;
+  id: number;
+  taskId: number;
+};
+
 export type Task = {
   id: UniqueIdentifier;
   title: string;
   recentlyAdded?: boolean;
   body?: string;
-  files?: File[];
+  taskFiles?: TaskFile[];
   comments?: Comment[];
   dueDate?: Date;
   asignee?: string;
@@ -99,6 +106,16 @@ export type Board = {
   title: string;
   tasks: Task[];
   recentlyAdded?: boolean;
+};
+
+export type File = {
+  id: string | number;
+  name: string;
+  title: string;
+  url: string;
+  size: number;
+  createdAt: Date;
+  updatedAt: Date;
 };
 
 interface Props {

@@ -13,7 +13,7 @@ export async function fetchWithOptions(
     method?: string;
     headers?: RequestInit["headers"];
     contentType?: string;
-    body?: string;
+    body?: string | FormData;
   }
 ) {
   const defaultOptions = {
@@ -29,6 +29,8 @@ export async function fetchWithOptions(
 
   let error: any = undefined;
   let data: any = undefined;
+
+  console.log(defaultOptions);
 
   try {
     const response = await fetch(url, defaultOptions);

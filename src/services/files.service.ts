@@ -65,9 +65,26 @@ const searchFiles = async (query: string) => {
   }
 };
 
+const addTaskFile = async (fileId: number, taskId: number) => {
+  console.log({ fileId, taskId });
+  try {
+    const file = await prisma.taskFile.create({
+      data: {
+        fileId,
+        taskId,
+      },
+    });
+
+    return file;
+  } catch (err: any) {
+    console.log("Error fetching file from database:", err);
+  }
+};
+
 export default {
   uploadFile,
   deleteFile,
   getFiles,
   searchFiles,
+  addTaskFile,
 };
