@@ -168,24 +168,23 @@ export default function MultipleContainers({
   }, [boards]);
 
   useEffect(() => {
-    if (store.removedItem) {
-      setBoards((boards) => {
-        return boards.map((board) => {
-          return {
-            ...board,
-            tasks: board.tasks.filter(
-              (task) => task.id !== "T" + store.removedItem
-            ),
-          };
-        });
-      });
-      setStore((store) => {
+    if(!store.removedItem) return;
+    setBoards((boards) => {
+      return boards.map((board) => {
         return {
-          ...store,
-          removedItem: null,
+          ...board,
+          tasks: board.tasks.filter(
+            (task) => task.id !== "T" + store.removedItem
+          ),
         };
       });
-    }
+    });
+    setStore((store) => {
+      return {
+        ...store,
+        removedItem: null,
+      };
+    });
   }, [store.removedItem]);
 
   useEffect(() => {
