@@ -16,6 +16,7 @@ type Props = {};
 
 export default function FilePickerModal({}: Props) {
   const [currentFiles, setCurrentFiles] = useState<File[]>([]);
+  const [inputValue, setInputValue] = useState("");
   const onDrop = useCallback((acceptedFiles: any) => {
     const formData = new FormData();
     acceptedFiles.forEach((file: any, index: number) => {
@@ -46,6 +47,24 @@ export default function FilePickerModal({}: Props) {
     { name: "File Upload", isActive: true },
     { name: "Library", isActive: false },
   ]);
+
+  const handleInput = (e: any) => {
+    setInputValue(e.target.value);
+    searchFiles(e.target.value);
+  };
+
+  const searchFiles = (query: string) => {
+    fetch(`/api/files/search?q=${query}`, {
+      method: "GET",
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        setCurrentFiles(data);
+      })
+      .catch((error) => {
+        console.error("Error fetching files:", error);
+      });
+  };
 
   useEffect(() => {
     const promise = fetchWithOptions("/api/files", { method: "GET" });
@@ -103,7 +122,7 @@ export default function FilePickerModal({}: Props) {
   return (
     <div className="absolute top-0 bottom-0 right-0 left-0">
       <div className="fixed top-0 bottom-0 right-0 left-0 bg-black opacity-50"></div>
-      <div className="absolute w-[70vw] h-[70vh] bg-white border-b rounded border-neutral-400 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+      <div className="absolute w-[70vw] h-[70vh] bg-white border-b overflow-hidden rounded border-neutral-400 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
         <div className="border-b border-neutral-400 py-3 my-3 px-4 flex items-center gap-x-4">
           {currentTabs.map((tab, index) => (
             <h3
@@ -162,9 +181,13 @@ export default function FilePickerModal({}: Props) {
         ) : (
           <div className="flex flex-col">
             <div className="border-b border-neutral-300 py-2 pb-4 px-4">
-              <Input placeholder="Search files" />
+              <Input
+                placeholder="Search files"
+                onChange={(e) => handleInput(e)}
+                value={inputValue}
+              />
             </div>
-            <div className="grid grid-cols-4 grid-rows-auto gap-4 p-4 my-2">
+            <div className="grid grid-cols-4 grid-rows-auto gap-4 p-4 my-2 overflow-y-scroll">
               {currentFiles.length > 0 &&
                 currentFiles.map((file: any) => (
                   <div

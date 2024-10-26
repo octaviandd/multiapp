@@ -1,3 +1,4 @@
+/** @format */
 
 import express from "express";
 import { withAuth } from "../middleware/auth.middleware";
@@ -13,6 +14,6 @@ router.use(withAuth);
 router.get("/", FilesController.getFiles);
 router.post("/upload", upload.any(), FilesController.uploadFile);
 router.delete("/delete/:fileId", FilesController.deleteFile);
-
+router.get("/search", FilesController.searchFiles);
 
 export default router;

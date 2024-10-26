@@ -22,7 +22,7 @@ export default function Tasks() {
     promise.then(({ data, error }) => {
       if (error) return;
 
-      console.log(data);
+      if (data.length === 0) return;
       setLastTaskCompleted(
         "Last task completed on " +
           dayjs(data[0].updatedAt).format("MMMM D, YYYY")

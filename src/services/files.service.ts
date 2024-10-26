@@ -7,10 +7,10 @@ const getFiles = async () => {
     const files = await prisma.file.findMany();
 
     return files;
-  } catch (err: any){
+  } catch (err: any) {
     console.log("Error fetching files from database:", err);
   }
-}
+};
 
 const uploadFile = async (files: any) => {
   try {
@@ -30,7 +30,7 @@ const uploadFile = async (files: any) => {
     });
 
     return insertedFiles;
-  } catch (err: any){
+  } catch (err: any) {
     console.log("Error uploading files to database:", err);
   }
 };
@@ -44,13 +44,30 @@ const deleteFile = async (fileId: number) => {
     });
 
     return true;
-  } catch (err: any){
+  } catch (err: any) {
     console.log("Error deleting file from database:", err);
+  }
+};
+
+const searchFiles = async (query: string) => {
+  try {
+    const files = await prisma.file.findMany({
+      where: {
+        title: {
+          contains: query,
+        },
+      },
+    });
+
+    return files;
+  } catch (err: any) {
+    console.log("Error searching files in database:", err);
   }
 };
 
 export default {
   uploadFile,
   deleteFile,
-  getFiles
+  getFiles,
+  searchFiles,
 };

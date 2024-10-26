@@ -9,9 +9,11 @@ const getFiles = async (req: Request, res: Response) => {
 
     res.status(200).json(files);
   } catch (error: any) {
-    res.status(500).json({ message: "Internal server error: " + error.message });
+    res
+      .status(500)
+      .json({ message: "Internal server error: " + error.message });
   }
-}
+};
 
 const uploadFile = async (req: Request, res: Response) => {
   try {
@@ -30,11 +32,13 @@ const uploadFile = async (req: Request, res: Response) => {
     const dbFiles = await FilesService.uploadFile(newFiles);
 
     res.status(201).json({
-      message: 'Files uploaded successfully',
+      message: "Files uploaded successfully",
       files: dbFiles,
     });
   } catch (error: any) {
-    res.status(500).json({ message: "Internal server error: " + error.message });
+    res
+      .status(500)
+      .json({ message: "Internal server error: " + error.message });
   }
 };
 
@@ -42,7 +46,6 @@ const deleteFile = async (req: Request, res: Response) => {
   try {
     const { fileId } = req.params;
     await FilesService.deleteFile(Number(fileId));
-
 
     return res.status(200).json({ message: "File deleted" });
   } catch (error: any) {
@@ -52,8 +55,22 @@ const deleteFile = async (req: Request, res: Response) => {
   }
 };
 
+const searchFiles = async (req: Request, res: Response) => {
+  try {
+    const { q } = req.query;
+    const files = await FilesService.searchFiles(q as string);
+
+    res.status(200).json(files);
+  } catch (error: any) {
+    res
+      .status(500)
+      .json({ message: "Internal server error: " + error.message });
+  }
+};
+
 export default {
   uploadFile,
   deleteFile,
   getFiles,
+  searchFiles,
 };
