@@ -16,6 +16,8 @@ import {
 } from "@/components/layout/dropdown-menu";
 import { useNavigate } from "react-router-dom";
 import { fetchWithOptions } from "@/utils/helpers/utils";
+import { StoreContext } from "@/store";
+import { useContext } from "react";
 
 type Props = {
   displaySidebar: boolean;
@@ -24,6 +26,7 @@ type Props = {
 
 export default function Header({ displaySidebar, setDisplaySidebar }: Props) {
   const navigate = useNavigate();
+  const { store } = useContext(StoreContext);
 
   function handleLogOut() {
     const promise = fetchWithOptions("/api/auth/logout", { method: "POST" });
@@ -92,7 +95,7 @@ export default function Header({ displaySidebar, setDisplaySidebar }: Props) {
           <DropdownMenuTrigger asChild>
             <Button className="flex items-center">
               <Avatar className="w-6 h-6 mr-2">
-                <AvatarImage src="https://github.com/shadcn.png" />
+                <AvatarImage src={store?.user?.profileImage} />
                 <AvatarFallback>CN</AvatarFallback>
               </Avatar>
               <svg

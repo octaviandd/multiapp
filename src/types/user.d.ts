@@ -16,4 +16,5 @@ export type User = {
   comments?: Comment[];
   taskLikes?: TaskLike[];
   commentLikes?: CommentLike[];
+  profileImage?: string;
 };

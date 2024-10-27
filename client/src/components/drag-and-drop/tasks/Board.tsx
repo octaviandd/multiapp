@@ -62,6 +62,7 @@ export type User = {
   tasks: Task[];
   email: string;
   role: string;
+  profileImage: string;
 };
 
 export type Comment = {

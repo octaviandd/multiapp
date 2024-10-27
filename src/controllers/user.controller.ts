@@ -19,6 +19,7 @@ const registerUser = async (req: Request, res: Response) => {
       password,
       first_name,
       last_name,
+      profileImage: "https://picsum.photos/100/100",
     });
 
     req.session.user = user as any;

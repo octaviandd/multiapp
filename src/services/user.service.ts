@@ -8,11 +8,13 @@ const createUser = async ({
   password,
   first_name,
   last_name,
+  profileImage,
 }: {
   email: string;
   password: string;
   first_name: string;
   last_name: string;
+  profileImage: string;
 }) => {
   try {
     const user = await prisma.user.findUnique({
@@ -31,6 +33,7 @@ const createUser = async ({
           lastName: last_name,
           email,
           password: hashedPassword,
+          profileImage,
           role: "",
         },
         include: {
