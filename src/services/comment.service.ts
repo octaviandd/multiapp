@@ -34,6 +34,9 @@ const createComment = async (commentData: any) => {
   try {
     const comment = await prisma.comment.create({
       data: commentData,
+      include: {
+        author: true,
+      },
     });
 
     return comment;

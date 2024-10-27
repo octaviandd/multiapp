@@ -58,7 +58,6 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
   }, [currentDate]);
 
   useEffect(() => {
-    console.log(store.recentlyAddedTaskFile);
     if (store.recentlyAddedTaskFile) {
       setCurrentTask((prev) => {
         if (prev) {
@@ -72,6 +71,10 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
         }
         return prev;
       });
+      setStore((prev) => ({
+        ...prev,
+        recentlyAddedTaskFile: undefined,
+      }));
     }
   }, [store.recentlyAddedTaskFile]);
 
@@ -269,7 +272,7 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
           </button>
         </div>
       </div>
-      <div className="h-full overflow-y-scroll max-h-[650px]">
+      <div className="h-full overflow-y-scroll max-h-[683.5px]">
         <div className="flex items-center justify-between p-4 border-b border-[#424244]">
           <h2 className="pb-0 mb-0 text-xl border-none font-semibold text-white">
             {currentTask?.title}
@@ -355,19 +358,19 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
               <p className="text-[14px] leading-6 font-medium">Comments</p>
             </div>
             {currentTask && (
-              <div className="flex items-center my-2">
-                <div className="mx-2 flex justify-between items-center w-full">
+              <div className="flex items-center">
+                <div className="mx-2 flex justify-between items-center w-full my-2 border-b border-neutral-600 mb-1 pb-2">
                   <img src="https://via.placeholder.com/32" alt="User Avatar" />
                   <div className="ml-2 w-full">
-                    <p className="font-medium">
+                    <p className="font-medium small">
                       {currentTask.author?.firstName +
                         " " +
                         currentTask.author?.lastName}{" "}
-                      <p className="extra-small font-medium inline-block">
+                      <span className="text-[10px] font-medium inline-block">
                         {" "}
                         created this task ·{" "}
                         {dayjs(currentTask.createdAt).format("D MMM")}
-                      </p>
+                      </span>
                     </p>
                   </div>
                 </div>

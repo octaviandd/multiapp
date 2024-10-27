@@ -18,7 +18,7 @@ export default function TaskAttachments({ taskFiles }: Props) {
       <p className="extra-small pb-3 text-white">Attachments</p>
       <section className="grid grid-cols-4 gap-4 grid-rows-auto p-6 items-center">
         {taskFiles?.map((taskFile) => (
-          <div className="relative group">
+          <div className="relative group" key={taskFile.id}>
             <button
               onClick={() =>
                 setStore((prev) => ({

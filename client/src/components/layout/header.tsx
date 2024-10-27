@@ -1,6 +1,5 @@
 /** @format */
 
-import Searchbar from "./searchbar";
 import { Avatar, AvatarFallback, AvatarImage } from "./avatar";
 import { Button } from "./button";
 import { Github, LogOut, Plus, Settings, User } from "lucide-react";
@@ -75,7 +74,6 @@ export default function Header({ displaySidebar, setDisplaySidebar }: Props) {
               align="start"
               alignOffset={15}
             >
-              <DropdownMenuSeparator />
               <DropdownMenuGroup>
                 <DropdownMenuItem>
                   <User color="black" className="mr-2 h-4 w-4" />
@@ -89,7 +87,6 @@ export default function Header({ displaySidebar, setDisplaySidebar }: Props) {
           </DropdownMenu>
         </div>
       </div>
-      <Searchbar />
       <div className="flex items-center gap-x-2 cursor-pointer">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -122,24 +119,6 @@ export default function Header({ displaySidebar, setDisplaySidebar }: Props) {
             <DropdownMenuLabel className="text-black">
               My Account
             </DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <User color="black" className="mr-2 h-4 w-4" />
-                <span className="text-black">Profile</span>
-                <DropdownMenuShortcut className="text-black">
-                  ⇧⌘P
-                </DropdownMenuShortcut>
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <Settings color="black" className="mr-2 h-4 w-4" />
-                <span className="text-black">Settings</span>
-                <DropdownMenuShortcut className="text-black">
-                  ⌘S
-                </DropdownMenuShortcut>
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-            <DropdownMenuSeparator />
             <DropdownMenuItem>
               <Github color="black" className="mr-2 h-4 w-4" />
               <span className="text-black">GitHub</span>
