@@ -3,7 +3,7 @@
 module.exports = {
   apps: [
     {
-      name: "server",
+      name: "my-node-backend",
       script: "dist/index.js",
       autorestart: true,
       watch: false,
