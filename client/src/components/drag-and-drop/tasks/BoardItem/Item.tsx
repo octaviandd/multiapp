@@ -11,7 +11,7 @@ import styles from "./item.module.scss";
 import { Handle } from "./Handle";
 
 import { cn } from "@/utils/helpers/utils";
-import { CalendarClock, CircleCheck, ThumbsUp } from "lucide-react";
+import { CircleCheck } from "lucide-react";
 import { StoreContext } from "@/store";
 
 export interface Props {
@@ -24,6 +24,7 @@ export interface Props {
   height?: number;
   index?: number;
   completed?: boolean;
+  lastFileUrl?: string;
   fadeIn?: boolean;
   transform?: Transform | null;
   listeners?: DraggableSyntheticListeners;
@@ -55,6 +56,7 @@ export const Item = React.memo(
         completed,
         id,
         listeners,
+        lastFileUrl,
         recentlyAdded,
         onRemove,
         removeTemporaryTask,
@@ -160,18 +162,15 @@ export const Item = React.memo(
                 placeholder="Write a new task"
               ></input>
             </div>
-            {!recentlyAdded && <div className="flex justify-between items-center mt-7">
-              <CalendarClock
-                width={14}
-                height={14}
-                className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 ease-in-out border-dotted rounded-full"
-              />
-              <ThumbsUp
-                className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 ease-in-out"
-                width={14}
-                height={14}
-              />
-            </div>}
+            {!recentlyAdded && lastFileUrl && (
+              <div className="flex justify-between items-center mt-7">
+                <img
+                  src={lastFileUrl}
+                  alt="last file"
+                  className="h-auto max-h-[250px] w-full object-cover"
+                />
+              </div>
+            )}
             <span className={styles.Actions}>
               {handle ? <Handle {...handleProps} {...listeners} /> : null}
             </span>

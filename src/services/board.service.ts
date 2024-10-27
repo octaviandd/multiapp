@@ -5,7 +5,17 @@ import prisma from "../prisma/prisma-client";
 const getBoards = async () => {
   try {
     const boards = await prisma.board.findMany({
-      include: { tasks: true },
+      include: {
+        tasks: {
+          include: {
+            files: {
+              include: {
+                file: true,
+              },
+            },
+          },
+        },
+      },
       orderBy: { displayOrder: "asc" },
     });
 

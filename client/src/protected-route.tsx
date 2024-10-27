@@ -3,9 +3,10 @@
 import React, { useState, useEffect, useContext } from "react";
 import { Navigate } from "react-router-dom";
 import { StoreContext } from "@/store";
+import { Spinner } from "./components/layout/spinner";
 
 interface Props {
-  children: React.ReactNode; // Typing for children prop
+  children: React.ReactNode;
 }
 
 export default function ProtectedRoute({
@@ -43,7 +44,11 @@ export default function ProtectedRoute({
   }, []);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-[#2E2E30]">
+        <Spinner size="large" />
+      </div>
+    );
   }
 
   if (isAuthenticated) {

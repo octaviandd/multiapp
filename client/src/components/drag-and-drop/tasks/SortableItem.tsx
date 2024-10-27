@@ -5,11 +5,13 @@ import React, { useEffect, useState } from "react";
 import { UniqueIdentifier } from "@dnd-kit/core";
 import { useSortable } from "@dnd-kit/sortable";
 import { Item } from "../home/index";
+import { Task } from "./Board";
 
 interface SortableItemProps {
   containerId: UniqueIdentifier;
   id: UniqueIdentifier;
   value: string;
+  item: Task;
   index: number;
   handle: boolean;
   disabled?: boolean;
@@ -39,6 +41,7 @@ export const SortableItem = ({
   handle,
   renderItem,
   style,
+  item,
   containerId,
   getIndex,
   wrapperStyle,

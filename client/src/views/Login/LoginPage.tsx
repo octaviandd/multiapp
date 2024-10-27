@@ -20,6 +20,8 @@ import {
 import { Input } from "@/components/layout/input";
 import { Link, useNavigate } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useContext, useEffect } from "react";
+import { StoreContext } from "@/store";
 
 const formSchema = z.object({
   email: z.string().min(5, {
@@ -31,6 +33,7 @@ const formSchema = z.object({
 });
 
 export function LoginForm() {
+  const { store } = useContext(StoreContext);
   const navigate = useNavigate();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -39,6 +42,7 @@ export function LoginForm() {
       password: "",
     },
   });
+
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     fetch("/api/auth/login", {
       method: "POST",

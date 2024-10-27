@@ -1,7 +1,7 @@
 /** @format */
 
 import { UniqueIdentifier } from "@dnd-kit/core";
-import { Check, ThumbsUp, Trash } from "lucide-react";
+import { Check, ThumbsDown, ThumbsUp, Trash } from "lucide-react";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { Task, TaskFile, User } from "../drag-and-drop/tasks/Board";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
@@ -19,6 +19,7 @@ import FilePickerModal from "./file-picker-modal";
 import TextEditor from "./text-editor";
 import TaskComment from "./task-comment";
 import TaskAttachments from "./task-attachments";
+import { Spinner } from "./spinner";
 interface SideTaskProps {
   selectedItem: UniqueIdentifier;
 }
@@ -124,6 +125,20 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
     });
   };
 
+  const handleLikeDislike = () => {
+    const userLikesTask = store?.user?.taskLikes.find(
+      (like) => like.taskId === (currentTask as Task).id
+    );
+
+    console.log(userLikesTask);
+
+    if (userLikesTask) {
+      dislikeTask();
+    } else {
+      likeTask();
+    }
+  };
+
   const completeTask = () => {
     const promise = fetchWithOptions(
       `/api/boards/tasks/${String(selectedItem).replace("T", "")}`,
@@ -167,13 +182,27 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
         }
         return prev;
       });
+
+      setStore((prev) => {
+        if (prev.user) {
+          return {
+            ...prev,
+            user: {
+              ...prev.user,
+              taskLikes: [...(prev.user.taskLikes ?? []), data],
+            },
+          };
+        }
+        return prev;
+      });
     });
   };
 
   const dislikeTask = () => {
     const likeId = currentTask?.taskLikes?.find(
-      (like) => like.authorId === (store.user as User).id
+      (like) => like.taskId === currentTask.id
     )?.id;
+
     const promise = fetchWithOptions(
       `/api/boards/likes/delete-like/${likeId}`,
       { method: "DELETE" }
@@ -186,8 +215,23 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
           return {
             ...prev,
             taskLikes: prev.taskLikes?.filter(
-              (like) => like.authorId !== (store.user as User).id
+              (like) => like.taskId !== currentTask?.id
             ),
+          };
+        }
+        return prev;
+      });
+
+      setStore((prev) => {
+        if (prev.user) {
+          return {
+            ...prev,
+            user: {
+              ...prev.user,
+              taskLikes: prev.user.taskLikes?.filter(
+                (like) => like.taskId !== currentTask?.id
+              ),
+            },
           };
         }
         return prev;
@@ -215,10 +259,6 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
       setCommentEditorState(defaultCommentEditorState);
     });
   };
-
-  if (isLoading) {
-    return <div>Loading..</div>;
-  }
 
   return (
     <div
@@ -254,13 +294,7 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
                 ? "bg-[#689AF3] border-[#689AF3] hover:bg-[#729ee9]"
                 : "border-neutral-600 bg-[#1E1F21] hover:bg-[#2A2B2D]"
             } border cursor-pointer rounded-md border-neutral-600 p-2 transition-background duration-300 ease-in-out`}
-            onClick={() =>
-              store?.user?.taskLikes.some(
-                (like) => like.authorId === (currentTask as Task).id
-              )
-                ? dislikeTask()
-                : likeTask()
-            }
+            onClick={() => handleLikeDislike()}
           >
             <ThumbsUp color="white" width={16} height={16} />
           </button>

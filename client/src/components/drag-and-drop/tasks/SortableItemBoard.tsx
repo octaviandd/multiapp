@@ -70,6 +70,9 @@ export const SortableItemBoard = ({
       dragging={isDragging}
       sorting={isSorting}
       handle={handle}
+      lastFileUrl={
+        item.files && item.files.length > 0 ? item.files[0].file.url : ""
+      }
       handleProps={handle ? { ref: setActivatorNodeRef } : undefined}
       index={index}
       wrapperStyle={wrapperStyle({ index })}
