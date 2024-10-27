@@ -83,7 +83,7 @@ export type Task = {
   title: string;
   recentlyAdded?: boolean;
   body?: string;
-  taskFiles?: TaskFile[];
+  files?: TaskFile[];
   comments?: Comment[];
   dueDate?: Date;
   asignee?: string;
@@ -205,7 +205,6 @@ export default function MultipleContainers({
   }, [store.removedItem]);
 
   useEffect(() => {
-    console.log("hit");
     setBoards((boards) => {
       return boards.map((board) => {
         return {

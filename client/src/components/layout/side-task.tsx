@@ -3,7 +3,7 @@
 import { UniqueIdentifier } from "@dnd-kit/core";
 import { Check, ThumbsUp, Trash } from "lucide-react";
 import React, { useContext, useEffect, useRef, useState } from "react";
-import { Task, User } from "../drag-and-drop/tasks/Board";
+import { Task, TaskFile, User } from "../drag-and-drop/tasks/Board";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import { EditorState, ContentState } from "draft-js";
 import { DatePicker } from "./date-picker";
@@ -58,13 +58,30 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
   }, [currentDate]);
 
   useEffect(() => {
+    console.log(store.recentlyAddedTaskFile);
+    if (store.recentlyAddedTaskFile) {
+      setCurrentTask((prev) => {
+        if (prev) {
+          return {
+            ...prev,
+            files: [
+              ...(prev?.files ?? []),
+              store.recentlyAddedTaskFile as TaskFile,
+            ],
+          };
+        }
+        return prev;
+      });
+    }
+  }, [store.recentlyAddedTaskFile]);
+
+  useEffect(() => {
     setIsLoading(true);
     const promise = fetchWithOptions(
       `/api/boards/tasks/${String(selectedItem).replace("T", "")}`
     );
     promise.then(({ data, error }) => {
       if (error) return error;
-
       setCurrentTask(data);
       setEditorState(
         EditorState.createWithContent(
@@ -331,7 +348,7 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
             ></TextEditor>
           </div>
 
-          <TaskAttachments taskFiles={currentTask?.taskFiles} />
+          <TaskAttachments taskFiles={currentTask?.files} />
 
           <div className="bg-[#252628] px-4 text-white pb-4 !mt-0">
             <div className="border-b py-4 mb-3 border-neutral-500">

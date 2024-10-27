@@ -30,8 +30,6 @@ export async function fetchWithOptions(
   let error: any = undefined;
   let data: any = undefined;
 
-  console.log(defaultOptions);
-
   try {
     const response = await fetch(url, defaultOptions);
     data = await response.json();

@@ -23,17 +23,24 @@ export default function FilePickerModal({}: Props) {
       formData.append(file.name + index, file);
     });
 
-    const promise = fetchWithOptions("/api/files/upload", {
+    fetch("/api/files/upload", {
       method: "POST",
       body: formData,
-    });
-    promise.then(({ data, error }) => {
-      if (error) return;
-
-      setCurrentFiles((prev) => {
-        return [...prev, ...data.files];
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        setCurrentFiles((prev) => {
+          return [...prev, ...data.files];
+        });
+        setCurrentTabs((prev) =>
+          prev.map((tab) => {
+            return { ...tab, isActive: tab.name === "Library" ? true : false };
+          })
+        );
+      })
+      .catch((error) => {
+        console.error("Error uploading files:", error);
       });
-    });
   }, []);
 
   const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
@@ -75,7 +82,11 @@ export default function FilePickerModal({}: Props) {
     promise.then(({ data, error }) => {
       if (error) return;
 
-      setStore((prev) => ({ ...prev, filePickerModalIsOpen: false }));
+      setStore((prev) => ({
+        ...prev,
+        filePickerModalIsOpen: false,
+        recentlyAddedTaskFile: data,
+      }));
     });
   };
 

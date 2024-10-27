@@ -2,6 +2,7 @@
 import { Task, User } from "@/components/drag-and-drop/tasks/Board";
 import { UniqueIdentifier } from "@dnd-kit/core";
 import React, { createContext, useState, ReactNode } from "react";
+import { TaskFile } from "@/components/drag-and-drop/tasks/Board";
 
 interface StoreState {
   displaySidebar: boolean;
@@ -10,6 +11,8 @@ interface StoreState {
   completedItem: Task | null;
   user: User | null;
   filePickerModalIsOpen: boolean;
+  imageModalIsOpen: boolean;
+  recentlyAddedTaskFile: undefined | TaskFile;
 }
 
 interface StoreContextType {
@@ -25,7 +28,9 @@ export const StoreContext = createContext<StoreContextType>({
     removedItem: null,
     completedItem: null,
     user: null,
-    filePickerModalIsOpen: false
+    filePickerModalIsOpen: false,
+    imageModalIsOpen: false,
+    recentlyAddedTaskFile: undefined,
   },
   setStore: () => {},
 });
@@ -37,7 +42,9 @@ export const StoreProvider = ({ children }: { children: ReactNode }) => {
     removedItem: null,
     completedItem: null,
     user: null,
-    filePickerModalIsOpen: false
+    filePickerModalIsOpen: false,
+    imageModalIsOpen: false,
+    recentlyAddedTaskFile: undefined,
   });
 
   return (

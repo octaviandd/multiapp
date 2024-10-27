@@ -4,7 +4,11 @@ import prisma from "../prisma/prisma-client";
 
 const getFiles = async () => {
   try {
-    const files = await prisma.file.findMany();
+    const files = await prisma.file.findMany({
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
 
     return files;
   } catch (err: any) {
@@ -72,6 +76,9 @@ const addTaskFile = async (fileId: number, taskId: number) => {
       data: {
         fileId,
         taskId,
+      },
+      include: {
+        file: true,
       },
     });
 

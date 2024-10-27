@@ -22,7 +22,6 @@ export default function Files() {
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log(data);
         setCurrentFiles((prev) => {
           return [...prev, ...data.files];
         });
@@ -142,14 +141,13 @@ export default function Files() {
                 <img
                   src={
                     file.type.includes("image")
-                      ? imgIcon
+                      ? file.url
                       : file.type.includes("pdf")
                       ? pdfIcon
                       : docIcon
                   }
+                  className="h-16 w-auto object-cover"
                   alt="Document Icon"
-                  width={50}
-                  height={50}
                 />
                 <p className="ml-4 text-white/80">{file.title}</p>
               </div>

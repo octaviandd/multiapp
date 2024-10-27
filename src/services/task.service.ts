@@ -88,6 +88,9 @@ const addTaskFile = async (fileId: number, taskId: number) => {
         fileId,
         taskId,
       },
+      include: {
+        file: true,
+      },
     });
 
     return file;
