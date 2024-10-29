@@ -51,6 +51,26 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
   };
 
   useEffect(() => {
+    if (store.recentlyRemovedTaskFileId) {
+      setCurrentTask((prev) => {
+        if (prev) {
+          return {
+            ...prev,
+            files: prev.files?.filter(
+              (file) => file.id !== store.recentlyRemovedTaskFileId
+            ),
+          };
+        }
+        return prev;
+      });
+      setStore((prev) => ({
+        ...prev,
+        recentlyRemovedTaskFileId: undefined,
+      }));
+    }
+  }, [store.recentlyRemovedTaskFileId]);
+
+  useEffect(() => {
     if (currentTask && currentDate) {
       updateTask({
         dueDate: dayjs(currentDate).toISOString(),
