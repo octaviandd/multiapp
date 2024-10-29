@@ -36,7 +36,7 @@ export default function Tasks() {
         <div className="flex items-center">
           <div className="flex items-center gap-x-2 cursor-pointer">
             <Avatar className="w-[48px] h-[48px] min-w-[48px] min-h-[48px]">
-              <AvatarImage src="https://github.com/shadcn.png" />
+              <AvatarImage src={store.user?.profileImage} />
               <AvatarFallback>CN</AvatarFallback>
             </Avatar>
           </div>

@@ -3,15 +3,23 @@
 import { StoreContext } from "@/store";
 import { cn } from "@/utils/helpers/utils";
 import { Plus } from "lucide-react";
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { TaskFile } from "../drag-and-drop/tasks/Board";
+import { createPortal } from "react-dom";
+import ImageModal from "./image-modal";
 
 type Props = {
   taskFiles: TaskFile[] | undefined;
 };
 
 export default function TaskAttachments({ taskFiles }: Props) {
-  const { setStore } = useContext(StoreContext);
+  const { store, setStore } = useContext(StoreContext);
+  const [currentTaskFile, setCurrentTaskFile] = useState<TaskFile | null>();
+
+  const handleImageClick = (taskFile: TaskFile) => {
+    setCurrentTaskFile(taskFile);
+    setStore((prev) => ({ ...prev, imageModalIsOpen: true }));
+  }
 
   return (
     <div className="border-b border-neutral-600 pb-4 px-4">
@@ -19,13 +27,7 @@ export default function TaskAttachments({ taskFiles }: Props) {
       <section className="grid grid-cols-4 gap-4 grid-rows-auto p-6 items-center">
         {taskFiles?.map((taskFile) => (
           <div className="relative group" key={taskFile.id}>
-            <button
-              onClick={() =>
-                setStore((prev) => ({
-                  ...prev,
-                  imageModalIsOpen: true,
-                }))
-              }
+            <button onClick={() => handleImageClick(taskFile)}
               className="absolute hidden group-hover:block top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 p-1.5 z-50 bg-neutral-500/50 rounded-lg"
             >
               <Plus className="h-4 w-4" color="white" />
@@ -51,6 +53,9 @@ export default function TaskAttachments({ taskFiles }: Props) {
           <Plus className="h-6 w-6" color="white" />
         </div>
       </section>
+      {store.imageModalIsOpen && currentTaskFile && createPortal(
+        <ImageModal currentTaskFile={currentTaskFile}/>, document.body
+      )}
     </div>
   );
 }
