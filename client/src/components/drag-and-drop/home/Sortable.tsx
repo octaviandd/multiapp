@@ -152,7 +152,6 @@ export function Sortable({
   };
 
   const onDragEnd = ({ over }: any) => {
-    console.log(over);
     setActiveId(null);
 
     if (over) {
