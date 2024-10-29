@@ -13,7 +13,7 @@ export default function TaskComment({ comment }: Props) {
   return (
     <div className="flex items-center my-2" key={comment.id}>
       <div className="mx-2">
-        <img src={comment.author.profileImage} alt="User Avatar" />
+        <img src={comment.author.profileImage} className="w-[32px] h-[32px]" alt="User Avatar" />
       </div>
       <div className="flex flex-col gap-y-1 w-full">
         <div className="flex justify-between">

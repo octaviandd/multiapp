@@ -414,7 +414,7 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
             {currentTask && (
               <div className="flex items-center">
                 <div className="mx-2 flex justify-between items-center w-full my-2 border-b border-neutral-600 mb-1 pb-2">
-                  <img src={currentTask.author?.profileImage} alt="User Avatar" />
+                  <img src={currentTask.author?.profileImage} className="w-[32px] h-[32px]" alt="User Avatar" />
                   <div className="ml-2 w-full">
                     <p className="font-medium small">
                       {currentTask.author?.firstName +
