@@ -88,6 +88,19 @@ const addTaskFile = async (req: Request, res: Response) => {
   }
 };
 
+const deleteTaskFile = async (req: Request, res: Response) => {
+  try {
+    const { fileId } = req.params;
+    await TaskService.deleteTaskFile(Number(fileId));
+
+    return res.status(200).json({ message: "Task file deleted" });
+  } catch (error: any) {
+    return res.status(500).json({
+      message: "Internal server error: " + error.message,
+    });
+  }
+}
+
 export default {
   getTasks,
   getTask,
@@ -95,4 +108,5 @@ export default {
   deleteTask,
   updateTask,
   addTaskFile,
+  deleteTaskFile,
 };

@@ -206,7 +206,27 @@ export default function MultipleContainers({
   }, [store.removedItem]);
 
   useEffect(() => {
-    console.log("hit");
+    if (store.recentlyRemovedTaskFileId) {
+      setBoards((boards) => {
+        return boards.map((board) => {
+          return {
+            ...board,
+            tasks: board.tasks.map((task) => {
+              return {
+                ...task,
+                files: task.files?.filter(
+                  (file) => file.id !== store.recentlyRemovedTaskFileId
+                ),
+              };
+            }),
+          };
+        });
+      });
+    }
+  }, [store.recentlyRemovedTaskFileId]);
+
+
+  useEffect(() => {
     if (store.recentlyAddedTaskFile) {
       setBoards((boards) => {
         return boards.map((board) => {

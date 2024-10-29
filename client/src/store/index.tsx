@@ -13,6 +13,7 @@ interface StoreState {
   filePickerModalIsOpen: boolean;
   imageModalIsOpen: boolean;
   recentlyAddedTaskFile: undefined | TaskFile;
+  recentlyRemovedTaskFileId: undefined | UniqueIdentifier;
 }
 
 interface StoreContextType {
@@ -31,6 +32,7 @@ export const StoreContext = createContext<StoreContextType>({
     filePickerModalIsOpen: false,
     imageModalIsOpen: false,
     recentlyAddedTaskFile: undefined,
+    recentlyRemovedTaskFileId: undefined,
   },
   setStore: () => {},
 });
@@ -45,6 +47,7 @@ export const StoreProvider = ({ children }: { children: ReactNode }) => {
     filePickerModalIsOpen: false,
     imageModalIsOpen: false,
     recentlyAddedTaskFile: undefined,
+    recentlyRemovedTaskFileId: undefined,
   });
 
   return (

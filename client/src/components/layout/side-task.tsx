@@ -385,7 +385,7 @@ const SideTask: React.FC<SideTaskProps> = ({ selectedItem }) => {
             ></TextEditor>
           </div>
 
-          <TaskAttachments taskFiles={currentTask?.files} />
+          <TaskAttachments taskFiles={currentTask?.files} setCurrentTask={setCurrentTask}/>
 
           <div className="bg-[#252628] px-4 text-white pb-4 !mt-0">
             <div className="border-b py-4 mb-3 border-neutral-500">

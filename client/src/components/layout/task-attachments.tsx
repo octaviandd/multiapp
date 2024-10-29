@@ -10,6 +10,7 @@ import ImageModal from "./image-modal";
 
 type Props = {
   taskFiles: TaskFile[] | undefined;
+  setCurrentTask: Function;
 };
 
 export default function TaskAttachments({ taskFiles }: Props) {
@@ -54,7 +55,7 @@ export default function TaskAttachments({ taskFiles }: Props) {
         </div>
       </section>
       {store.imageModalIsOpen && currentTaskFile && createPortal(
-        <ImageModal currentTaskFile={currentTaskFile}/>, document.body
+        <ImageModal currentTaskFile={currentTaskFile} setCurrentTask={setCurrentTaskFile}/>, document.body
       )}
     </div>
   );

@@ -99,6 +99,18 @@ const addTaskFile = async (fileId: number, taskId: number) => {
   }
 };
 
+const deleteTaskFile = async (fileId: number) => {
+  try {
+    await prisma.taskFile.delete({
+      where: { id: fileId },
+    });
+
+    return true;
+  } catch (error: any) {
+    throw new Error("Failed to delete task file: " + error.message);
+  }
+}
+
 export default {
   getTask,
   updateTask,
@@ -106,4 +118,5 @@ export default {
   createTask,
   addTaskFile,
   getTasks,
+  deleteTaskFile,
 };
