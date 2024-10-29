@@ -150,7 +150,7 @@ export const Item = React.memo(
             {...props}
             tabIndex={!handle ? 0 : undefined}
           >
-            <div className="flex items-center">
+            <div className="flex items-center flex-start">
               <div className="mr-2">
                 <CircleCheck width={14} height={14} />
               </div>
@@ -161,6 +161,9 @@ export const Item = React.memo(
                 ref={inputRef}
                 placeholder="Write a new task"
               ></input>
+              <span className={styles.Actions}>
+                <Handle {...handleProps} {...listeners} />
+              </span>
             </div>
             {!recentlyAdded && lastFileUrl && (
               <div className="flex justify-between items-center mt-7">
@@ -171,9 +174,6 @@ export const Item = React.memo(
                 />
               </div>
             )}
-            <span className={styles.Actions}>
-              {handle ? <Handle {...handleProps} {...listeners} /> : null}
-            </span>
           </div>
         </li>
       );

@@ -22,6 +22,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useContext, useEffect } from "react";
 import { StoreContext } from "@/store";
+import { fetchWithOptions } from "@/utils/helpers/utils";
 
 const formSchema = z.object({
   email: z.string().min(5, {
@@ -44,19 +45,12 @@ export function LoginForm() {
   });
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
-    fetch("/api/auth/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(values),
-    }).then((res) => {
-      if (res.status === 200) {
-        navigate("/");
-      } else {
-        console.log("Login failed");
-      }
-    });
+    const promise = fetchWithOptions("/api/auth/login", {method: "POST", body: JSON.stringify(values)});
+    promise.then(({data, error}) => {
+      if(error) return ;
+
+      navigate("/");
+    })
   };
 
   return (

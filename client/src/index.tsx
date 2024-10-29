@@ -2,7 +2,7 @@
 
 import React from "react";
 import ReactDOM from "react-dom/client";
-import "./index.scss";
+import "./global-styles/index.scss";
 import Root from "./Root";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Errors from "./views/Error/ErrorPage";

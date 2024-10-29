@@ -34,7 +34,6 @@ function renderSortableItemDragOverlay({
   handleRemoveRow,
   wrapperStyle,
 }: Props) {
-  console.log(id)
   const board = findBoardByItemId(id) as Board;
   const item = board?.tasks.find((item) => item.id === id) as Task;
 

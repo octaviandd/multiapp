@@ -138,14 +138,14 @@ export const BoardContainer = forwardRef<HTMLDivElement, Props>(
                       onClick={() => onClickFocus()}
                     >
                       <Pen width={16} height={16} className="mr-2" />
-                      Rename Section
+                      Rename board
                     </DropdownMenuItem>
                     <DropdownMenuItem
                       className="cursor-pointer px-3 py-2 hover:bg-[#3D3E3F] flex items-center"
                       onClick={(e) => handleRemoveBoard(e, id)}
                     >
                       <Trash width={16} height={16} className="mr-2" />
-                      Delete Section
+                      Delete board
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>

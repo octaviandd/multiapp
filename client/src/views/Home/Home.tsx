@@ -2,7 +2,6 @@
 
 import React, {useContext} from "react";
 import { BoardSortable } from "../../components/drag-and-drop/home/BoardSortable";
-import styles from "./home.module.scss";
 import { StoreContext } from "@/store";
 import dayjs from "dayjs";
 
@@ -10,7 +9,7 @@ export default function Home() {
   const { store } = useContext(StoreContext);
 
   return (
-    <div className={styles.Home}>
+    <div className="home">
       <div className="p-6">
         <div className="mb-4">
           <p className="text-[20px] text-white">Home</p>

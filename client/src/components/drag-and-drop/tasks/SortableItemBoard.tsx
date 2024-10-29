@@ -6,6 +6,7 @@ import { UniqueIdentifier } from "@dnd-kit/core";
 import { useSortable } from "@dnd-kit/sortable";
 import { Item } from "./BoardItem/index";
 import { Task } from "./Board";
+import { useMountStatus } from "@/utils/helpers/utils";
 
 interface SortableItemProps {
   containerId: UniqueIdentifier;
@@ -18,18 +19,6 @@ interface SortableItemProps {
   removeTemporaryTask?(): void;
   saveTask?(title: string, taskId: UniqueIdentifier): void;
   wrapperStyle({ index }: { index: number }): React.CSSProperties;
-}
-
-function useMountStatus() {
-  const [isMounted, setIsMounted] = useState(false);
-
-  useEffect(() => {
-    const timeout = setTimeout(() => setIsMounted(true), 500);
-
-    return () => clearTimeout(timeout);
-  }, []);
-
-  return isMounted;
 }
 
 export const SortableItemBoard = ({

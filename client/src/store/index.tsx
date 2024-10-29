@@ -21,10 +21,9 @@ interface StoreContextType {
   setStore: React.Dispatch<React.SetStateAction<StoreState>>;
 }
 
-// Create a Context
 export const StoreContext = createContext<StoreContextType>({
   store: {
-    displaySidebar: false,
+    displaySidebar: true,
     currentBoardItem: null,
     removedItem: null,
     completedItem: null,
@@ -39,7 +38,7 @@ export const StoreContext = createContext<StoreContextType>({
 
 export const StoreProvider = ({ children }: { children: ReactNode }) => {
   const [store, setStore] = useState<StoreState>({
-    displaySidebar: false,
+    displaySidebar: true,
     currentBoardItem: null,
     removedItem: null,
     completedItem: null,

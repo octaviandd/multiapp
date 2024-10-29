@@ -17,7 +17,7 @@ const spinnerVariants = cva("flex-col items-center justify-center", {
   },
 });
 
-const loaderVariants = cva("animate-spin text-primary", {
+const loaderVariants = cva("animate-spin bg-transparent text-primary", {
   variants: {
     size: {
       small: "size-6",
