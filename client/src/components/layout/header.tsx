@@ -124,7 +124,12 @@ export default function Header({ displaySidebar, setDisplaySidebar }: Props) {
             </DropdownMenuLabel>
             <DropdownMenuItem>
               <Github color="black" className="mr-2 h-4 w-4" />
-              <span className="text-black">GitHub</span>
+              <a
+                href="https://github.com/octaviandd"
+                className="text-black no-underline"
+              >
+                GitHub
+              </a>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem
