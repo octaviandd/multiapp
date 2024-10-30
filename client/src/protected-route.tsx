@@ -55,5 +55,5 @@ export default function ProtectedRoute({
     return <>{children}</>;
   }
 
-  return <Navigate to="/login" />;
+  return <Navigate to="/register" />;
 }
