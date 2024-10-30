@@ -7,6 +7,9 @@ import React, { useContext, useState } from "react";
 import { TaskFile } from "../drag-and-drop/tasks/Board";
 import { createPortal } from "react-dom";
 import ImageModal from "./image-modal";
+import docIcon from "@/assets/doc.png";
+import pdfIcon from "@/assets/pdf.png";
+import imgIcon from "@/assets/img.png";
 
 type Props = {
   taskFiles: TaskFile[] | undefined;
@@ -20,7 +23,19 @@ export default function TaskAttachments({ taskFiles }: Props) {
   const handleImageClick = (taskFile: TaskFile) => {
     setCurrentTaskFile(taskFile);
     setStore((prev) => ({ ...prev, imageModalIsOpen: true }));
-  }
+  };
+
+  const taskFileUrl = (taskFile: TaskFile) => {
+    let iconUrl = null;
+    if (taskFile.file.type.includes("image")) {
+      iconUrl = taskFile.file.url;
+    } else if (taskFile.file.type.includes("pdf")) {
+      iconUrl = pdfIcon;
+    } else {
+      iconUrl = docIcon;
+    }
+    return iconUrl;
+  };
 
   return (
     <div className="border-b border-neutral-600 pb-4 px-4">
@@ -28,14 +43,15 @@ export default function TaskAttachments({ taskFiles }: Props) {
       <section className="grid grid-cols-4 gap-4 grid-rows-auto p-6 items-center">
         {taskFiles?.map((taskFile) => (
           <div className="relative group" key={taskFile.id}>
-            <button onClick={() => handleImageClick(taskFile)}
+            <button
+              onClick={() => handleImageClick(taskFile)}
               className="absolute hidden group-hover:block top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 p-1.5 z-50 bg-neutral-500/50 rounded-lg"
             >
               <Plus className="h-4 w-4" color="white" />
             </button>
             <div className="absolute top-0 hidden group-hover:block left-0 right-0 bottom-0 bg-black opacity-35 h-full w-full"></div>
             <img
-              src={taskFile.file.url}
+              src={taskFileUrl(taskFile)}
               alt="attachment"
               key={taskFile.id}
               className="h-12 w-full rounded-lg object-cover"
@@ -54,9 +70,15 @@ export default function TaskAttachments({ taskFiles }: Props) {
           <Plus className="h-6 w-6" color="white" />
         </div>
       </section>
-      {store.imageModalIsOpen && currentTaskFile && createPortal(
-        <ImageModal currentTaskFile={currentTaskFile} setCurrentTask={setCurrentTaskFile}/>, document.body
-      )}
+      {store.imageModalIsOpen &&
+        currentTaskFile &&
+        createPortal(
+          <ImageModal
+            currentTaskFile={currentTaskFile}
+            setCurrentTask={setCurrentTaskFile}
+          />,
+          document.body
+        )}
     </div>
   );
 }

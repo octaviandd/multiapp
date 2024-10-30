@@ -110,6 +110,7 @@ export type Board = {
 };
 
 export type File = {
+  type: any;
   id: string | number;
   name: string;
   title: string;
@@ -224,7 +225,6 @@ export default function MultipleContainers({
       });
     }
   }, [store.recentlyRemovedTaskFileId]);
-
 
   useEffect(() => {
     if (store.recentlyAddedTaskFile) {

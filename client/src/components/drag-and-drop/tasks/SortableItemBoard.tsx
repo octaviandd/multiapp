@@ -5,8 +5,10 @@ import React, { useEffect, useState } from "react";
 import { UniqueIdentifier } from "@dnd-kit/core";
 import { useSortable } from "@dnd-kit/sortable";
 import { Item } from "./BoardItem/index";
-import { Task } from "./Board";
+import { Task, TaskFile } from "./Board";
 import { useMountStatus } from "@/utils/helpers/utils";
+import docIcon from "@/assets/doc.png";
+import pdfIcon from "@/assets/pdf.png";
 
 interface SortableItemProps {
   containerId: UniqueIdentifier;
@@ -49,6 +51,18 @@ export const SortableItemBoard = ({
   const mounted = useMountStatus();
   const mountedWhileDragging = isDragging && !mounted;
 
+  const taskFileUrl = (taskFile: TaskFile) => {
+    let iconUrl = null;
+    if (taskFile.file.type.includes("image")) {
+      iconUrl = taskFile.file.url;
+    } else if (taskFile.file.type.includes("pdf")) {
+      iconUrl = pdfIcon;
+    } else {
+      iconUrl = docIcon;
+    }
+    return iconUrl;
+  };
+
   return (
     <Item
       ref={disabled ? undefined : setNodeRef}
@@ -61,7 +75,7 @@ export const SortableItemBoard = ({
       handle={handle}
       lastFileUrl={
         item.files && item.files.length > 0
-          ? item.files[item.files.length - 1].file.url
+          ? taskFileUrl(item.files[item.files.length - 1])
           : ""
       }
       handleProps={handle ? { ref: setActivatorNodeRef } : undefined}

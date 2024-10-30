@@ -49,7 +49,28 @@ export default function Home() {
             </div>
           </div>
         </div>
-        <div className="my-6 flex w-full"></div>
+        <div className="my-6 flex w-1/2 home-board-note mx-auto">
+          <div>
+            <p className="text-[16px] text-white">My Tasks</p>
+          </div>
+          <div className="mt-4 flex flex-col gap-y-2">
+            {store?.user?.tasks.map((task) => (
+              <div key={task.id} className="home-board-note-item">
+                <div>
+                  <p className="text-white">{task.title}</p>
+                  <p className="text-white extra-small">
+                    {dayjs(task.createdAt).format("DD MMM YYYY")}
+                  </p>
+                </div>
+                <div className="flex items-center justify-center">
+                  <p className="text-white small">
+                    {task.completed ? "Completed" : "Pending"}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );

@@ -13,6 +13,7 @@ import { Handle } from "./Handle";
 import { cn } from "@/utils/helpers/utils";
 import { CircleCheck } from "lucide-react";
 import { StoreContext } from "@/store";
+import { TaskFile } from "../Board";
 
 export interface Props {
   dragOverlay?: boolean;

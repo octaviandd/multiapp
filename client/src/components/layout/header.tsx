@@ -67,9 +67,9 @@ export default function Header({ displaySidebar, setDisplaySidebar }: Props) {
         <div className="flex items-center gap-x-2 border rounded-full border-neutral-400 px-2 py-1 cursor-pointer hover:bg-[#3D3E40] transition-all ease-in-out duration-100">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <div className="flex items-center bg-transparent px-2 py-0 h-8 focus:outline-none">
+              <div className="flex items-center  bg-transparent px-2 py-0 h-8 focus:outline-none">
                 <Plus className="text-white" />
-                <span className="text-white ml-2">Create</span>
+                <a className="text-white ml-2">Create</a>
               </div>
             </DropdownMenuTrigger>
             <DropdownMenuContent
@@ -78,9 +78,11 @@ export default function Header({ displaySidebar, setDisplaySidebar }: Props) {
               alignOffset={15}
             >
               <DropdownMenuGroup>
-                <DropdownMenuItem>
+                <DropdownMenuItem className="cursor-pointer">
                   <User color="black" className="mr-2 h-4 w-4" />
-                  <span className="text-black">Task</span>
+                  <a href="/tasks/board" className="text-black">
+                    Task
+                  </a>
                   <DropdownMenuShortcut className="text-black">
                     ⇧⌘P
                   </DropdownMenuShortcut>
