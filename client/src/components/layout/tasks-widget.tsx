@@ -1,6 +1,6 @@
 /** @format */
 
-import { ActionProps } from "@/components/drag-and-drop/home/Item/Action";
+import { ActionProps } from "@/components/drag-and-drop/tasks/BoardItem/Action";
 import React, { forwardRef } from "react";
 
 export const TasksWidget = forwardRef<HTMLButtonElement, ActionProps>(

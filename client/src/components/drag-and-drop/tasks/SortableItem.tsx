@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 
 import { UniqueIdentifier } from "@dnd-kit/core";
 import { useSortable } from "@dnd-kit/sortable";
-import { Item } from "../home/index";
+import { Item } from "./BoardItem/Item";
 import { Task } from "./Board";
 import { useMountStatus } from "@/utils/helpers/utils";
 
@@ -18,7 +18,6 @@ interface SortableItemProps {
   disabled?: boolean;
   style(args: any): React.CSSProperties;
   getIndex(id: UniqueIdentifier): number;
-  renderItem(): React.ReactElement;
   wrapperStyle({ index }: { index: number }): React.CSSProperties;
 }
 
@@ -28,9 +27,7 @@ export const SortableItem = ({
   index,
   value,
   handle,
-  renderItem,
   style,
-  item,
   containerId,
   getIndex,
   wrapperStyle,
@@ -55,6 +52,7 @@ export const SortableItem = ({
     <Item
       ref={disabled ? undefined : setNodeRef}
       value={value}
+      id={id}
       dragging={isDragging}
       sorting={isSorting}
       handle={handle}
@@ -74,7 +72,6 @@ export const SortableItem = ({
       transform={transform}
       fadeIn={mountedWhileDragging}
       listeners={listeners}
-      renderItem={renderItem}
     />
   );
 };
